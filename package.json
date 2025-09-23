@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "docker:compose:up": "docker compose up -d",
+    "docker:compose:down": "docker compose down"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.10",
