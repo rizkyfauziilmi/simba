@@ -28,6 +28,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
+  // If user is logged in, prevent access to /login
+  if (session && request.nextUrl.pathname === "/login") {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   return NextResponse.next();
 }
 
