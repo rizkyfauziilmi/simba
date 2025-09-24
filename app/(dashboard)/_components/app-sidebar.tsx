@@ -34,105 +34,105 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/",
       icon: LucideLayoutDashboard,
     },
     {
       title: "Data Master",
-      url: "#",
+      url: "/master",
       icon: Database,
       role: ["admin"],
       items: [
         {
           title: "Siswa",
-          url: "#",
+          url: "/master/siswa",
           role: ["admin"],
         },
         {
           title: "Guru",
-          url: "#",
+          url: "/master/guru",
           role: ["admin"],
         },
         {
           title: "Kelas",
-          url: "#",
+          url: "/master/kelas",
           role: ["admin"],
         },
         {
           title: "Mata Pelajaran",
-          url: "#",
+          url: "/master/mapel",
           role: ["admin"],
         },
       ],
     },
     {
       title: "Akademik",
-      url: "#",
+      url: "/akademik",
       icon: GraduationCap,
       role: ["teacher", "student"],
       items: [
         {
           title: "Jadwal Pelajaran",
-          url: "#",
+          url: "/akademik/jadwal",
           role: ["teacher", "student"],
         },
         {
           title: "Kalender Akademik",
-          url: "#",
+          url: "/akademik/kalender",
           role: ["teacher", "student"],
         },
       ],
     },
     {
       title: "Absensi",
-      url: "#",
+      url: "/absensi",
       icon: ScanFace,
       role: ["admin", "teacher", "student"],
       items: [
         {
           title: "Absensi Siswa",
-          url: "#",
+          url: "/absensi/siswa",
           role: ["teacher", "student"],
         },
         {
           title: "Absensi Guru",
-          url: "#",
+          url: "/absensi/guru",
           role: ["admin", "teacher"],
         },
       ],
     },
     {
       title: "Nilai",
-      url: "#",
+      url: "/nilai",
       icon: Award,
       role: ["teacher", "student"],
       items: [
         {
           title: "Input Nilai",
-          url: "#",
+          url: "/nilai/input",
           role: ["teacher"],
         },
         {
           title: "Rekap Nilai",
-          url: "#",
+          url: "/nilai/rekap",
           role: ["teacher", "student"],
         },
         {
           title: "Rapor",
-          url: "#",
+          url: "/nilai/rapor",
           role: ["teacher", "student"],
         },
       ],
     },
     {
       title: "Laporan",
-      url: "#",
+      url: "/laporan",
       icon: FileUser,
       role: ["admin"],
     },
     {
       title: "Manajemen Pengguna",
-      url: "#",
+      url: "/pengguna",
       icon: ShieldUser,
       role: ["admin"],
     },
@@ -140,12 +140,12 @@ const data = {
   navSecondary: [
     {
       title: "Profil / Akun",
-      url: "#",
+      url: "/akun",
       icon: CircleUser,
     },
     {
       title: "Pengaturan",
-      url: "#",
+      url: "/pengaturan",
       icon: Settings,
     },
   ],
