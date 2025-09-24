@@ -18,24 +18,40 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 
+// Tambahkan props currentRole
 export function NavMain({
   items,
+  currentRole,
 }: {
   items: {
     title: string;
     url: string;
     icon: LucideIcon;
     isActive?: boolean;
+    role?: string[];
     items?: {
       title: string;
       url: string;
+      role?: string[];
     }[];
   }[];
+  currentRole: string;
 }) {
+  // Filter parent items sesuai role
+  const filteredItems = items
+    .filter((item) => !item.role || item.role.includes(currentRole))
+    .map((item) => ({
+      ...item,
+      // Filter child items sesuai role
+      items: item.items?.filter(
+        (subItem) => !subItem.role || subItem.role.includes(currentRole),
+      ),
+    }));
+
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {items.map((item) => (
+        {filteredItems.map((item) => (
           <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={item.title}>

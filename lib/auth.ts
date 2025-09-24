@@ -10,5 +10,10 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  plugins: [username(), admin()],
+  plugins: [
+    username(),
+    admin({
+      defaultRole: "student",
+    }),
+  ],
 });

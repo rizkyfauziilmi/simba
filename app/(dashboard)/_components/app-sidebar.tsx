@@ -26,6 +26,9 @@ import {
 import { NavSecondary } from "./nav-secondary";
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
+import { authClient } from "@/lib/auth-client";
+import { UserDropdownSkeleton } from "./user-dropdown-skeleton";
+import { NavMainSkeleton } from "./nav-main-skeleton";
 
 const data = {
   navMain: [
@@ -38,22 +41,27 @@ const data = {
       title: "Data Master",
       url: "#",
       icon: Database,
+      role: ["admin"],
       items: [
         {
           title: "Siswa",
           url: "#",
+          role: ["admin"],
         },
         {
           title: "Guru",
           url: "#",
+          role: ["admin"],
         },
         {
           title: "Kelas",
           url: "#",
+          role: ["admin"],
         },
         {
           title: "Mata Pelajaran",
           url: "#",
+          role: ["admin"],
         },
       ],
     },
@@ -61,14 +69,17 @@ const data = {
       title: "Akademik",
       url: "#",
       icon: GraduationCap,
+      role: ["teacher", "student"],
       items: [
         {
           title: "Jadwal Pelajaran",
           url: "#",
+          role: ["teacher", "student"],
         },
         {
           title: "Kalender Akademik",
           url: "#",
+          role: ["teacher", "student"],
         },
       ],
     },
@@ -76,14 +87,17 @@ const data = {
       title: "Absensi",
       url: "#",
       icon: ScanFace,
+      role: ["admin", "teacher", "student"],
       items: [
         {
           title: "Absensi Siswa",
           url: "#",
+          role: ["teacher", "student"],
         },
         {
           title: "Absensi Guru",
           url: "#",
+          role: ["admin", "teacher"],
         },
       ],
     },
@@ -91,18 +105,22 @@ const data = {
       title: "Nilai",
       url: "#",
       icon: Award,
+      role: ["teacher", "student"],
       items: [
         {
           title: "Input Nilai",
           url: "#",
+          role: ["teacher"],
         },
         {
           title: "Rekap Nilai",
           url: "#",
+          role: ["teacher", "student"],
         },
         {
           title: "Rapor",
           url: "#",
+          role: ["teacher", "student"],
         },
       ],
     },
@@ -110,11 +128,13 @@ const data = {
       title: "Laporan",
       url: "#",
       icon: FileUser,
+      role: ["admin"],
     },
     {
       title: "Manajemen Pengguna",
       url: "#",
       icon: ShieldUser,
+      role: ["admin"],
     },
   ],
   navSecondary: [
@@ -132,6 +152,10 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session, isPending } = authClient.useSession();
+
+  const isSessionLoading = isPending || !session;
+
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>
       <SidebarHeader>
@@ -154,11 +178,27 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        {/*TODO: add loading UI*/}
+        {isSessionLoading ? (
+          <NavMainSkeleton />
+        ) : (
+          <NavMain
+            items={data.navMain}
+            currentRole={session.user.role ?? "student"}
+          />
+        )}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser />
+        {isSessionLoading ? (
+          <UserDropdownSkeleton />
+        ) : (
+          <NavUser
+            name={session.user.name}
+            email={session.user.email}
+            image={session.user.image}
+          />
+        )}
       </SidebarFooter>
     </Sidebar>
   );
