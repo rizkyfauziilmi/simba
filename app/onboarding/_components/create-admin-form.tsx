@@ -10,12 +10,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { LoaderCircle, UserPen } from "lucide-react";
+import { Eye, EyeOff, LoaderCircle, UserPen } from "lucide-react";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { APIError } from "better-auth/api";
 import {
   Form,
   FormControl,
@@ -27,8 +25,8 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/auth";
 import { createAdmin } from "../_actions/actions";
+import { useState } from "react";
 
 const createAdminSchema = z
   .object({
@@ -52,6 +50,8 @@ export function CreateAdminForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof createAdminSchema>>({
@@ -144,7 +144,22 @@ export function CreateAdminForm({
                   <FormItem>
                     <FormLabel>Kata Sandi</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="******" {...field} />
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="******"
+                          {...field}
+                        />
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-1 top-1/2 -translate-y-1/2"
+                        >
+                          {showPassword ? <EyeOff /> : <Eye />}
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -157,7 +172,24 @@ export function CreateAdminForm({
                   <FormItem>
                     <FormLabel>Konfirmasi Kata Sandi</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="******" {...field} />
+                      <div className="relative">
+                        <Input
+                          type={showConfirmPassword ? "text" : "password"}
+                          placeholder="******"
+                          {...field}
+                        />
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="ghost"
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                          className="absolute right-1 top-1/2 -translate-y-1/2"
+                        >
+                          {showConfirmPassword ? <EyeOff /> : <Eye />}
+                        </Button>
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

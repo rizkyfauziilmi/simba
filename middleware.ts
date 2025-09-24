@@ -24,7 +24,7 @@ export async function middleware(request: NextRequest) {
     headers: await headers(),
   });
 
-  if (!session) {
+  if (!session && request.nextUrl.pathname !== "/login") {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

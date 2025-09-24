@@ -14,6 +14,10 @@ export async function createAdmin(values: {
         name: values.username,
         email: values.email,
         password: values.password,
+        data: {
+          username: values.username,
+          displayUsername: values.username,
+        },
         role: "admin",
       },
       asResponse: true,
