@@ -13,6 +13,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "./_components/app-sidebar";
+import { RoleBadge } from "./_components/role-badge";
 
 export default function DashboardLayout({
   children,
@@ -23,7 +24,7 @@ export default function DashboardLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2">
+        <header className="flex pr-4 justify-between h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator
@@ -44,6 +45,7 @@ export default function DashboardLayout({
               </BreadcrumbList>
             </Breadcrumb>
           </div>
+          <RoleBadge />
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
       </SidebarInset>

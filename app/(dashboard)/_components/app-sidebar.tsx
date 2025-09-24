@@ -11,7 +11,7 @@ import {
   LucideLayoutDashboard,
   ScanFace,
   Settings,
-  ShieldUser,
+  UsersRound,
 } from "lucide-react";
 
 import {
@@ -29,6 +29,8 @@ import { NavUser } from "./nav-user";
 import { authClient } from "@/lib/auth-client";
 import { UserDropdownSkeleton } from "./user-dropdown-skeleton";
 import { NavMainSkeleton } from "./nav-main-skeleton";
+import { RoleBadge } from "./role-badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const data = {
   navMain: [
@@ -133,7 +135,7 @@ const data = {
     {
       title: "Manajemen Pengguna",
       url: "/pengguna",
-      icon: ShieldUser,
+      icon: UsersRound,
       role: ["admin"],
     },
   ],
@@ -168,6 +170,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">SIMBA</span>
+
                   <span className="truncate text-xs text-muted-foreground">
                     Sistem Informasi Manajemen Bustanul Arifin
                   </span>

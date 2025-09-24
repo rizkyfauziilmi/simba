@@ -104,7 +104,7 @@ export function LoginForm({
         </a>
         <h1 className="text-xl font-bold">
           Selamat datang di <br />
-          Bustanul Arifin.
+          SIMBA.
         </h1>
       </div>
       <Form {...form}>
