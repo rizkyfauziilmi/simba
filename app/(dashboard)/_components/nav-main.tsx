@@ -60,7 +60,13 @@ export function NavMain({
             defaultOpen={pathname.startsWith(item.url)}
           >
             <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.title}>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                isActive={
+                  pathname === item.url || pathname.startsWith(item.url + "/")
+                }
+              >
                 <a href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
@@ -78,7 +84,10 @@ export function NavMain({
                     <SidebarMenuSub>
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
+                          <SidebarMenuSubButton
+                            asChild
+                            isActive={pathname === subItem.url}
+                          >
                             <a href={subItem.url}>
                               <span>{subItem.title}</span>
                             </a>
