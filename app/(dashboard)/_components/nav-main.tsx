@@ -17,6 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import { usePathname } from "next/navigation";
 
 // Tambahkan props currentRole
 export function NavMain({
@@ -27,7 +28,6 @@ export function NavMain({
     title: string;
     url: string;
     icon: LucideIcon;
-    isActive?: boolean;
     role?: string[];
     items?: {
       title: string;
@@ -37,6 +37,8 @@ export function NavMain({
   }[];
   currentRole: string;
 }) {
+  const pathname = usePathname();
+
   // Filter parent items sesuai role
   const filteredItems = items
     .filter((item) => !item.role || item.role.includes(currentRole))
@@ -44,7 +46,7 @@ export function NavMain({
       ...item,
       // Filter child items sesuai role
       items: item.items?.filter(
-        (subItem) => !subItem.role || subItem.role.includes(currentRole),
+        (subItem) => !subItem.role || subItem.role.includes(currentRole)
       ),
     }));
 
@@ -52,7 +54,11 @@ export function NavMain({
     <SidebarGroup>
       <SidebarMenu>
         {filteredItems.map((item) => (
-          <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
+          <Collapsible
+            key={item.title}
+            asChild
+            defaultOpen={pathname.startsWith(item.url)}
+          >
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={item.title}>
                 <a href={item.url}>
