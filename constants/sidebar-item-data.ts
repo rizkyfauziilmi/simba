@@ -8,6 +8,8 @@ export const routeData = {
       title: "Dashboard",
       url: "/",
       icon: LucideLayoutDashboard,
+      role: ["admin", "teacher", "student"],
+      items: undefined,
     },
     {
       title: "Data Master",
@@ -101,12 +103,14 @@ export const routeData = {
       url: "/laporan",
       icon: FileUser,
       role: ["admin"],
+      items: undefined,
     },
     {
       title: "Manajemen Pengguna",
       url: "/pengguna",
       icon: UsersRound,
       role: ["admin"],
+      items: undefined,
     },
   ],
   navSecondary: [
@@ -114,11 +118,15 @@ export const routeData = {
       title: "Profil / Akun",
       url: "/akun",
       icon: CircleUser,
+      role: ["admin", "teacher", "student"],
+      items: undefined,
     },
     {
       title: "Pengaturan",
       url: "/pengaturan",
       icon: Settings,
+      role: ["admin", "teacher", "student"],
+      items: undefined,
     },
   ],
 };

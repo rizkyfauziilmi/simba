@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import db from "./lib/db";
+import { auth } from "./lib/auth";
+import { headers } from "next/headers";
+import { routeData } from "./constants/sidebar-item-data";
 
 export async function middleware(request: NextRequest) {
   const isThereAnyUser = (await db.user.count()) > 0;
@@ -31,6 +32,36 @@ export async function middleware(request: NextRequest) {
   // If user is logged in, prevent access to /login
   if (session && request.nextUrl.pathname === "/login") {
     return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // Role-based route protection using sidebar data
+  if (session) {
+    const userRole = session.user?.role;
+    const pathname = request.nextUrl.pathname;
+
+    // Helper to flatten all routes from sidebar data
+    function getAllRoutes() {
+      const routes = [];
+      for (const nav of [routeData.navMain, routeData.navSecondary]) {
+        for (const item of nav) {
+          routes.push({ url: item.url, role: item.role });
+          if (item.items) {
+            for (const sub of item.items) {
+              routes.push({ url: sub.url, role: sub.role });
+            }
+          }
+        }
+      }
+      return routes;
+    }
+
+    const allRoutes = getAllRoutes();
+    // Find route config for current path
+    const routeConfig = allRoutes.find(r => r.url === pathname);
+    if (routeConfig && routeConfig.role && !routeConfig.role.includes(userRole!)) {
+      // If user role is not allowed, redirect to home
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
 
   return NextResponse.next();
