@@ -26,6 +26,7 @@ import {
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const loginSchema = z.object({
   usernameOrEmail: z.string().min(1, "Nama Pengguna atau Email harus diisi"),
@@ -96,12 +97,12 @@ export function LoginForm({
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
-        <a href="#" className="flex flex-col items-center gap-2 font-medium">
+        <Link href="/" className="flex flex-col items-center gap-2 font-medium">
           <div className="flex size-8 items-center justify-center rounded-md">
             <GalleryVerticalEnd className="size-6" />
           </div>
           <span className="sr-only">Bustanul Arifin</span>
-        </a>
+        </Link>
         <h1 className="text-xl font-bold">
           Selamat datang di <br />
           SIMBA.

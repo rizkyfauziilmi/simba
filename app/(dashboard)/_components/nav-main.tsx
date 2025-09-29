@@ -18,6 +18,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 // Tambahkan props currentRole
 export function NavMain({
@@ -46,7 +47,7 @@ export function NavMain({
       ...item,
       // Filter child items sesuai role
       items: item.items?.filter(
-        (subItem) => !subItem.role || subItem.role.includes(currentRole)
+        (subItem) => !subItem.role || subItem.role.includes(currentRole),
       ),
     }));
 
@@ -67,10 +68,10 @@ export function NavMain({
                   pathname === item.url || pathname.startsWith(item.url + "/")
                 }
               >
-                <a href={item.url}>
+                <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
               {item.items?.length ? (
                 <>
@@ -88,9 +89,7 @@ export function NavMain({
                             asChild
                             isActive={pathname === subItem.url}
                           >
-                            <a href={subItem.url}>
-                              <span>{subItem.title}</span>
-                            </a>
+                            <Link href={subItem.url}>{subItem.title}</Link>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}

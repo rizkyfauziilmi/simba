@@ -12,6 +12,7 @@ import {
   BookOpen,
   TrendingUp,
 } from "lucide-react";
+import Link from "next/link";
 
 export function AdminDashboard() {
   return (
@@ -125,7 +126,7 @@ export function AdminDashboard() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="grid gap-3">
-              <a
+              <Link
                 href="/master/siswa"
                 className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent transition-colors"
               >
@@ -134,8 +135,8 @@ export function AdminDashboard() {
                   <span className="text-sm font-medium">Data Siswa</span>
                 </div>
                 <span className="text-xs text-muted-foreground">Kelola</span>
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/absensi"
                 className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent transition-colors"
               >
@@ -144,8 +145,8 @@ export function AdminDashboard() {
                   <span className="text-sm font-medium">Absensi</span>
                 </div>
                 <span className="text-xs text-muted-foreground">Lihat</span>
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/laporan"
                 className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent transition-colors"
               >
@@ -154,7 +155,7 @@ export function AdminDashboard() {
                   <span className="text-sm font-medium">Laporan</span>
                 </div>
                 <span className="text-xs text-muted-foreground">Buat</span>
-              </a>
+              </Link>
             </div>
           </CardContent>
         </Card>
