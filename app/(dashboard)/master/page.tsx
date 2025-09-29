@@ -1,12 +1,5 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
-import { BookOpenIcon, UserIcon, UserPlusIcon, UsersIcon } from "lucide-react";
-import Link from "next/link";
+import { BookOpenIcon, GraduationCap, UserIcon, UsersIcon } from "lucide-react";
+import { MasterNavCard } from "./_components/master-nav-card";
 
 const navItems = [
   {
@@ -19,7 +12,7 @@ const navItems = [
     label: "Guru",
     description: "Kelola data guru dalam sistem.",
     href: "/master/guru",
-    icon: <UserPlusIcon className="size-6" />,
+    icon: <GraduationCap className="size-6" />,
   },
   {
     label: "Kelas",
@@ -34,39 +27,6 @@ const navItems = [
     icon: <BookOpenIcon className="size-6" />,
   },
 ];
-
-interface MasterNavCardProps {
-  label: string;
-  description: string;
-  href: string;
-  icon: React.ReactNode;
-}
-
-export function MasterNavCard({
-  label,
-  description,
-  href,
-  icon,
-}: MasterNavCardProps) {
-  return (
-    <Card>
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4 pl-6">
-          {icon}
-          <div className="space-y-1">
-            <CardTitle>{label}</CardTitle>
-            <CardDescription>{description}</CardDescription>
-          </div>
-        </div>
-        <CardContent>
-          <Button variant="outline" asChild>
-            <Link href={href}>Kelola</Link>
-          </Button>
-        </CardContent>
-      </div>
-    </Card>
-  );
-}
 
 export default function MasterPage() {
   return (
