@@ -16,7 +16,7 @@ interface MasterNavCardProps {
   icon: React.ReactNode;
 }
 
-export function MasterNavCard({
+export function ParentNavCard({
   label,
   description,
   href,
