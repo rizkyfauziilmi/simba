@@ -6,32 +6,29 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
+  CardHeader,
 } from "@/components/ui/card";
+import { type LucideIcon } from "lucide-react";
 import Link from "next/link";
 
 interface MasterNavCardProps {
-  label: string;
+  title: string;
   description: string;
   href: string;
-  icon: React.ReactNode;
 }
 
 export function ParentNavCard({
-  label,
+  title,
   description,
   href,
-  icon,
 }: MasterNavCardProps) {
   return (
     <Card>
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4 pl-6">
-          {icon}
-          <div className="space-y-1">
-            <CardTitle>{label}</CardTitle>
-            <CardDescription>{description}</CardDescription>
-          </div>
-        </div>
+        <CardHeader className="flex-1">
+          <CardTitle>{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
+        </CardHeader>
         <CardContent>
           <Button variant="outline" asChild>
             <Link href={href}>Kelola</Link>

@@ -1,5 +1,8 @@
-import { CircleUser, FileUser, LucideLayoutDashboard, Settings, 
-    UsersRound, Award, Database, GraduationCap, ScanFace,
+import {
+  CircleUser,
+  LucideLayoutDashboard,
+  Settings,
+  Database,
 } from "lucide-react";
 
 export const routeData = {
@@ -9,7 +12,7 @@ export const routeData = {
       url: "/",
       icon: LucideLayoutDashboard,
       role: ["admin", "teacher", "student"],
-      items: undefined,
+      items: [],
     },
     {
       title: "Data Master",
@@ -19,98 +22,29 @@ export const routeData = {
       items: [
         {
           title: "Siswa",
+          description: "Kelola data siswa dalam sekolah",
           url: "/master/siswa",
           role: ["admin"],
         },
         {
           title: "Guru",
+          description: "Kelola data guru dalam sekolah",
           url: "/master/guru",
           role: ["admin"],
         },
         {
           title: "Kelas",
+          description: "Kelola data kelas dalam sekolah",
           url: "/master/kelas",
           role: ["admin"],
         },
         {
           title: "Mata Pelajaran",
+          description: "Kelola data mata pelajaran dalam sekolah",
           url: "/master/mapel",
           role: ["admin"],
         },
       ],
-    },
-    {
-      title: "Akademik",
-      url: "/akademik",
-      icon: GraduationCap,
-      role: ["teacher", "student"],
-      items: [
-        {
-          title: "Jadwal Pelajaran",
-          url: "/akademik/jadwal",
-          role: ["teacher", "student"],
-        },
-        {
-          title: "Kalender Akademik",
-          url: "/akademik/kalender",
-          role: ["teacher", "student"],
-        },
-      ],
-    },
-    {
-      title: "Absensi",
-      url: "/absensi",
-      icon: ScanFace,
-      role: ["admin", "teacher", "student"],
-      items: [
-        {
-          title: "Absensi Siswa",
-          url: "/absensi/siswa",
-          role: ["teacher", "student"],
-        },
-        {
-          title: "Absensi Guru",
-          url: "/absensi/guru",
-          role: ["admin", "teacher"],
-        },
-      ],
-    },
-    {
-      title: "Nilai",
-      url: "/nilai",
-      icon: Award,
-      role: ["teacher", "student"],
-      items: [
-        {
-          title: "Input Nilai",
-          url: "/nilai/input",
-          role: ["teacher"],
-        },
-        {
-          title: "Rekap Nilai",
-          url: "/nilai/rekap",
-          role: ["teacher", "student"],
-        },
-        {
-          title: "Rapor",
-          url: "/nilai/rapor",
-          role: ["teacher", "student"],
-        },
-      ],
-    },
-    {
-      title: "Laporan",
-      url: "/laporan",
-      icon: FileUser,
-      role: ["admin"],
-      items: undefined,
-    },
-    {
-      title: "Manajemen Pengguna",
-      url: "/pengguna",
-      icon: UsersRound,
-      role: ["admin"],
-      items: undefined,
     },
   ],
   navSecondary: [
@@ -119,14 +53,14 @@ export const routeData = {
       url: "/akun",
       icon: CircleUser,
       role: ["admin", "teacher", "student"],
-      items: undefined,
+      items: [],
     },
     {
       title: "Pengaturan",
       url: "/pengaturan",
       icon: Settings,
       role: ["admin", "teacher", "student"],
-      items: undefined,
+      items: [],
     },
   ],
 };

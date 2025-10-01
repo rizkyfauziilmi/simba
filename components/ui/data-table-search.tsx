@@ -5,17 +5,17 @@ import { Input } from "./input";
 
 export function DataTableSearch<TData>({
   table,
-  targetKey,
+  searchKey,
 }: {
   table: Table<TData>;
-  targetKey: string;
+  searchKey: string;
 }) {
   return (
     <Input
-      placeholder={`Cari berdasarkan ${targetKey}`}
-      value={(table.getColumn(targetKey)?.getFilterValue() as string) ?? ""}
+      placeholder={`Cari berdasarkan ${searchKey}`}
+      value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
       onChange={(event) =>
-        table.getColumn(targetKey)?.setFilterValue(event.target.value)
+        table.getColumn(searchKey)?.setFilterValue(event.target.value)
       }
       className="max-w-sm"
     />

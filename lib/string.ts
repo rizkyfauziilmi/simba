@@ -1,3 +1,6 @@
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
+
 export function getAvatarFallback(name: string): string {
   if (!name) return "";
   const words = name.trim().split(/\s+/);
@@ -8,4 +11,25 @@ export function getAvatarFallback(name: string): string {
     }
   }
   return initials;
+}
+
+export function enumToReadable(enumValue: string): string {
+  if (!enumValue) return "";
+
+  // Split by underscore and convert each word
+  const words = enumValue.split("_");
+
+  return words
+    .map((word) => {
+      // Convert to lowercase first, then capitalize first letter
+      const lowerWord = word.toLowerCase();
+      return lowerWord.charAt(0).toUpperCase() + lowerWord.slice(1);
+    })
+    .join(" ");
+}
+
+export function formattedDate(date: Date): string {
+  return format(date, "EEEE, dd MMMM yyyy", {
+    locale: id,
+  });
 }

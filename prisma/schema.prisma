@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
   output   = "../lib/generated/prisma"
@@ -10,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String    @id @default(cuid())
   name          String
   email         String
   emailVerified Boolean   @default(false)
@@ -27,9 +26,9 @@ model User {
   banned     Boolean?  @default(false)
   banReason  String?
   banExpires DateTime?
+  student    Student?
 
   @@unique([email])
-  @@map("user")
   @@unique([username])
 }
 
@@ -78,4 +77,28 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+}
+
+model Student {
+  id           String        @id @default(cuid())
+  nama         String
+  nisn         String        @unique
+  tanggalLahir DateTime
+  jenisKelamin Gender
+  alamat       String
+  nomorTelepon String
+  status       StudentStatus
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Gender {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+enum StudentStatus {
+  AKTIF
+  TIDAK_AKTIF
 }
