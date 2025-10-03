@@ -23,6 +23,10 @@ export const deleteStudentSchema = z.object({
   studentId: z.cuid("ID siswa wajib diisi"),
 });
 
+export const getStudentSchema = z.object({
+  studentId: z.string("ID siswa wajib diisi"),
+});
+
 export const updateStudentSchema = createStudentSchema.partial().extend({
   studentId: z.cuid("ID siswa wajib diisi"),
 });

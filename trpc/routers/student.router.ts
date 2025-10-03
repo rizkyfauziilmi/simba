@@ -3,6 +3,7 @@ import { adminProcedure, createTRPCRouter } from "../init";
 import {
   createStudentSchema,
   deleteStudentSchema,
+  getStudentSchema,
   updateStudentSchema,
 } from "../schemas/student.schema";
 import { TRPCError } from "@trpc/server";
@@ -13,6 +14,19 @@ export const studentRouter = createTRPCRouter({
     const students = await ctx.db.student.findMany();
     return students;
   }),
+  getStudentById: adminProcedure
+    .input(getStudentSchema)
+    .query(async ({ ctx, input }) => {
+      const { studentId } = input;
+
+      const student = await ctx.db.student.findUnique({
+        where: {
+          id: studentId,
+        },
+      });
+
+      return student;
+    }),
   createStudent: adminProcedure
     .input(createStudentSchema)
     .mutation(async ({ ctx, input }) => {

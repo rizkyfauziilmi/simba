@@ -33,15 +33,15 @@ export function DeleteStudentAlertDialog({
   const deleteStudentMutationOptions =
     trpc.student.deleteStudent.mutationOptions({
       onSuccess: (data) => {
-        setOpen(false);
         queryClient.invalidateQueries({
           queryKey: trpc.student.getAllStudents.queryKey(),
         });
         toast.success(data.message);
+        setOpen(false);
       },
       onError: (error) => {
-        setOpen(false);
         toast.error(error.message);
+        setOpen(false);
       },
       onMutate: () => {
         setIsLoading(true);

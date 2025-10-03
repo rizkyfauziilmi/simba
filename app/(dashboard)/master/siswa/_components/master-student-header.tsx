@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { DownloadIcon } from "lucide-react";
+import { DownloadIcon, UserPlus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CreateStudentDialog } from "./create-student-dialog";
+import Link from "next/link";
 
 export const MasterStudentHeader = () => {
   return (
@@ -17,7 +17,12 @@ export const MasterStudentHeader = () => {
         Daftar Siswa
       </h3>
       <div className="flex items-center gap-2">
-        <CreateStudentDialog />
+        <Button variant="outline" asChild>
+          <Link href="/master/siswa/tambah">
+            <UserPlus />
+            Tambah Siswa
+          </Link>
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary">

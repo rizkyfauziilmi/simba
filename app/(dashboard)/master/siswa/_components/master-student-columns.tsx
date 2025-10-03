@@ -1,7 +1,13 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Loader2, MoreHorizontal, Trash, UserPen } from "lucide-react";
+import {
+  BookUser,
+  Loader2,
+  MoreHorizontal,
+  Trash,
+  UserPen,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,9 +23,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Student } from "@/lib/generated/prisma";
 import { useState } from "react";
 import { enumToReadable, formattedDate } from "@/lib/string";
-import { Badge } from "@/components/ui/badge";
-import { UpdateStudentDialog } from "./update-student-dialog";
 import { DeleteStudentAlertDialog } from "./delete-student-alert-dialog";
+import { useRouter } from "next/navigation";
+import { GetStudentStatusBadge } from "./get-student-status-badge";
 
 export const studentMasterColumns: ColumnDef<Student>[] = [
   {
@@ -70,13 +76,10 @@ export const studentMasterColumns: ColumnDef<Student>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Status" />
     ),
-    cell: ({ row }) => (
-      <Badge
-        variant={row.getValue("status") === "AKTIF" ? "default" : "destructive"}
-      >
-        {enumToReadable(row.getValue("status"))}
-      </Badge>
-    ),
+    cell: ({ row }) =>
+      GetStudentStatusBadge({
+        status: row.getValue("status"),
+      }),
   },
   {
     accessorKey: "tanggalLahir",
@@ -89,9 +92,10 @@ export const studentMasterColumns: ColumnDef<Student>[] = [
     id: "actions",
     header: "Aksi",
     cell: function ActionsComponent({ row }) {
+      const { id } = row.original;
+      const router = useRouter();
       const [isLoading, setIsLoading] = useState(false);
       const [confirmDelete, setConfirmDelete] = useState(false);
-      const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
 
       return (
         <>
@@ -113,7 +117,15 @@ export const studentMasterColumns: ColumnDef<Student>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Aksi</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => setOpenUpdateDialog(true)}>
+              <DropdownMenuItem
+                onSelect={() => router.push(`/master/siswa/${id}`)}
+              >
+                <BookUser />
+                Lihat Detail
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => router.push(`/master/siswa/${id}/edit`)}
+              >
                 <UserPen />
                 Edit Siswa
               </DropdownMenuItem>
@@ -131,12 +143,6 @@ export const studentMasterColumns: ColumnDef<Student>[] = [
             studentId={row.original.id}
             open={confirmDelete}
             setOpen={setConfirmDelete}
-          />
-          <UpdateStudentDialog
-            setIsLoading={setIsLoading}
-            student={row.original}
-            open={openUpdateDialog}
-            setOpen={setOpenUpdateDialog}
           />
         </>
       );

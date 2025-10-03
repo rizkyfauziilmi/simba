@@ -65,7 +65,15 @@ export function NavMain({
                 asChild
                 tooltip={item.title}
                 isActive={
-                  pathname === item.url || pathname.startsWith(item.url + "/")
+                  // pathname === item.url || pathname.startsWith(item.url + "/")
+                  // kode di atas salah, hanya tangkap sampai satu level, misal /master/siswa, tapi tidak untuk /master/siswa/buat karena /buat tidak ada di props items
+                  // jadi harus hapus startsWith dan ganti dengan pengecekan exact match dan pengecekan pada subItem
+                  pathname === item.url ||
+                  item.items?.some((subItem) => pathname === subItem.url) ||
+                  item.items?.some((subItem) =>
+                    pathname.startsWith(subItem.url + "/"),
+                  ) ||
+                  false
                 }
               >
                 <Link href={item.url}>
@@ -87,7 +95,10 @@ export function NavMain({
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton
                             asChild
-                            isActive={pathname === subItem.url}
+                            isActive={
+                              pathname === subItem.url ||
+                              pathname.startsWith(subItem.url + "/")
+                            }
                           >
                             <Link href={subItem.url}>{subItem.title}</Link>
                           </SidebarMenuSubButton>
