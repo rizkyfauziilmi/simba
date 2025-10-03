@@ -13,7 +13,13 @@ export const createStudentSchema = z.object({
     message: "Jenis kelamin wajib diisi",
   }),
   alamat: z.string().min(1, "Alamat wajib diisi"),
-  nomorTelepon: z.string().min(1, "Nomor telepon wajib diisi"),
+  nomorTelepon: z
+    .string()
+    .regex(
+      /^(?:\+62|62|0)8[1-9][0-9]{6,10}$/,
+      "No. HP/WA harus berupa nomor Indonesia yang valid",
+    )
+    .min(1, "No. HP/WA harus diisi"),
   status: z.enum(StudentStatus, {
     message: "Status wajib diisi",
   }),

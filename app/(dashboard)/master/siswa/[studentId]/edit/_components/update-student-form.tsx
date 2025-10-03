@@ -42,6 +42,7 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { Gender, StudentStatus } from "@/lib/generated/prisma";
 import { cn } from "@/lib/utils";
+import { PhoneInput } from "@/components/phone-input";
 
 export function UpdateStudentForm() {
   const params = useParams<{ studentId: string }>();
@@ -210,9 +211,15 @@ export function UpdateStudentForm() {
               name="nomorTelepon"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nomor Telepon</FormLabel>
+                  <FormLabel>Nomor Handphone</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Masukkan nomor telepon" />
+                    <PhoneInput
+                      placeholder="Masukkan Nomor Handphone"
+                      international={false}
+                      defaultCountry="ID"
+                      allowedCountries={["ID"]}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

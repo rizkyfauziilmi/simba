@@ -37,6 +37,7 @@ import { Gender, StudentStatus } from "@/lib/generated/prisma";
 import { enumToReadable } from "@/lib/string";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { PhoneInput } from "@/components/phone-input";
 
 export default function CreateStudentForm() {
   const trpc = useTRPC();
@@ -195,9 +196,15 @@ export default function CreateStudentForm() {
             name="nomorTelepon"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nomor Telepon</FormLabel>
+                <FormLabel>Nomor Handphone</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Masukkan nomor telepon" />
+                  <PhoneInput
+                    placeholder="Masukkan Nomor Handphone"
+                    international={false}
+                    defaultCountry="ID"
+                    allowedCountries={["ID"]}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
