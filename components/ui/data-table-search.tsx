@@ -1,22 +1,20 @@
 "use client";
 
-import { Table } from "@tanstack/react-table";
 import { Input } from "./input";
 
-export function DataTableSearch<TData>({
-  table,
-  searchKey,
+export function DataTableSearch({
+  globalFilter,
+  setGlobalFilterAction,
 }: {
-  table: Table<TData>;
-  searchKey: string;
+  globalFilter: string;
+  setGlobalFilterAction: (value: string) => void;
 }) {
   return (
     <Input
-      placeholder={`Cari berdasarkan ${searchKey}`}
-      value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""}
-      onChange={(event) =>
-        table.getColumn(searchKey)?.setFilterValue(event.target.value)
-      }
+      placeholder="Cari berdasarkan kolom apapun..."
+      type="search"
+      value={globalFilter ?? ""}
+      onChange={(e) => setGlobalFilterAction(e.target.value)}
       className="max-w-sm"
     />
   );

@@ -33,3 +33,7 @@ export function formattedDate(date: Date): string {
     locale: id,
   });
 }
+
+export function formattedNip(nip: string): string {
+  return nip.replace(/(\d{4})(\d{2})(\d{2})(\d{4})(\d{4})/, "$1-$2-$3-$4-$5");
+}

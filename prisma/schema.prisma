@@ -27,6 +27,7 @@ model User {
   banReason  String?
   banExpires DateTime?
   student    Student?
+  teacher    Teacher?
 
   @@unique([email])
   @@unique([username])
@@ -86,8 +87,11 @@ model Student {
   tanggalLahir DateTime
   jenisKelamin Gender
   alamat       String
-  nomorTelepon String
-  status       StudentStatus
+  noTelepon    String
+  status       StudentStatus @default(AKTIF)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -101,4 +105,29 @@ enum Gender {
 enum StudentStatus {
   AKTIF
   TIDAK_AKTIF
+}
+
+model Teacher {
+  id           String        @id @default(cuid())
+  nip          String        @unique
+  nama         String
+  jenisKelamin Gender
+  tanggalLahir DateTime
+  alamat       String?
+  email        String?       @unique
+  noTelepon    String?
+  status       TeacherStatus @default(AKTIF)
+  tanggalMasuk DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+enum TeacherStatus {
+  AKTIF
+  TIDAK_AKTIF
+  CUTI
 }

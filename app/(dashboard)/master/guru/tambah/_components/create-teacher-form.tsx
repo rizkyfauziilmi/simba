@@ -1,7 +1,6 @@
 "use client";
 
 import { useTRPC } from "@/trpc/client";
-import { createStudentSchema } from "@/trpc/schemas/student.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -38,44 +37,46 @@ import { enumToReadable } from "@/lib/string";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { PhoneInput } from "@/components/phone-input";
+import { createTeacherSchema } from "@/trpc/schemas/teacher.schema";
 
-export function CreateStudentForm() {
+export function CreateTeacherForm() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof createStudentSchema>>({
-    resolver: zodResolver(createStudentSchema),
+  const form = useForm<z.infer<typeof createTeacherSchema>>({
+    resolver: zodResolver(createTeacherSchema),
     defaultValues: {
-      alamat: "",
+      nip: "",
       nama: "",
-      nisn: "",
+      alamat: "",
       noTelepon: "",
+      email: "",
     },
   });
 
-  const createStudentMutationOptions =
-    trpc.student.createStudent.mutationOptions({
+  const createTeacherMutationOptions =
+    trpc.teacher.createTeacher.mutationOptions({
       onError: (error) => {
         toast.error(error.message);
       },
       onSuccess: (data) => {
         form.reset();
         queryClient.invalidateQueries({
-          queryKey: trpc.student.getAllStudents.queryKey(),
+          queryKey: trpc.teacher.getAllTeachers.queryKey(),
         });
         toast.success(data.message);
-        router.push("/master/siswa");
+        router.push("/master/guru");
       },
     });
-  const createStudentMutation = useMutation(createStudentMutationOptions);
+  const createTeacherMutation = useMutation(createTeacherMutationOptions);
 
-  function onSubmit(data: z.infer<typeof createStudentSchema>) {
-    createStudentMutation.mutate(data);
+  function onSubmit(data: z.infer<typeof createTeacherSchema>) {
+    createTeacherMutation.mutate(data);
   }
 
   const isLoading =
-    createStudentMutation.isPending || form.formState.isSubmitting;
+    createTeacherMutation.isPending || form.formState.isSubmitting;
 
   return (
     <Form {...form}>
@@ -83,10 +84,10 @@ export function CreateStudentForm() {
         <div className="grid grid-cols-2 gap-4">
           <FormField
             control={form.control}
-            name="nisn"
+            name="nip"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>NISN</FormLabel>
+                <FormLabel>NIP</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} placeholder="Masukkan NISN" />
                 </FormControl>
@@ -102,6 +103,23 @@ export function CreateStudentForm() {
                 <FormLabel>Nama Lengkap</FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="Masukkan nama lengkap" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Alamat Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    {...field}
+                    placeholder="Masukkan nama lengkap"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -130,6 +148,38 @@ export function CreateStudentForm() {
                     ))}
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="alamat"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Alamat</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Masukkan alamat" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="noTelepon"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nomor Handphone</FormLabel>
+                <FormControl>
+                  <PhoneInput
+                    placeholder="Masukkan Nomor Handphone"
+                    international={false}
+                    defaultCountry="ID"
+                    allowedCountries={["ID"]}
+                    {...field}
+                  />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -180,32 +230,44 @@ export function CreateStudentForm() {
           />
           <FormField
             control={form.control}
-            name="alamat"
+            name="tanggalMasuk"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Alamat</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Masukkan alamat" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="noTelepon"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nomor Handphone</FormLabel>
-                <FormControl>
-                  <PhoneInput
-                    placeholder="Masukkan Nomor Handphone"
-                    international={false}
-                    defaultCountry="ID"
-                    allowedCountries={["ID"]}
-                    {...field}
-                  />
-                </FormControl>
+              <FormItem className="flex flex-col">
+                <FormLabel>Tanggal Masuk Mengajar</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground",
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP", {
+                            locale: id,
+                          })
+                        ) : (
+                          <span>Pilih Tanggal Masuk</span>
+                        )}
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date("1900-01-01")
+                      }
+                      locale={id}
+                      captionLayout="dropdown"
+                    />
+                  </PopoverContent>
+                </Popover>
                 <FormMessage />
               </FormItem>
             )}

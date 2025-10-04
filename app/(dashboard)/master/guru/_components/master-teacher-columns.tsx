@@ -1,7 +1,13 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { MoreHorizontal, Pen, Trash } from "lucide-react";
+import {
+  BookUser,
+  Loader2,
+  MoreHorizontal,
+  Trash,
+  UserPen,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,13 +20,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Checkbox } from "@/components/ui/checkbox";
-
-export type Teacher = {
-  id: string;
-  name: string;
-  email: string;
-  active: boolean;
-};
+import { Teacher } from "@/lib/generated/prisma";
+import { enumToReadable, formattedDate, formattedNip } from "@/lib/string";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { GetTeacherStatusBadge } from "./get-student-status-badge";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { DeleteTeacherAlertDialog } from "./delete-teacher-alert-dialog";
 
 export const teacherMasterColumns: ColumnDef<Teacher>[] = [
   {
@@ -46,48 +56,119 @@ export const teacherMasterColumns: ColumnDef<Teacher>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "nip",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="NIP" />
+    ),
+    cell: ({ row }) => (
+      <Tooltip>
+        <TooltipTrigger>
+          <div className="max-w-[100px] text-xs truncate">
+            {formattedNip(row.getValue("nip"))}
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{formattedNip(row.getValue("nip"))}</p>
+        </TooltipContent>
+      </Tooltip>
+    ),
+  },
+  {
+    accessorKey: "nama",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nama" />
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "jenisKelamin",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
+      <DataTableColumnHeader column={column} title="Jenis Kelamin" />
+    ),
+    cell: ({ row }) => (
+      <div>{enumToReadable(row.getValue("jenisKelamin"))}</div>
     ),
   },
   {
-    accessorKey: "active",
+    accessorKey: "tanggalLahir",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Aktif" />
+      <DataTableColumnHeader column={column} title="Tanggal Lahir" />
     ),
+    cell: ({ row }) => <div>{formattedDate(row.getValue("tanggalLahir"))}</div>,
+  },
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+    cell: ({ row }) =>
+      GetTeacherStatusBadge({
+        status: row.getValue("status"),
+      }),
+  },
+  {
+    accessorKey: "tanggalMasuk",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Tanggal Masuk" />
+    ),
+    cell: ({ row }) => <div>{formattedDate(row.getValue("tanggalMasuk"))}</div>,
   },
   {
     id: "actions",
     header: "Aksi",
-    cell: () => {
+    cell: function ActionsComponent({ row }) {
+      const { id } = row.original;
+      const router = useRouter();
+      const [isLoading, setIsLoading] = useState(false);
+      const [confirmDelete, setConfirmDelete] = useState(false);
+
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Pen />
-              Edit Guru
-            </DropdownMenuItem>
-            <DropdownMenuItem variant="destructive">
-              <Trash />
-              Hapus Guru
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                disabled={isLoading}
+              >
+                <span className="sr-only">Open menu</span>
+                {isLoading ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <MoreHorizontal className="h-4 w-4" />
+                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onSelect={() => router.push(`/master/guru/${id}`)}
+              >
+                <BookUser />
+                Lihat Detail
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => router.push(`/master/guru/${id}/edit`)}
+              >
+                <UserPen />
+                Edit Guru
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                onSelect={() => setConfirmDelete(true)}
+              >
+                <Trash />
+                Hapus Guru
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DeleteTeacherAlertDialog
+            setIsLoading={setIsLoading}
+            teacherId={row.original.id}
+            open={confirmDelete}
+            setOpen={setConfirmDelete}
+          />
+        </>
       );
     },
   },

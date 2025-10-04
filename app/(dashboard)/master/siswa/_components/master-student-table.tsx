@@ -11,11 +11,5 @@ export function MasterStudentTable() {
     trpc.student.getAllStudents.queryOptions(),
   );
 
-  return (
-    <DataTable
-      searchKey="nisn"
-      columns={studentMasterColumns}
-      data={students}
-    />
-  );
+  return <DataTable columns={studentMasterColumns} data={students} />;
 }

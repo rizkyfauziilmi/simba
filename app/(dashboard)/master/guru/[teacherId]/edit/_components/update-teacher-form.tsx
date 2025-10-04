@@ -1,7 +1,6 @@
 "use client";
 
 import { useTRPC } from "@/trpc/client";
-import { updateStudentSchema } from "@/trpc/schemas/student.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   useMutation,
@@ -40,56 +39,59 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { Gender, StudentStatus } from "@/lib/generated/prisma";
+import { Gender, TeacherStatus } from "@/lib/generated/prisma";
 import { cn } from "@/lib/utils";
 import { PhoneInput } from "@/components/phone-input";
+import { updateTeacherSchema } from "@/trpc/schemas/teacher.schema";
 
-export function UpdateStudentForm() {
-  const params = useParams<{ studentId: string }>();
+export function UpdateTeacherForm() {
+  const params = useParams<{ teacherId: string }>();
   const router = useRouter();
 
   const trpc = useTRPC();
   const queryClient = useQueryClient();
-  const { data: student } = useSuspenseQuery(
-    trpc.student.getStudentById.queryOptions({ studentId: params.studentId }),
+  const { data: teacher } = useSuspenseQuery(
+    trpc.teacher.getTeacherById.queryOptions({ teacherId: params.teacherId }),
   );
 
-  const form = useForm<z.infer<typeof updateStudentSchema>>({
-    resolver: zodResolver(updateStudentSchema),
+  const form = useForm<z.infer<typeof updateTeacherSchema>>({
+    resolver: zodResolver(updateTeacherSchema),
     defaultValues: {
-      status: student?.status,
-      tanggalLahir: student?.tanggalLahir,
-      jenisKelamin: student?.jenisKelamin,
-      alamat: student?.alamat,
-      nama: student?.nama,
-      nisn: student?.nisn,
-      noTelepon: student?.noTelepon,
-      studentId: student?.id,
+      nip: teacher?.nip,
+      email: teacher?.email || "",
+      alamat: teacher?.alamat || "",
+      noTelepon: teacher?.noTelepon || "",
+      tanggalMasuk: teacher?.tanggalMasuk,
+      status: teacher?.status,
+      tanggalLahir: teacher?.tanggalLahir,
+      jenisKelamin: teacher?.jenisKelamin,
+      nama: teacher?.nama,
+      teacherId: teacher?.id,
     },
   });
 
-  const updateStudentMutationOptions =
-    trpc.student.updateStudent.mutationOptions({
+  const updateTeacherMutationOptions =
+    trpc.teacher.updateTeacher.mutationOptions({
       onError: (error) => {
         toast.error(error.message);
       },
       onSuccess: (data) => {
         form.reset();
         queryClient.invalidateQueries({
-          queryKey: trpc.student.getAllStudents.queryKey(),
+          queryKey: trpc.teacher.getAllTeachers.queryKey(),
         });
         toast.success(data.message);
-        router.push("/master/siswa");
+        router.push("/master/guru");
       },
     });
-  const updateStudentMutation = useMutation(updateStudentMutationOptions);
+  const updateTeacherMutation = useMutation(updateTeacherMutationOptions);
 
-  function onSubmit(data: z.infer<typeof updateStudentSchema>) {
-    updateStudentMutation.mutate(data);
+  function onSubmit(data: z.infer<typeof updateTeacherSchema>) {
+    updateTeacherMutation.mutate(data);
   }
 
   const isLoading =
-    updateStudentMutation.isPending || form.formState.isSubmitting;
+    updateTeacherMutation.isPending || form.formState.isSubmitting;
 
   return (
     <div>
@@ -98,10 +100,10 @@ export function UpdateStudentForm() {
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="nisn"
+              name="nip"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>NISN</FormLabel>
+                  <FormLabel>NIP</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -121,6 +123,23 @@ export function UpdateStudentForm() {
                   <FormLabel>Nama Lengkap</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Masukkan nama lengkap" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Alamat Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      {...field}
+                      placeholder="Masukkan nama lengkap"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -149,6 +168,38 @@ export function UpdateStudentForm() {
                       ))}
                     </SelectContent>
                   </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="alamat"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Alamat</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Masukkan alamat" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="noTelepon"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nomor Handphone</FormLabel>
+                  <FormControl>
+                    <PhoneInput
+                      placeholder="Masukkan Nomor Handphone"
+                      international={false}
+                      defaultCountry="ID"
+                      allowedCountries={["ID"]}
+                      {...field}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -199,32 +250,44 @@ export function UpdateStudentForm() {
             />
             <FormField
               control={form.control}
-              name="alamat"
+              name="tanggalMasuk"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Alamat</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Masukkan alamat" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="noTelepon"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nomor Handphone</FormLabel>
-                  <FormControl>
-                    <PhoneInput
-                      placeholder="Masukkan Nomor Handphone"
-                      international={false}
-                      defaultCountry="ID"
-                      allowedCountries={["ID"]}
-                      {...field}
-                    />
-                  </FormControl>
+                <FormItem className="flex flex-col">
+                  <FormLabel>Tanggal Masuk Mengajar</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground",
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP", {
+                              locale: id,
+                            })
+                          ) : (
+                            <span>Pilih Tanggal Masuk</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        locale={id}
+                        captionLayout="dropdown"
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
@@ -246,7 +309,7 @@ export function UpdateStudentForm() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.keys(StudentStatus).map((status) => (
+                    {Object.keys(TeacherStatus).map((status) => (
                       <SelectItem key={status} value={status}>
                         {enumToReadable(status)}
                       </SelectItem>

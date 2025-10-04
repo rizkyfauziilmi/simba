@@ -58,7 +58,13 @@ export function NavMain({
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={pathname.startsWith(item.url)}
+            defaultOpen={
+              pathname === item.url ||
+              item.items?.some((subItem) => pathname === subItem.url) ||
+              item.items?.some((subItem) =>
+                pathname.startsWith(subItem.url + "/"),
+              )
+            }
           >
             <SidebarMenuItem>
               <SidebarMenuButton

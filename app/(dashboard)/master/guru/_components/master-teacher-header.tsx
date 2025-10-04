@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 export const MasterTeacherHeader = () => {
   return (
@@ -16,9 +17,11 @@ export const MasterTeacherHeader = () => {
         Daftar Guru
       </h3>
       <div className="space-x-4">
-        <Button variant="outline">
-          <UserPlus />
-          Tambah Guru
+        <Button variant="outline" asChild>
+          <Link href="/master/guru/tambah">
+            <UserPlus />
+            Tambah Guru
+          </Link>
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

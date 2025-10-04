@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   Calendar,
   Hash,
+  Mail,
   MapPin,
   Phone,
   User,
@@ -16,18 +17,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { enumToReadable, formattedDate } from "@/lib/string";
-import { GetStudentStatusBadge } from "../../_components/get-student-status-badge";
+import { GetTeacherStatusBadge } from "../../_components/get-student-status-badge";
 
-export function StudentDetail() {
-  const params = useParams<{ studentId: string }>();
+export function TeacherDetail() {
+  const params = useParams<{ teacherId: string }>();
   const router = useRouter();
 
   const trpc = useTRPC();
-  const { data: student } = useSuspenseQuery(
-    trpc.student.getStudentById.queryOptions({ studentId: params.studentId }),
+  const { data: teacher } = useSuspenseQuery(
+    trpc.teacher.getTeacherById.queryOptions({ teacherId: params.teacherId }),
   );
 
-  if (!student) return null;
+  if (!teacher) return null;
 
   return (
     <div>
@@ -46,12 +47,12 @@ export function StudentDetail() {
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-              {student.nama}
+              {teacher.nama}
             </h1>
             <p className="mt-1 text-muted-foreground">Detail informasi siswa</p>
           </div>
-          {GetStudentStatusBadge({
-            status: student.status,
+          {GetTeacherStatusBadge({
+            status: teacher.status,
           })}
         </div>
       </div>
@@ -71,26 +72,16 @@ export function StudentDetail() {
               <dt className="text-sm font-medium text-muted-foreground">
                 Nama Lengkap
               </dt>
-              <dd className="text-base text-foreground">{student.nama}</dd>
+              <dd className="text-base text-foreground">{teacher.nama}</dd>
             </div>
 
             <div className="space-y-1">
               <dt className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                 <Hash className="h-4 w-4" />
-                NISN
+                NIP
               </dt>
               <dd className="font-mono text-base text-foreground">
-                {student.nisn}
-              </dd>
-            </div>
-
-            <div className="space-y-1">
-              <dt className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <Calendar className="h-4 w-4" />
-                Tanggal Lahir
-              </dt>
-              <dd className="text-base text-foreground">
-                {formattedDate(student.tanggalLahir)}
+                {teacher.nip}
               </dd>
             </div>
 
@@ -100,7 +91,27 @@ export function StudentDetail() {
                 Jenis Kelamin
               </dt>
               <dd className="text-base text-foreground">
-                {enumToReadable(student.jenisKelamin)}
+                {enumToReadable(teacher.jenisKelamin)}
+              </dd>
+            </div>
+
+            <div className="space-y-1">
+              <dt className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <Calendar className="h-4 w-4" />
+                Tanggal Lahir
+              </dt>
+              <dd className="text-base text-foreground">
+                {formattedDate(teacher.tanggalLahir)}
+              </dd>
+            </div>
+
+            <div className="space-y-1">
+              <dt className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <Calendar className="h-4 w-4" />
+                Tanggal Masuk
+              </dt>
+              <dd className="text-base text-foreground">
+                {formattedDate(teacher.tanggalMasuk)}
               </dd>
             </div>
           </CardContent>
@@ -120,7 +131,7 @@ export function StudentDetail() {
                 <Phone className="h-4 w-4" />
                 Nomor Telepon
               </dt>
-              <dd className="text-base text-foreground">{student.noTelepon}</dd>
+              <dd className="text-base text-foreground">{teacher.noTelepon}</dd>
             </div>
 
             <div className="space-y-1">
@@ -129,8 +140,16 @@ export function StudentDetail() {
                 Alamat
               </dt>
               <dd className="text-base leading-relaxed text-foreground">
-                {student.alamat}
+                {teacher.alamat}
               </dd>
+            </div>
+
+            <div className="space-y-1">
+              <dt className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                <Mail className="h-4 w-4" />
+                Email
+              </dt>
+              <dd className="text-base text-foreground">{teacher.email}</dd>
             </div>
           </CardContent>
         </Card>
@@ -139,7 +158,7 @@ export function StudentDetail() {
       {/* Action Buttons */}
       <div className="mt-8 flex gap-3">
         <Button asChild>
-          <Link href={`/master/siswa/${student.id}/edit`}>Edit Data Siswa</Link>
+          <Link href={`/master/guru/${teacher.id}/edit`}>Edit Data Guru</Link>
         </Button>
         <Button variant="outline">Cetak Profil</Button>
       </div>
