@@ -4,7 +4,15 @@ import { enumToReadable } from "@/lib/string";
 
 export function GetStudentStatusBadge({ status }: { status: StudentStatus }) {
   return (
-    <Badge variant={status === "AKTIF" ? "default" : "destructive"}>
+    <Badge
+      variant={
+        status === "AKTIF"
+          ? "default"
+          : status === "TIDAK_AKTIF"
+            ? "secondary"
+            : "destructive"
+      }
+    >
       {enumToReadable(status)}
     </Badge>
   );

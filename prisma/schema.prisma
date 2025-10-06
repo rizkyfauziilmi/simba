@@ -105,6 +105,7 @@ enum Gender {
 enum StudentStatus {
   AKTIF
   TIDAK_AKTIF
+  KELUAR
 }
 
 model Teacher {

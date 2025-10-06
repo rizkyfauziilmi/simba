@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { enumToReadable, formattedDate } from "@/lib/string";
-import { GetTeacherStatusBadge } from "../../_components/get-student-status-badge";
+import { GetTeacherStatusBadge } from "../../_components/get-teacher-status-badge";
 
 export function TeacherDetail() {
   const params = useParams<{ teacherId: string }>();
