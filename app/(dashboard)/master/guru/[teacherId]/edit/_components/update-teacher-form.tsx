@@ -78,7 +78,13 @@ export function UpdateTeacherForm() {
       onSuccess: (data) => {
         form.reset();
         queryClient.invalidateQueries({
-          queryKey: trpc.teacher.getAllTeachers.queryKey(),
+          queryKey: trpc.student.pathKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.teacher.pathKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.class.pathKey(),
         });
         toast.success(data.message);
         router.push("/master/guru");
@@ -154,6 +160,7 @@ export function UpdateTeacherForm() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    key={field.value}
                   >
                     <FormControl className="w-full">
                       <SelectTrigger>
@@ -166,6 +173,17 @@ export function UpdateTeacherForm() {
                           {enumToReadable(gender)}
                         </SelectItem>
                       ))}
+                      {field.value && (
+                        <Button
+                          type="button"
+                          className="w-full"
+                          onClick={() => {
+                            field.onChange("");
+                          }}
+                        >
+                          Hapus Pilihan
+                        </Button>
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -302,6 +320,7 @@ export function UpdateTeacherForm() {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  key={field.value}
                 >
                   <FormControl className="w-full">
                     <SelectTrigger>
@@ -314,6 +333,17 @@ export function UpdateTeacherForm() {
                         {enumToReadable(status)}
                       </SelectItem>
                     ))}
+                    {field.value && (
+                      <Button
+                        type="button"
+                        className="w-full"
+                        onClick={() => {
+                          field.onChange("");
+                        }}
+                      >
+                        Hapus Pilihan
+                      </Button>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -331,7 +361,7 @@ export function UpdateTeacherForm() {
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading && <LoaderIcon className="animate-spin" />}
-              {isLoading ? "Memperbarui..." : "Perbarui Siswa"}
+              {isLoading ? "Memperbarui..." : "Perbarui"}
             </Button>
           </div>
         </form>

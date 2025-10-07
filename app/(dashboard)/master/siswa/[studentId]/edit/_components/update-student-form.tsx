@@ -5,6 +5,7 @@ import { updateStudentSchema } from "@/trpc/schemas/student.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   useMutation,
+  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
@@ -24,7 +25,9 @@ import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -40,9 +43,11 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { Gender, StudentStatus } from "@/lib/generated/prisma";
+import { Gender, StudentGrade, StudentStatus } from "@/lib/generated/prisma";
 import { cn } from "@/lib/utils";
 import { PhoneInput } from "@/components/phone-input";
+import { FormInputSkeleton } from "@/components/form-input-skeleton";
+import { NoUserError } from "@/components/no-user-error";
 
 export function UpdateStudentForm() {
   const params = useParams<{ studentId: string }>();
@@ -52,6 +57,12 @@ export function UpdateStudentForm() {
   const queryClient = useQueryClient();
   const { data: student } = useSuspenseQuery(
     trpc.student.getStudentById.queryOptions({ studentId: params.studentId }),
+  );
+
+  const { data: availableClasses, isPending } = useQuery(
+    trpc.class.getAvailableClasses.queryOptions({
+      currentClass: student?.kelasId ?? undefined,
+    }),
   );
 
   const form = useForm<z.infer<typeof updateStudentSchema>>({
@@ -65,6 +76,7 @@ export function UpdateStudentForm() {
       nisn: student?.nisn,
       noTelepon: student?.noTelepon,
       studentId: student?.id,
+      kelasId: student?.kelasId ?? undefined,
     },
   });
 
@@ -76,7 +88,13 @@ export function UpdateStudentForm() {
       onSuccess: (data) => {
         form.reset();
         queryClient.invalidateQueries({
-          queryKey: trpc.student.getAllStudents.queryKey(),
+          queryKey: trpc.student.pathKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.teacher.pathKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.class.pathKey(),
         });
         toast.success(data.message);
         router.push("/master/siswa");
@@ -135,6 +153,7 @@ export function UpdateStudentForm() {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    key={field.value}
                   >
                     <FormControl className="w-full">
                       <SelectTrigger>
@@ -147,6 +166,17 @@ export function UpdateStudentForm() {
                           {enumToReadable(gender)}
                         </SelectItem>
                       ))}
+                      {field.value && (
+                        <Button
+                          type="button"
+                          className="w-full"
+                          onClick={() => {
+                            field.onChange("");
+                          }}
+                        >
+                          Hapus Pilihan
+                        </Button>
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -239,6 +269,7 @@ export function UpdateStudentForm() {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  key={field.value}
                 >
                   <FormControl className="w-full">
                     <SelectTrigger>
@@ -251,24 +282,101 @@ export function UpdateStudentForm() {
                         {enumToReadable(status)}
                       </SelectItem>
                     ))}
+                    {field.value && (
+                      <Button
+                        type="button"
+                        className="w-full"
+                        onClick={() => {
+                          field.onChange("");
+                        }}
+                      >
+                        Hapus Pilihan
+                      </Button>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
               </FormItem>
             )}
           />
+          {isPending ? (
+            <FormInputSkeleton />
+          ) : (
+            availableClasses && (
+              <FormField
+                control={form.control}
+                name="kelasId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kelas</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      key={field.value}
+                    >
+                      {availableClasses.length === 0 ? (
+                        <NoUserError
+                          title="Kelas tidak tersedia"
+                          description="Tidak ada kelas yang tersedia. Silakan buat kelas terlebih dahulu."
+                        />
+                      ) : (
+                        <>
+                          <FormControl className="w-full">
+                            <SelectTrigger
+                              disabled={availableClasses.length === 0}
+                            >
+                              <SelectValue placeholder="Pilih kelas siswa" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Object.values(StudentGrade).map((grade, index) => (
+                              <SelectGroup key={`${grade}-${index}`}>
+                                <SelectLabel>{grade}</SelectLabel>
+                                {availableClasses
+                                  .filter((aclass) => aclass.tingkat === grade)
+                                  .map((aclass) => (
+                                    <SelectItem
+                                      value={aclass.id}
+                                      key={aclass.id}
+                                    >
+                                      {aclass.namaKelas}
+                                    </SelectItem>
+                                  ))}
+                              </SelectGroup>
+                            ))}
+                            {field.value && (
+                              <Button
+                                type="button"
+                                className="w-full"
+                                onClick={() => {
+                                  field.onChange("");
+                                }}
+                              >
+                                Hapus Pilihan
+                              </Button>
+                            )}
+                          </SelectContent>
+                        </>
+                      )}
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )
+          )}
           <div className="flex items-center gap-2 justify-end">
             <Button
               type="button"
               variant="outline"
-              disabled={isLoading}
+              disabled={isLoading || isPending}
               onClick={() => router.back()}
             >
               Kembali
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading || isPending}>
               {isLoading && <LoaderIcon className="animate-spin" />}
-              {isLoading ? "Memperbarui..." : "Perbarui Siswa"}
+              {isLoading ? "Memperbarui..." : "Perbarui"}
             </Button>
           </div>
         </form>

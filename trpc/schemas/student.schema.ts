@@ -21,17 +21,22 @@ export const createStudentSchema = z.object({
       "No. HP/WA harus berupa nomor Indonesia yang valid",
     )
     .min(1, "No. HP/WA harus diisi"),
+  status: z
+    .enum(StudentStatus, {
+      message: "Status siswa wajib diisi",
+    })
+    .optional(),
+  kelasId: z.string().optional(),
 });
 
 export const deleteStudentSchema = z.object({
-  studentId: z.cuid("ID siswa wajib diisi"),
+  studentId: z.cuid("ID siswa tidak valid"),
 });
 
 export const getStudentSchema = z.object({
-  studentId: z.string("ID siswa wajib diisi"),
+  studentId: z.string("ID siswa tidak valid"),
 });
 
 export const updateStudentSchema = createStudentSchema.partial().extend({
-  studentId: z.cuid("ID siswa wajib diisi"),
-  status: z.enum(StudentStatus).optional(),
+  studentId: z.cuid("ID siswa tidak valid"),
 });

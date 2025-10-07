@@ -14,61 +14,60 @@ import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-interface DeleteStudentAlertDialogProps {
+interface DeleteClassAlertDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   setIsLoading: (isLoading: boolean) => void;
-  studentId: string;
+  classId: string;
 }
 
-export function DeleteStudentAlertDialog({
+export function DeleteClassAlertDialog({
   open,
   setOpen,
   setIsLoading,
-  studentId,
-}: DeleteStudentAlertDialogProps) {
+  classId,
+}: DeleteClassAlertDialogProps) {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
 
-  const deleteStudentMutationOptions =
-    trpc.student.deleteStudent.mutationOptions({
-      onSuccess: (data) => {
-        queryClient.invalidateQueries({
-          queryKey: trpc.student.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.teacher.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.class.pathKey(),
-        });
-        toast.success(data.message);
-        setOpen(false);
-      },
-      onError: (error) => {
-        toast.error(error.message);
-        setOpen(false);
-      },
-      onMutate: () => {
-        setIsLoading(true);
-      },
-      onSettled: () => {
-        setIsLoading(false);
-      },
-    });
-  const deleteStudentMutation = useMutation(deleteStudentMutationOptions);
-  const isDeleting = deleteStudentMutation.isPending;
+  const deleteClassMutationOptions = trpc.class.deleteClass.mutationOptions({
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: trpc.student.pathKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: trpc.teacher.pathKey(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: trpc.class.pathKey(),
+      });
+      toast.success(data.message);
+      setOpen(false);
+    },
+    onError: (error) => {
+      toast.error(error.message);
+      setOpen(false);
+    },
+    onMutate: () => {
+      setIsLoading(true);
+    },
+    onSettled: () => {
+      setIsLoading(false);
+    },
+  });
+  const deleteClassMutation = useMutation(deleteClassMutationOptions);
+  const isDeleting = deleteClassMutation.isPending;
 
   return (
     <AlertDialog open={open} onOpenChange={(open) => setOpen(open)}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Apakah Anda yakin ingin menghapus siswa ini?
+            Apakah Anda yakin ingin menghapus kelas ini?
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Aksi ini tidak dapat dibatalkan. Ini akan menghapus siswa dan
-            menghapus data siswa dari server kami.
+            Tindakan ini tidak dapat dibatalkan. Ini akan menghapus kelas dan
+            mengeluarkan semua siswa dari kelas ini.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -76,8 +75,8 @@ export function DeleteStudentAlertDialog({
           <AlertDialogAction
             disabled={isDeleting}
             onClick={() =>
-              deleteStudentMutation.mutate({
-                studentId,
+              deleteClassMutation.mutate({
+                classId,
               })
             }
           >

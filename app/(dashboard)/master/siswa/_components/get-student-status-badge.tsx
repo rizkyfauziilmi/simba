@@ -8,7 +8,7 @@ export function GetStudentStatusBadge({ status }: { status: StudentStatus }) {
       variant={
         status === "AKTIF"
           ? "default"
-          : status === "TIDAK_AKTIF"
+          : status === "LULUS"
             ? "secondary"
             : "destructive"
       }

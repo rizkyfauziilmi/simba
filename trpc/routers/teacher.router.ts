@@ -14,6 +14,29 @@ export const teacherRouter = createTRPCRouter({
     const teachers = await ctx.db.teacher.findMany();
     return teachers;
   }),
+  getNotHomeRoomTeachers: adminProcedure.query(async ({ ctx }) => {
+    const teachers = await ctx.db.teacher.findMany({
+      where: {
+        waliKelas: null,
+        NOT: {
+          OR: [
+            {
+              status: "KELUAR",
+            },
+            {
+              status: "PENSIUN",
+            },
+          ],
+        },
+      },
+      select: {
+        nama: true,
+        id: true,
+        nip: true,
+      },
+    });
+    return teachers;
+  }),
   getTeacherById: adminProcedure
     .input(getTeacherSchema)
     .query(async ({ ctx, input }) => {
@@ -95,9 +118,6 @@ export const teacherRouter = createTRPCRouter({
         data: {
           ...input,
           userId: newUserTeacher.user.id,
-        },
-        select: {
-          id: true,
         },
       });
 

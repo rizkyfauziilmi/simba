@@ -3,7 +3,7 @@
 import { useTRPC } from "@/trpc/client";
 import { createStudentSchema } from "@/trpc/schemas/student.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -20,7 +20,9 @@ import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -33,16 +35,22 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, LoaderIcon } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { Gender } from "@/lib/generated/prisma";
+import { Gender, StudentGrade, StudentStatus } from "@/lib/generated/prisma";
 import { enumToReadable } from "@/lib/string";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { PhoneInput } from "@/components/phone-input";
+import { FormInputSkeleton } from "@/components/form-input-skeleton";
+import { NoUserError } from "@/components/no-user-error";
 
 export function CreateStudentForm() {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const { data: availableClasses, isPending } = useQuery(
+    trpc.class.getAvailableClasses.queryOptions({}),
+  );
 
   const form = useForm<z.infer<typeof createStudentSchema>>({
     resolver: zodResolver(createStudentSchema),
@@ -51,6 +59,7 @@ export function CreateStudentForm() {
       nama: "",
       nisn: "",
       noTelepon: "",
+      status: "AKTIF",
     },
   });
 
@@ -62,7 +71,13 @@ export function CreateStudentForm() {
       onSuccess: (data) => {
         form.reset();
         queryClient.invalidateQueries({
-          queryKey: trpc.student.getAllStudents.queryKey(),
+          queryKey: trpc.student.pathKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.teacher.pathKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.class.pathKey(),
         });
         toast.success(data.message);
         router.push("/master/siswa");
@@ -116,6 +131,7 @@ export function CreateStudentForm() {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  key={field.value}
                 >
                   <FormControl className="w-full">
                     <SelectTrigger>
@@ -128,6 +144,17 @@ export function CreateStudentForm() {
                         {enumToReadable(gender)}
                       </SelectItem>
                     ))}
+                    {field.value && (
+                      <Button
+                        type="button"
+                        className="w-full"
+                        onClick={() => {
+                          field.onChange("");
+                        }}
+                      >
+                        Hapus Pilihan
+                      </Button>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -211,16 +238,118 @@ export function CreateStudentForm() {
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                key={field.value}
+              >
+                <FormControl className="w-full">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.keys(StudentStatus).map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {enumToReadable(status)}
+                    </SelectItem>
+                  ))}
+                  {field.value && (
+                    <Button
+                      type="button"
+                      className="w-full"
+                      onClick={() => {
+                        field.onChange("");
+                      }}
+                    >
+                      Hapus Pilihan
+                    </Button>
+                  )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {isPending ? (
+          <FormInputSkeleton />
+        ) : (
+          availableClasses && (
+            <FormField
+              control={form.control}
+              name="kelasId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kelas</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    key={field.value}
+                  >
+                    {availableClasses.length === 0 ? (
+                      <NoUserError
+                        title="Kelas tidak tersedia"
+                        description="Tidak ada kelas yang tersedia. Silakan buat kelas terlebih dahulu."
+                      />
+                    ) : (
+                      <>
+                        <FormControl className="w-full">
+                          <SelectTrigger
+                            disabled={availableClasses.length === 0}
+                          >
+                            <SelectValue placeholder="Pilih kelas siswa" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {Object.values(StudentGrade).map((grade, index) => (
+                            <SelectGroup key={`${grade}-${index}`}>
+                              <SelectLabel>{grade}</SelectLabel>
+                              {availableClasses
+                                .filter((aclass) => aclass.tingkat === grade)
+                                .map((aclass) => (
+                                  <SelectItem value={aclass.id} key={aclass.id}>
+                                    {aclass.namaKelas}
+                                  </SelectItem>
+                                ))}
+                            </SelectGroup>
+                          ))}
+                          {field.value && (
+                            <Button
+                              type="button"
+                              className="w-full"
+                              onClick={() => {
+                                field.onChange("");
+                              }}
+                            >
+                              Hapus Pilihan
+                            </Button>
+                          )}
+                        </SelectContent>
+                      </>
+                    )}
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )
+        )}
         <div className="flex items-center gap-2 justify-end">
           <Button
             type="button"
             variant="outline"
-            disabled={isLoading}
+            disabled={isLoading || isPending}
             onClick={() => router.back()}
           >
             Kembali
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading || isPending}>
             {isLoading && <LoaderIcon className="animate-spin" />}
             {isLoading ? "Menyimpan..." : "Simpan"}
           </Button>

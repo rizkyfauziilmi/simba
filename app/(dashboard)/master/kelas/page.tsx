@@ -1,37 +1,22 @@
-import { DataTable } from "@/components/ui/data-table";
-import { Class, classMasterColumns } from "./_components/master-class-columns";
+import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { MasterClassHeader } from "./_components/master-class-header";
-
-async function getData(): Promise<Class[]> {
-  return [
-    {
-      id: "728ed52f",
-      name: "10 MIPA",
-      active: true,
-      students: 30,
-    },
-    {
-      id: "728ed52f",
-      name: "10 MIPA X",
-      active: true,
-      students: 25,
-    },
-    {
-      id: "728ed52f",
-      name: "12 MIPA",
-      active: true,
-      students: 20,
-    },
-  ];
-}
+import { ErrorBoundary } from "react-error-boundary";
+import { Suspense } from "react";
+import { MasterClassTable } from "./_components/master-class-table";
 
 export default async function MasterKelasPage() {
-  const classes = await getData();
+  prefetch(trpc.class.getAllClasses.queryOptions());
 
   return (
     <div className="space-y-4">
       <MasterClassHeader />
-      <DataTable columns={classMasterColumns} data={classes} />
+      <HydrateClient>
+        <ErrorBoundary fallback={<div>Something went wrong</div>}>
+          <Suspense fallback={<div>Loading...</div>}>
+            <MasterClassTable />
+          </Suspense>
+        </ErrorBoundary>
+      </HydrateClient>
     </div>
   );
 }

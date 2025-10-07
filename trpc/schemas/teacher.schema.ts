@@ -25,7 +25,11 @@ export const createTeacherSchema = z.object({
       /^(?:\+62|62|0)8[1-9][0-9]{6,10}$/,
       "No. HP/WA harus berupa nomor Indonesia yang valid",
     )
-    .min(1, "No. HP/WA harus diisi")
+    .optional(),
+  status: z
+    .enum(TeacherStatus, {
+      message: "Status guru wajib diisi",
+    })
     .optional(),
   tanggalMasuk: z.date("Tanggal masuk wajib diisi"),
 });
@@ -40,5 +44,4 @@ export const getTeacherSchema = z.object({
 
 export const updateTeacherSchema = createTeacherSchema.partial().extend({
   teacherId: z.cuid("ID guru wajib diisi"),
-  status: z.enum(TeacherStatus).optional(),
 });

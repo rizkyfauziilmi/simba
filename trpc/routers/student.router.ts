@@ -14,6 +14,20 @@ export const studentRouter = createTRPCRouter({
     const students = await ctx.db.student.findMany();
     return students;
   }),
+  getAllStudentsWithNoClass: adminProcedure.query(async ({ ctx }) => {
+    const students = await ctx.db.student.findMany({
+      where: {
+        kelasId: null,
+        status: "AKTIF",
+      },
+      select: {
+        nama: true,
+        nisn: true,
+        id: true,
+      },
+    });
+    return students;
+  }),
   getStudentById: adminProcedure
     .input(getStudentSchema)
     .query(async ({ ctx, input }) => {
@@ -30,8 +44,7 @@ export const studentRouter = createTRPCRouter({
   createStudent: adminProcedure
     .input(createStudentSchema)
     .mutation(async ({ ctx, input }) => {
-      const { alamat, jenisKelamin, nama, nisn, noTelepon, tanggalLahir } =
-        input;
+      const { nama, nisn } = input;
 
       const isNisnExists = await ctx.db.student.findFirst({
         where: {
@@ -66,12 +79,14 @@ export const studentRouter = createTRPCRouter({
 
       await ctx.db.student.create({
         data: {
-          alamat,
-          jenisKelamin,
-          nama,
-          nisn,
-          noTelepon,
-          tanggalLahir,
+          nama: input.nama,
+          nisn: input.nisn,
+          tanggalLahir: input.tanggalLahir,
+          jenisKelamin: input.jenisKelamin,
+          alamat: input.alamat,
+          noTelepon: input.noTelepon,
+          status: input.status,
+          kelasId: input.kelasId || null,
           userId: newUserStudent.user.id,
         },
       });
@@ -122,7 +137,7 @@ export const studentRouter = createTRPCRouter({
   updateStudent: adminProcedure
     .input(updateStudentSchema)
     .mutation(async ({ ctx, input }) => {
-      const { studentId, ...data } = input;
+      const { studentId, kelasId, ...data } = input;
 
       const student = await ctx.db.student.findUnique({
         where: {
@@ -144,7 +159,10 @@ export const studentRouter = createTRPCRouter({
         where: {
           id: studentId,
         },
-        data,
+        data: {
+          ...data,
+          kelasId: kelasId || null,
+        },
       });
 
       return {

@@ -27,7 +27,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { GetTeacherStatusBadge } from "./get-student-status-badge";
+import { GetTeacherStatusBadge } from "./get-teacher-status-badge";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { DeleteTeacherAlertDialog } from "./delete-teacher-alert-dialog";

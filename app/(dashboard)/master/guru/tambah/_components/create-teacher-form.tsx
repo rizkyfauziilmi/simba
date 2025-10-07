@@ -32,7 +32,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, LoaderIcon } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { Gender } from "@/lib/generated/prisma";
+import { Gender, TeacherStatus } from "@/lib/generated/prisma";
 import { enumToReadable } from "@/lib/string";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
@@ -52,6 +52,7 @@ export function CreateTeacherForm() {
       alamat: "",
       noTelepon: "",
       email: "",
+      status: "AKTIF",
     },
   });
 
@@ -63,7 +64,13 @@ export function CreateTeacherForm() {
       onSuccess: (data) => {
         form.reset();
         queryClient.invalidateQueries({
-          queryKey: trpc.teacher.getAllTeachers.queryKey(),
+          queryKey: trpc.student.pathKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.teacher.pathKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.class.pathKey(),
         });
         toast.success(data.message);
         router.push("/master/guru");
@@ -89,7 +96,7 @@ export function CreateTeacherForm() {
               <FormItem>
                 <FormLabel>NIP</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} placeholder="Masukkan NISN" />
+                  <Input type="number" {...field} placeholder="Masukkan NIP" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -134,6 +141,7 @@ export function CreateTeacherForm() {
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
+                  key={field.value}
                 >
                   <FormControl className="w-full">
                     <SelectTrigger>
@@ -146,6 +154,17 @@ export function CreateTeacherForm() {
                         {enumToReadable(gender)}
                       </SelectItem>
                     ))}
+                    {field.value && (
+                      <Button
+                        type="button"
+                        className="w-full"
+                        onClick={() => {
+                          field.onChange("");
+                        }}
+                      >
+                        Hapus Pilihan
+                      </Button>
+                    )}
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -273,6 +292,45 @@ export function CreateTeacherForm() {
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                key={field.value}
+              >
+                <FormControl className="w-full">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.keys(TeacherStatus).map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {enumToReadable(status)}
+                    </SelectItem>
+                  ))}
+                  {field.value && (
+                    <Button
+                      type="button"
+                      className="w-full"
+                      onClick={() => {
+                        field.onChange("");
+                      }}
+                    >
+                      Hapus Pilihan
+                    </Button>
+                  )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="flex items-center gap-2 justify-end">
           <Button
             type="button"

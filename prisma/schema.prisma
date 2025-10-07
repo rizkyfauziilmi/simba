@@ -95,17 +95,11 @@ model Student {
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
 
-enum Gender {
-  LAKI_LAKI
-  PEREMPUAN
-}
+  kelasId String?
+  kelas   Class?  @relation(fields: [kelasId], references: [id])
 
-enum StudentStatus {
-  AKTIF
-  TIDAK_AKTIF
-  KELUAR
+  ClassHistory ClassHistory[]
 }
 
 model Teacher {
@@ -125,10 +119,60 @@ model Teacher {
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
+
+  waliKelas Class?
+}
+
+model Class {
+  id        String       @id @default(cuid())
+  namaKelas String
+  tingkat   StudentGrade
+  ruang     String?
+  status    ClassStatus  @default(AKTIF)
+
+  waliKelasId String?  @unique
+  waliKelas   Teacher? @relation(fields: [waliKelasId], references: [id])
+
+  students     Student[]
+  ClassHistory ClassHistory[]
+}
+
+model ClassHistory {
+  id        String   @id @default(cuid())
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id])
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([classId, studentId])
+}
+
+enum Gender {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+enum StudentStatus {
+  AKTIF
+  LULUS
+  KELUAR
 }
 
 enum TeacherStatus {
   AKTIF
-  TIDAK_AKTIF
   CUTI
+  KELUAR
+  PENSIUN
+}
+
+enum StudentGrade {
+  SD
+  SMP
+  SMK
+}
+
+enum ClassStatus {
+  AKTIF
+  NON_AKTIF
 }

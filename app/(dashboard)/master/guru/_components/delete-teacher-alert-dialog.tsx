@@ -34,7 +34,13 @@ export function DeleteTeacherAlertDialog({
     trpc.teacher.deleteTeacher.mutationOptions({
       onSuccess: (data) => {
         queryClient.invalidateQueries({
-          queryKey: trpc.teacher.getAllTeachers.queryKey(),
+          queryKey: trpc.student.pathKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.teacher.pathKey(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: trpc.class.pathKey(),
         });
         toast.success(data.message);
         setOpen(false);

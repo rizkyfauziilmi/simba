@@ -1,5 +1,5 @@
 import { CreateStudentForm } from "./_components/create-student-form";
 
-export default function MasterSiswaTambahPage() {
+export default async function MasterSiswaTambahPage() {
   return <CreateStudentForm />;
 }
