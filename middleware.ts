@@ -5,39 +5,37 @@ import { headers } from "next/headers";
 import { routeData } from "./constants/sidebar-item-data";
 
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
   const isThereAnyUser = (await db.user.count()) > 0;
 
-  // If there is no user, allow access only to /onboarding, otherwise redirect to /onboarding
+  // === ONBOARDING ACCESS CONTROL ===
   if (!isThereAnyUser) {
-    if (request.nextUrl.pathname !== "/onboarding") {
+    if (pathname !== "/onboarding") {
       return NextResponse.redirect(new URL("/onboarding", request.url));
     }
-    // Allow access to /onboarding if no user exists
-    return NextResponse.next();
+    return NextResponse.next(); // allow access to /onboarding
   }
 
-  // If there is at least one user, prevent access to /onboarding
-  if (request.nextUrl.pathname === "/onboarding" && isThereAnyUser) {
+  if (isThereAnyUser && pathname === "/onboarding") {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
+  // === AUTH SESSION CHECK ===
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
-  if (!session && request.nextUrl.pathname !== "/login") {
+  if (!session && pathname !== "/login") {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // If user is logged in, prevent access to /login
-  if (session && request.nextUrl.pathname === "/login") {
+  if (session && pathname === "/login") {
     return NextResponse.redirect(new URL("/", request.url));
   }
 
-  // Role-based route protection using sidebar data
+  // === ROLE-BASED ROUTE PROTECTION ===
   if (session) {
     const userRole = session.user?.role;
-    const pathname = request.nextUrl.pathname;
 
     // Helper to flatten all routes from sidebar data
     function getAllRoutes() {
@@ -56,18 +54,27 @@ export async function middleware(request: NextRequest) {
     }
 
     const allRoutes = getAllRoutes();
-    // Find route config for current path
-    const routeConfig = allRoutes.find(r => r.url === pathname);
-    if (routeConfig && routeConfig.role && !routeConfig.role.includes(userRole!)) {
-      // If user role is not allowed, redirect to home
+
+    // Cari route yang cocok berdasarkan prefix terpanjang
+    const routeConfig = allRoutes
+      .filter((r) => pathname.startsWith(r.url))
+      .sort((a, b) => b.url.length - a.url.length)[0];
+
+    if (
+      routeConfig &&
+      routeConfig.role &&
+      !routeConfig.role.includes(userRole!)
+    ) {
+      // Jika role tidak diizinkan, redirect ke halaman utama
       return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
+  // === ALLOW ACCESS ===
   return NextResponse.next();
 }
 
 export const config = {
   runtime: "nodejs",
-  matcher: ["/((?!api|trpc|_next/static|_next/image).*)"],
+  matcher: ["/((?!api|trpc|_next/static|_next/image).*)"], // hanya middleware di-ran pada route frontend
 };
