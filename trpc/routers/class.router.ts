@@ -3,6 +3,8 @@ import {
   createClassSchema,
   deleteClassSchema,
   getAvailableClassesSchema,
+  getClassByIdSchema,
+  markAsPassedSchema,
   updateClassSchema,
 } from "../schemas/class.schema";
 import { TRPCError } from "@trpc/server";
@@ -70,6 +72,43 @@ export const classRouter = createTRPCRouter({
     });
     return classes;
   }),
+  getClassById: adminProcedure
+    .input(getClassByIdSchema)
+    .query(async ({ ctx, input }) => {
+      const kelas = await ctx.db.class.findUnique({
+        where: {
+          id: input.classId,
+        },
+        include: {
+          waliKelas: {
+            select: {
+              nama: true,
+              id: true,
+            },
+          },
+          students: {
+            select: {
+              id: true,
+              nama: true,
+              nisn: true,
+              status: true,
+            },
+            orderBy: {
+              nama: "asc",
+            },
+          },
+        },
+      });
+
+      if (!kelas) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Kelas tidak ditemukan",
+        });
+      }
+
+      return kelas;
+    }),
   createClass: adminProcedure
     .input(createClassSchema)
     .mutation(async ({ ctx, input }) => {
@@ -142,6 +181,7 @@ export const classRouter = createTRPCRouter({
           tingkat: input.tingkat,
           ruang: input.ruang,
           status: input.status,
+          isLast: input.isLast,
           waliKelasId: input.waliKelasId,
           students: studentIds
             ? {
@@ -189,7 +229,15 @@ export const classRouter = createTRPCRouter({
   updateClass: adminProcedure
     .input(updateClassSchema)
     .mutation(async ({ ctx, input }) => {
-      const { classId, namaKelas, tingkat, ruang, status, waliKelasId } = input;
+      const {
+        classId,
+        isLast,
+        namaKelas,
+        tingkat,
+        ruang,
+        status,
+        waliKelasId,
+      } = input;
 
       const kelas = await ctx.db.class.findUnique({
         where: {
@@ -310,12 +358,101 @@ export const classRouter = createTRPCRouter({
           tingkat,
           ruang,
           status,
+          isLast,
           waliKelasId,
         },
       });
 
       return {
         message: "Kelas berhasil diupdate",
+      };
+    }),
+  markAsPassed: adminProcedure
+    .input(markAsPassedSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { classId, promotedClassId } = input;
+
+      const kelas = await ctx.db.class.findUnique({
+        where: {
+          id: classId,
+        },
+        select: {
+          id: true,
+          isLast: true,
+        },
+      });
+
+      if (!kelas) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Kelas tidak ditemukan",
+        });
+      }
+
+      // if the class is not the last class, promotedClassId must be provided
+      if (!kelas.isLast && !promotedClassId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message:
+            "Mohon pilih kelas tujuan untuk siswa yang naik kelas tersebut",
+        });
+      }
+
+      let promotedClass: { id: string } | null = null;
+      if (promotedClassId) {
+        promotedClass = await ctx.db.class.findUnique({
+          where: {
+            id: promotedClassId,
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        if (!promotedClass) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Kelas tujuan tidak ditemukan",
+          });
+        }
+      }
+
+      // update all students in the class
+      const studentsInClass = await ctx.db.student.findMany({
+        where: {
+          kelasId: kelas.id,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const studentIds = studentsInClass.map((s) => s.id);
+
+      if (studentIds.length > 0) {
+        await ctx.db.student.updateMany({
+          where: {
+            id: {
+              in: studentIds,
+            },
+          },
+          data: {
+            kelasId: promotedClass ? promotedClass.id : null,
+            status: kelas.isLast ? "LULUS" : "AKTIF",
+          },
+        });
+      }
+
+      // finally, create class history record
+      await ctx.db.classHistory.createMany({
+        data: studentIds.map((studentId) => ({
+          studentId,
+          classId: kelas.id,
+        })),
+      });
+
+      return {
+        message: `Siswa di kelas berhasil ditandai sebagai ${kelas.isLast ? "lulus" : "naik kelas"}`,
       };
     }),
 });

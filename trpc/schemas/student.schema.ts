@@ -29,6 +29,8 @@ export const createStudentSchema = z.object({
   kelasId: z.string().optional(),
 });
 
+export const getAllStudentsWithNoClassSchema = z.string().optional();
+
 export const deleteStudentSchema = z.object({
   studentId: z.cuid("ID siswa tidak valid"),
 });

@@ -64,6 +64,13 @@ export const classMasterColumns: ColumnDef<ClassWithWaliAndCount>[] = [
     cell: ({ row }) => GetStudentGradeBadge({ grade: row.getValue("tingkat") }),
   },
   {
+    accessorKey: "isLast",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Tingkat Terakhir" />
+    ),
+    cell: ({ row }) => <div>{row.getValue("isLast") ? "Ya" : "Bukan"}</div>,
+  },
+  {
     accessorKey: "ruang",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Ruang" />

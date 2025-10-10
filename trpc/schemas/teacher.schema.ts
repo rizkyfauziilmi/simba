@@ -34,6 +34,8 @@ export const createTeacherSchema = z.object({
   tanggalMasuk: z.date("Tanggal masuk wajib diisi"),
 });
 
+export const getNotHomeRoomTeachersSchema = z.string().optional();
+
 export const deleteTeacherSchema = z.object({
   teacherId: z.cuid("ID guru wajib diisi"),
 });

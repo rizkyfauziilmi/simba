@@ -3,6 +3,7 @@ import { adminProcedure, createTRPCRouter } from "../init";
 import {
   createTeacherSchema,
   deleteTeacherSchema,
+  getNotHomeRoomTeachersSchema,
   getTeacherSchema,
   updateTeacherSchema,
 } from "../schemas/teacher.schema";
@@ -14,29 +15,40 @@ export const teacherRouter = createTRPCRouter({
     const teachers = await ctx.db.teacher.findMany();
     return teachers;
   }),
-  getNotHomeRoomTeachers: adminProcedure.query(async ({ ctx }) => {
-    const teachers = await ctx.db.teacher.findMany({
-      where: {
-        waliKelas: null,
-        NOT: {
-          OR: [
-            {
-              status: "KELUAR",
-            },
-            {
-              status: "PENSIUN",
-            },
-          ],
+  getNotHomeRoomTeachers: adminProcedure
+    .input(getNotHomeRoomTeachersSchema)
+    .query(async ({ ctx, input: currentClassId }) => {
+      const teachers = await ctx.db.teacher.findMany({
+        where: {
+          NOT: {
+            OR: [{ status: "KELUAR" }, { status: "PENSIUN" }],
+          },
+          OR: currentClassId
+            ? [
+                {
+                  waliKelas: null,
+                },
+                {
+                  waliKelas: {
+                    id: currentClassId,
+                  },
+                },
+              ]
+            : [
+                {
+                  waliKelas: null,
+                },
+              ],
         },
-      },
-      select: {
-        nama: true,
-        id: true,
-        nip: true,
-      },
-    });
-    return teachers;
-  }),
+        select: {
+          nama: true,
+          id: true,
+          nip: true,
+        },
+      });
+
+      return teachers;
+    }),
   getTeacherById: adminProcedure
     .input(getTeacherSchema)
     .query(async ({ ctx, input }) => {

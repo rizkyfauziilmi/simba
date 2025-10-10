@@ -129,6 +129,7 @@ model Class {
   tingkat   StudentGrade
   ruang     String?
   status    ClassStatus  @default(AKTIF)
+  isLast    Boolean      @default(false)
 
   waliKelasId String?  @unique
   waliKelas   Teacher? @relation(fields: [waliKelasId], references: [id])

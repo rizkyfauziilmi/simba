@@ -2,7 +2,12 @@
 
 import { useTRPC } from "@/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -33,8 +38,8 @@ import { Check, ChevronsUpDown, LoaderIcon } from "lucide-react";
 import { ClassStatus, StudentGrade } from "@/lib/generated/prisma";
 import { enumToReadable, getAvatarFallback } from "@/lib/string";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { createClassSchema } from "@/trpc/schemas/class.schema";
+import { useParams, useRouter } from "next/navigation";
+import { updateClassSchema } from "@/trpc/schemas/class.schema";
 import { FormInputSkeleton } from "@/components/form-input-skeleton";
 import {
   CommandGroup,
@@ -51,27 +56,39 @@ import React from "react";
 import { NoUserError } from "@/components/no-user-error";
 import { Switch } from "@/components/ui/switch";
 
-export function CreateClassForm() {
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
+export function EditClassForm() {
+  const params = useParams<{ classId: string }>();
+
   const router = useRouter();
 
-  const { data: homeroomTeachers, isPending: isPendingHomeroomTeachers } =
-    useQuery(trpc.teacher.getNotHomeRoomTeachers.queryOptions());
-  const { data: studentsWithNoClass, isPending: isPendingStudentsWithNoClass } =
-    useQuery(trpc.student.getAllStudentsWithNoClass.queryOptions());
+  const trpc = useTRPC();
+  const queryClient = useQueryClient();
+  const { data: classData } = useSuspenseQuery(
+    trpc.class.getClassById.queryOptions({ classId: params.classId }),
+  );
 
-  const form = useForm<z.infer<typeof createClassSchema>>({
-    resolver: zodResolver(createClassSchema),
+  const { data: homeroomTeachers, isPending: isPendingHomeroomTeachers } =
+    useQuery(trpc.teacher.getNotHomeRoomTeachers.queryOptions(classData?.id));
+  const { data: studentsWithNoClass, isPending: isPendingStudentsWithNoClass } =
+    useQuery(
+      trpc.student.getAllStudentsWithNoClass.queryOptions(classData?.id),
+    );
+
+  const form = useForm<z.infer<typeof updateClassSchema>>({
+    resolver: zodResolver(updateClassSchema),
     defaultValues: {
-      namaKelas: "",
-      ruang: "",
-      status: "AKTIF",
-      tingkat: "SMK",
+      classId: classData?.id,
+      waliKelasId: classData?.waliKelasId || "",
+      isLast: classData?.isLast,
+      namaKelas: classData?.namaKelas,
+      ruang: classData?.ruang || "",
+      status: classData?.status,
+      studentIds: classData?.students.map((student) => student.id),
+      tingkat: classData?.tingkat,
     },
   });
 
-  const createClassMutationOptions = trpc.class.createClass.mutationOptions({
+  const updateClassMutationOptions = trpc.class.updateClass.mutationOptions({
     onError: (error) => {
       toast.error(error.message);
     },
@@ -90,14 +107,14 @@ export function CreateClassForm() {
       router.push("/master/kelas");
     },
   });
-  const createTeacherMutation = useMutation(createClassMutationOptions);
+  const updateTeacherMutation = useMutation(updateClassMutationOptions);
 
-  function onSubmit(data: z.infer<typeof createClassSchema>) {
-    createTeacherMutation.mutate(data);
+  function onSubmit(data: z.infer<typeof updateClassSchema>) {
+    updateTeacherMutation.mutate(data);
   }
 
   const isLoading =
-    createTeacherMutation.isPending || form.formState.isSubmitting;
+    updateTeacherMutation.isPending || form.formState.isSubmitting;
   const isPending = isPendingHomeroomTeachers || isPendingStudentsWithNoClass;
 
   return (

@@ -99,6 +99,7 @@ async function createClasses(amount: number) {
         namaKelas: `Kelas ${i + 1}`,
         tingkat: faker.helpers.arrayElement(["SD", "SMP", "SMK"]),
         ruang: `R${i + 1}`,
+        isLast: i === amount - 1,
         status: "AKTIF",
       },
     });

@@ -12,6 +12,7 @@ export const createClassSchema = z.object({
       message: "Status kelas wajib diisi",
     })
     .optional(),
+  isLast: z.boolean().default(false).optional(),
   waliKelasId: z.cuid("ID guru tidak valid").optional(),
   studentIds: z.array(z.cuid("ID siswa tidak valid")).optional(),
 });
@@ -24,4 +25,15 @@ export const getAvailableClassesSchema = z.object({
   currentClass: z.string().optional(),
 });
 
-export const deleteClassSchema = z.object({ classId: z.string() });
+export const getClassByIdSchema = z.object({
+  classId: z.string(),
+});
+
+export const deleteClassSchema = z.object({
+  classId: z.cuid("ID kelas tidak valid"),
+});
+
+export const markAsPassedSchema = z.object({
+  classId: z.cuid("ID kelas tidak valid"),
+  promotedClassId: z.string().optional(),
+});

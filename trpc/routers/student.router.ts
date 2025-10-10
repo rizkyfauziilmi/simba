@@ -3,6 +3,7 @@ import { adminProcedure, createTRPCRouter } from "../init";
 import {
   createStudentSchema,
   deleteStudentSchema,
+  getAllStudentsWithNoClassSchema,
   getStudentSchema,
   updateStudentSchema,
 } from "../schemas/student.schema";
@@ -14,20 +15,35 @@ export const studentRouter = createTRPCRouter({
     const students = await ctx.db.student.findMany();
     return students;
   }),
-  getAllStudentsWithNoClass: adminProcedure.query(async ({ ctx }) => {
-    const students = await ctx.db.student.findMany({
-      where: {
-        kelasId: null,
-        status: "AKTIF",
-      },
-      select: {
-        nama: true,
-        nisn: true,
-        id: true,
-      },
-    });
-    return students;
-  }),
+  getAllStudentsWithNoClass: adminProcedure
+    .input(getAllStudentsWithNoClassSchema)
+    .query(async ({ ctx, input: currentClassId }) => {
+      const students = await ctx.db.student.findMany({
+        where: {
+          OR: currentClassId
+            ? [
+                {
+                  kelasId: null,
+                },
+                {
+                  kelasId: currentClassId,
+                },
+              ]
+            : [
+                {
+                  kelasId: null,
+                },
+              ],
+          status: "AKTIF",
+        },
+        select: {
+          nama: true,
+          nisn: true,
+          id: true,
+        },
+      });
+      return students;
+    }),
   getStudentById: adminProcedure
     .input(getStudentSchema)
     .query(async ({ ctx, input }) => {
