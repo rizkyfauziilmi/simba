@@ -379,6 +379,11 @@ export const classRouter = createTRPCRouter({
         select: {
           id: true,
           isLast: true,
+          _count: {
+            select: {
+              students: true,
+            },
+          },
         },
       });
 
@@ -386,6 +391,13 @@ export const classRouter = createTRPCRouter({
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Kelas tidak ditemukan",
+        });
+      }
+
+      if (kelas._count.students === 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Tidak ada siswa di kelas ini untuk diproses",
         });
       }
 

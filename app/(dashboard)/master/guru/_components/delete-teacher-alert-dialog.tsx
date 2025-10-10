@@ -47,7 +47,6 @@ export function DeleteTeacherAlertDialog({
       },
       onError: (error) => {
         toast.error(error.message);
-        setOpen(false);
       },
       onMutate: () => {
         setIsLoading(true);

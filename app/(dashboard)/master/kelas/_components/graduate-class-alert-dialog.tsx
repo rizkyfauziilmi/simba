@@ -75,7 +75,6 @@ export function GraduateClassAlertDialog({
     },
     onError: (error) => {
       toast.error(error.message);
-      setOpen(false);
     },
     onMutate: () => {
       setIsLoading(true);
