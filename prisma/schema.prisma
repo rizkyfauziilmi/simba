@@ -22,15 +22,38 @@ model User {
   username        String?
   displayUsername String?
 
-  role       String?
-  banned     Boolean?  @default(false)
-  banReason  String?
-  banExpires DateTime?
-  student    Student?
-  teacher    Teacher?
+  role          String?
+  banned        Boolean?        @default(false)
+  banReason     String?
+  banExpires    DateTime?
+  student       Student?
+  teacher       Teacher?
+  SchoolFinance SchoolFinance[]
 
   @@unique([email])
   @@unique([username])
+}
+
+model SchoolBalance {
+  id          String   @id @default(cuid())
+  amount      Int // Saldo saat ini dalam satuan rupiah
+  updatedAt   DateTime @updatedAt
+  description String?
+}
+
+model SchoolFinance {
+  id          String      @id @default(cuid())
+  type        FinanceType // PEMASUKAN atau PENGELUARAN
+  category    String // Contoh: SPP, Donasi, Gaji, Operasional, dll.
+  amount      Int // Jumlah uang dalam satuan rupiah
+  description String? // Keterangan tambahan
+  date        DateTime // Tanggal transaksi
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Jika ingin mengaitkan transaksi dengan user tertentu (opsional)
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
 }
 
 model Session {
@@ -156,7 +179,7 @@ enum Gender {
 
 enum StudentStatus {
   AKTIF
-  LULUS
+  ALUMNI
   KELUAR
 }
 
@@ -176,4 +199,9 @@ enum StudentGrade {
 enum ClassStatus {
   AKTIF
   NON_AKTIF
+}
+
+enum FinanceType {
+  PEMASUKAN
+  PENGELUARAN
 }

@@ -12,12 +12,12 @@ import { TRPCError } from "@trpc/server";
 export const classRouter = createTRPCRouter({
   getAvailableClasses: adminProcedure
     .input(getAvailableClassesSchema)
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx, input: currentClassId }) => {
       const classes = await ctx.db.class.findMany({
         where: {
           OR: [
             {
-              id: input.currentClass,
+              id: currentClassId,
             },
             {
               status: "AKTIF",
@@ -438,7 +438,7 @@ export const classRouter = createTRPCRouter({
           },
           data: {
             kelasId: promotedClass ? promotedClass.id : null,
-            status: kelas.isLast ? "LULUS" : "AKTIF",
+            status: kelas.isLast ? "ALUMNI" : "AKTIF",
           },
         });
       }
@@ -452,7 +452,7 @@ export const classRouter = createTRPCRouter({
       });
 
       return {
-        message: `Siswa di kelas berhasil ditandai sebagai ${kelas.isLast ? "lulus" : "naik kelas"}`,
+        message: `Siswa di kelas berhasil ditandai sebagai ${kelas.isLast ? "alumni" : "naik kelas"}`,
       };
     }),
 });

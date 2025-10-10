@@ -237,8 +237,8 @@ export function EditClassForm() {
                 </FormLabel>
                 <FormDescription>
                   Jika diaktifkan, kelas ini akan dianggap sebagai kelas
-                  terakhir dan setiap siswa yang lulus dari kelas ini tidak akan
-                  ditampilkan dalam daftar siswa aktif.
+                  terakhir dan setiap siswa yang lulus dari kelas ini akan
+                  menjadi alumni.
                 </FormDescription>
               </div>
               <FormControl>

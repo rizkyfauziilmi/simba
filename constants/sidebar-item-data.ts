@@ -3,6 +3,7 @@ import {
   LucideLayoutDashboard,
   Settings,
   Database,
+  Wallet,
 } from "lucide-react";
 
 export const routeData = {
@@ -45,6 +46,13 @@ export const routeData = {
           role: ["admin"],
         },
       ],
+    },
+    {
+      title: "Keuangan",
+      url: "/keuangan",
+      icon: Wallet,
+      role: ["admin"],
+      items: [],
     },
   ],
   navSecondary: [

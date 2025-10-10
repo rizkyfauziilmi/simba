@@ -3,6 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import {
   BookUser,
+  GraduationCap,
   Loader2,
   MoreHorizontal,
   Trash,
@@ -26,6 +27,7 @@ import { ClassWithWaliAndCount } from "@/types/database-return.type";
 import { GetStudentGradeBadge } from "./get-student-grade-badge";
 import { GetClassStatusBadge } from "./get-class-status-badge";
 import { DeleteClassAlertDialog } from "./delete-class-alert-dialog";
+import { GraduateClassAlertDialog } from "./graduate-class-alert-dialog";
 
 export const classMasterColumns: ColumnDef<ClassWithWaliAndCount>[] = [
   {
@@ -122,6 +124,7 @@ export const classMasterColumns: ColumnDef<ClassWithWaliAndCount>[] = [
       const router = useRouter();
       const [isLoading, setIsLoading] = useState(false);
       const [confirmDelete, setConfirmDelete] = useState(false);
+      const [confirmGraduate, setConfirmGraduate] = useState(false);
 
       return (
         <>
@@ -155,6 +158,10 @@ export const classMasterColumns: ColumnDef<ClassWithWaliAndCount>[] = [
                 <UserPen />
                 Edit Kelas
               </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setConfirmGraduate(true)}>
+                <GraduationCap />
+                Naikkan Kelas
+              </DropdownMenuItem>
               <DropdownMenuItem
                 variant="destructive"
                 onSelect={() => setConfirmDelete(true)}
@@ -169,6 +176,13 @@ export const classMasterColumns: ColumnDef<ClassWithWaliAndCount>[] = [
             classId={row.original.id}
             open={confirmDelete}
             setOpen={setConfirmDelete}
+          />
+          <GraduateClassAlertDialog
+            classId={row.original.id}
+            isLast={row.original.isLast}
+            open={confirmGraduate}
+            setIsLoading={setIsLoading}
+            setOpen={setConfirmGraduate}
           />
         </>
       );

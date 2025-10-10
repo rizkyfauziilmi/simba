@@ -21,9 +21,7 @@ export const updateClassSchema = createClassSchema.partial().extend({
   classId: z.cuid("ID kelas tidak valid"),
 });
 
-export const getAvailableClassesSchema = z.object({
-  currentClass: z.string().optional(),
-});
+export const getAvailableClassesSchema = z.string().optional();
 
 export const getClassByIdSchema = z.object({
   classId: z.string(),
@@ -37,3 +35,8 @@ export const markAsPassedSchema = z.object({
   classId: z.cuid("ID kelas tidak valid"),
   promotedClassId: z.string().optional(),
 });
+
+export type CreateClassSchema = z.infer<typeof createClassSchema>;
+export type UpdateClassSchema = z.infer<typeof updateClassSchema>;
+export type DeleteClassSchema = z.infer<typeof deleteClassSchema>;
+export type MarkAsPassedSchema = z.infer<typeof markAsPassedSchema>;

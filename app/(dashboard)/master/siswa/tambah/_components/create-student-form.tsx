@@ -49,7 +49,7 @@ export function CreateStudentForm() {
   const router = useRouter();
 
   const { data: availableClasses, isPending } = useQuery(
-    trpc.class.getAvailableClasses.queryOptions({}),
+    trpc.class.getAvailableClasses.queryOptions(),
   );
 
   const form = useForm<z.infer<typeof createStudentSchema>>({

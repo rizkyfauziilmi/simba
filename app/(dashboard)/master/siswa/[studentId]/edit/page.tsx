@@ -2,7 +2,7 @@ import { getQueryClient, HydrateClient, trpc } from "@/trpc/server";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-import { UpdateStudentForm } from "./_components/update-student-form";
+import { EditStudentForm } from "./_components/edit-student-form";
 
 export default async function MasterUpdateSiswaPage({
   params,
@@ -23,7 +23,7 @@ export default async function MasterUpdateSiswaPage({
     <HydrateClient>
       <ErrorBoundary fallback={<div>Something went wrong</div>}>
         <Suspense fallback={<div>Loading...</div>}>
-          <UpdateStudentForm />
+          <EditStudentForm />
         </Suspense>
       </ErrorBoundary>
     </HydrateClient>

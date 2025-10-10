@@ -60,9 +60,7 @@ export function EditStudentForm() {
   );
 
   const { data: availableClasses, isPending } = useQuery(
-    trpc.class.getAvailableClasses.queryOptions({
-      currentClass: student?.kelasId ?? undefined,
-    }),
+    trpc.class.getAvailableClasses.queryOptions(student?.kelasId ?? undefined),
   );
 
   const form = useForm<z.infer<typeof updateStudentSchema>>({
