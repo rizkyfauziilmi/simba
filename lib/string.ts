@@ -37,3 +37,20 @@ export function formattedDate(date: Date): string {
 export function formattedNip(nip: string): string {
   return nip.replace(/(\d{4})(\d{2})(\d{2})(\d{4})(\d{4})/, "$1-$2-$3-$4-$5");
 }
+
+export function formatIDR(amount: number) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+export function formatDateISOToID(dateISO: string | Date) {
+  const d = typeof dateISO === "string" ? new Date(dateISO) : dateISO;
+  return d.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}

@@ -4,7 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/client";
-
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -31,7 +31,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <main>{children}</main>
+            <NuqsAdapter>
+              <main>{children}</main>
+            </NuqsAdapter>
             <Toaster />
           </ThemeProvider>
         </body>

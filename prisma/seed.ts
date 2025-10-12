@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import db from "@/lib/db";
+import { formatIDR } from "@/lib/string";
 import { faker } from "@faker-js/faker";
 import cliProgress from "cli-progress";
 
@@ -251,6 +252,104 @@ async function createStudents(amount: number, classIds: string[]) {
 }
 
 // ------------------------------------
+// ✅ Create Finance Records
+// ------------------------------------
+async function createFinanceRecords(amount: number) {
+  const bar = new cliProgress.SingleBar({
+    format:
+      "💰 Creating Finance Records |{bar}| {value}/{total} ({percentage}%)",
+    barCompleteChar: "\u2588",
+    barIncompleteChar: "\u2591",
+    hideCursor: true,
+  });
+
+  bar.start(amount, 0);
+
+  const categoriesIn = ["SPP", "Donasi", "Bantuan Pemerintah", "Dana BOS"];
+  const categoriesOut = ["Gaji Guru", "Operasional", "Perbaikan", "Kegiatan"];
+
+  const allUsers = await db.user.findMany({
+    where: { role: "admin" },
+    select: { id: true },
+  });
+
+  for (let i = 0; i < amount; i++) {
+    const isIncome = faker.datatype.boolean();
+    const category = isIncome
+      ? faker.helpers.arrayElement(categoriesIn)
+      : faker.helpers.arrayElement(categoriesOut);
+
+    const amountValue = isIncome
+      ? faker.number.int({ min: 500_000, max: 3_000_000 })
+      : faker.number.int({ min: 100_000, max: 2_000_000 });
+
+    // from 3 years ago to today
+    const randomDate = faker.date.between({
+      from: new Date(new Date().setFullYear(new Date().getFullYear() - 3)),
+      to: new Date(),
+    });
+
+    await db.schoolFinance.create({
+      data: {
+        type: isIncome ? "PEMASUKAN" : "PENGELUARAN",
+        category,
+        amount: amountValue,
+        date: randomDate,
+        description: isIncome
+          ? `Penerimaan ${category}`
+          : `Pengeluaran untuk ${category}`,
+        userId: faker.helpers.arrayElement(allUsers)?.id,
+      },
+    });
+
+    bar.update(i + 1);
+  }
+
+  bar.stop();
+}
+
+// ------------------------------------
+// ✅ Sync School Balance
+// ------------------------------------
+async function syncSchoolBalance() {
+  const [pemasukan, pengeluaran] = await db.$transaction([
+    db.schoolFinance.aggregate({
+      where: { type: "PEMASUKAN" },
+      _sum: { amount: true },
+    }),
+    db.schoolFinance.aggregate({
+      where: { type: "PENGELUARAN" },
+      _sum: { amount: true },
+    }),
+  ]);
+
+  const totalPemasukan = pemasukan._sum.amount ?? 0;
+  const totalPengeluaran = pengeluaran._sum.amount ?? 0;
+  const saldo = totalPemasukan - totalPengeluaran;
+
+  const existingBalance = await db.schoolBalance.findFirst();
+
+  if (existingBalance) {
+    await db.schoolBalance.update({
+      where: { id: existingBalance.id },
+      data: {
+        amount: saldo,
+        description: "Saldo otomatis disinkronkan dari transaksi keuangan.",
+      },
+    });
+  } else {
+    await db.schoolBalance.create({
+      data: {
+        amount: saldo,
+        description: "Saldo awal dari transaksi seed.",
+      },
+    });
+  }
+
+  console.log(`💰 SchoolBalance disinkronkan: Rp ${formatIDR(saldo)}`);
+}
+
+// ------------------------------------
 // ✅ Main Seeder Function
 // ------------------------------------
 async function main() {
@@ -263,6 +362,9 @@ async function main() {
 
   await createTeachers(5, classIds);
   await createStudents(20, classIds);
+
+  await createFinanceRecords(100);
+  await syncSchoolBalance();
 }
 
 main()

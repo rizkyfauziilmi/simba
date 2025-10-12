@@ -35,7 +35,7 @@ model User {
 }
 
 model SchoolBalance {
-  id          String   @id @default(cuid())
+  id          Int      @id @default(autoincrement())
   amount      Int // Saldo saat ini dalam satuan rupiah
   updatedAt   DateTime @updatedAt
   description String?
