@@ -1,10 +1,14 @@
 "use server";
 
+import { expenseCategories, incomeCategories } from "@/constants/categories";
 import { auth } from "@/lib/auth";
+import { now } from "@/lib/date";
 import db from "@/lib/db";
+import { Prisma } from "@/lib/generated/prisma";
 import { formatIDR } from "@/lib/string";
 import { faker } from "@faker-js/faker";
 import cliProgress from "cli-progress";
+import { eachDayOfInterval, subYears } from "date-fns";
 
 // ------------------------------------
 // ✅ Helper: Safe Username Generator
@@ -251,10 +255,12 @@ async function createStudents(amount: number, classIds: string[]) {
   bar.stop();
 }
 
-// ------------------------------------
-// ✅ Create Finance Records
-// ------------------------------------
-async function createFinanceRecords(amount: number) {
+async function createFinanceRecords(extraAmount: number) {
+  const startDate = subYears(new Date(), 3); // 3 tahun lalu
+  const days = eachDayOfInterval({ start: startDate, end: now });
+
+  const totalTarget = days.length * 2 + extraAmount;
+
   const bar = new cliProgress.SingleBar({
     format:
       "💰 Creating Finance Records |{bar}| {value}/{total} ({percentage}%)",
@@ -263,31 +269,52 @@ async function createFinanceRecords(amount: number) {
     hideCursor: true,
   });
 
-  bar.start(amount, 0);
-
-  const categoriesIn = ["SPP", "Donasi", "Bantuan Pemerintah", "Dana BOS"];
-  const categoriesOut = ["Gaji Guru", "Operasional", "Perbaikan", "Kegiatan"];
+  bar.start(totalTarget, 0);
 
   const allUsers = await db.user.findMany({
     where: { role: "admin" },
     select: { id: true },
   });
 
-  for (let i = 0; i < amount; i++) {
+  // 1️⃣ Wajib 1 pemasukan & 1 pengeluaran per hari
+  for (let i = 0; i < days.length; i++) {
+    const date = days[i];
+
+    const pemasukan: Prisma.SchoolFinanceCreateInput = {
+      type: "PEMASUKAN",
+      category: faker.helpers.arrayElement(incomeCategories),
+      amount: faker.number.int({ min: 500_000, max: 800_000 }),
+      date: faker.date.between({ from: date, to: date }), // jam random di hari itu
+      description: `Penerimaan dari sekolah`,
+    };
+
+    const pengeluaran: Prisma.SchoolFinanceCreateInput = {
+      type: "PENGELUARAN",
+      category: faker.helpers.arrayElement(expenseCategories),
+      amount: faker.number.int({ min: 100_000, max: 500_000 }),
+      date: faker.date.between({ from: date, to: date }),
+      description: `Pengeluaran sekolah`,
+    };
+
+    await db.schoolFinance.createMany({
+      data: [pemasukan, pengeluaran],
+    });
+
+    bar.update((i + 1) * 2);
+  }
+
+  // 2️⃣ Tambahan data acak ekstra (optional)
+  for (let i = 0; i < extraAmount; i++) {
     const isIncome = faker.datatype.boolean();
     const category = isIncome
-      ? faker.helpers.arrayElement(categoriesIn)
-      : faker.helpers.arrayElement(categoriesOut);
+      ? faker.helpers.arrayElement(incomeCategories)
+      : faker.helpers.arrayElement(expenseCategories);
 
     const amountValue = isIncome
-      ? faker.number.int({ min: 500_000, max: 3_000_000 })
-      : faker.number.int({ min: 100_000, max: 2_000_000 });
+      ? faker.number.int({ min: 500_000, max: 800_000 })
+      : faker.number.int({ min: 100_000, max: 500_000 });
 
-    // from 3 years ago to today
-    const randomDate = faker.date.between({
-      from: new Date(new Date().setFullYear(new Date().getFullYear() - 3)),
-      to: new Date(),
-    });
+    const randomDate = faker.date.between({ from: startDate, to: now });
 
     await db.schoolFinance.create({
       data: {
@@ -302,7 +329,7 @@ async function createFinanceRecords(amount: number) {
       },
     });
 
-    bar.update(i + 1);
+    bar.update(days.length * 2 + i + 1);
   }
 
   bar.stop();
@@ -346,7 +373,7 @@ async function syncSchoolBalance() {
     });
   }
 
-  console.log(`💰 SchoolBalance disinkronkan: Rp ${formatIDR(saldo)}`);
+  console.log(`💰 SchoolBalance disinkronkan: ${formatIDR(saldo)}`);
 }
 
 // ------------------------------------
@@ -363,7 +390,7 @@ async function main() {
   await createTeachers(5, classIds);
   await createStudents(20, classIds);
 
-  await createFinanceRecords(100);
+  await createFinanceRecords(1000);
   await syncSchoolBalance();
 }
 

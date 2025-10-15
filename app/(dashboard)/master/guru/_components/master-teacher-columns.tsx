@@ -21,7 +21,7 @@ import {
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Teacher } from "@/lib/generated/prisma";
-import { enumToReadable, formattedDate, formattedNip } from "@/lib/string";
+import { enumToReadable, formattedNip } from "@/lib/string";
 import {
   Tooltip,
   TooltipContent,
@@ -31,6 +31,7 @@ import { GetTeacherStatusBadge } from "./get-teacher-status-badge";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { DeleteTeacherAlertDialog } from "./delete-teacher-alert-dialog";
+import { formattedDate } from "@/lib/date";
 
 export const teacherMasterColumns: ColumnDef<Teacher>[] = [
   {

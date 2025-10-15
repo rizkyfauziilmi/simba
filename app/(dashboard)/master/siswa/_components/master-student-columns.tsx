@@ -22,10 +22,11 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Student } from "@/lib/generated/prisma";
 import { useState } from "react";
-import { enumToReadable, formattedDate } from "@/lib/string";
+import { enumToReadable } from "@/lib/string";
 import { DeleteStudentAlertDialog } from "./delete-student-alert-dialog";
 import { useRouter } from "next/navigation";
 import { GetStudentStatusBadge } from "./get-student-status-badge";
+import { formattedDate } from "@/lib/date";
 
 export const studentMasterColumns: ColumnDef<Student>[] = [
   {

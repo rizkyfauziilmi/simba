@@ -1,27 +1,44 @@
-import z from "zod";
 import { adminProcedure, createTRPCRouter } from "../init";
-import { getFinanceSummarySchema } from "../schemas/finance.schema";
 import {
+  createTransactionSchema,
+  deleteTransactionSchema,
+  getFinanceSummarySchema,
+} from "../schemas/finance.schema";
+import {
+  endOfDay,
+  endOfMonth,
   endOfQuarter,
-  endOfYear,
-  getQuarter,
+  endOfWeek,
+  isWithinInterval,
+  startOfDay,
+  startOfMonth,
   startOfQuarter,
-  startOfYear,
+  startOfWeek,
 } from "date-fns";
 import { TRPCError } from "@trpc/server";
 import { formatIDR } from "@/lib/string";
+import {
+  calendarPeriod,
+  generateIntervalDates,
+  getIntervalName,
+  now,
+  Period,
+  startOfLastYear,
+} from "@/lib/date";
 
 export const financeRouter = createTRPCRouter({
   getFinanceSummary: adminProcedure
     .input(getFinanceSummarySchema)
     .query(async ({ ctx, input }) => {
-      const { startDate, endDate, type, category } = input;
+      const { startDate, endDate, categories } = input;
 
-      // Default tanggal ke awal dan akhir tahun jika tidak diset
-      const start = startDate ?? startOfYear(new Date());
-      const end = endDate ?? endOfYear(new Date());
+      const start = startDate ?? startOfLastYear;
+      const end = endDate ?? now;
 
-      // Get atau create school balance
+      // set waktu 00:00 untuk start dan 23:59:59 untuk end
+      start.setHours(0, 0, 0, 0);
+      end.setHours(23, 59, 59, 999);
+
       let balance = await ctx.db.schoolBalance.findFirst({
         where: { id: 1 },
         select: {
@@ -29,6 +46,7 @@ export const financeRouter = createTRPCRouter({
           updatedAt: true,
         },
       });
+      // Jika belum ada balance, buat dengan nilai 0
       if (!balance) {
         balance = await ctx.db.schoolBalance.create({
           data: {
@@ -48,8 +66,9 @@ export const financeRouter = createTRPCRouter({
           gte: start,
           lte: end,
         },
-        ...(type && { type }),
-        ...(category && { category }),
+        ...(categories && categories.length > 0
+          ? { category: { in: categories } }
+          : {}),
       };
 
       // Aggregate total pemasukan & pengeluaran (selalu tanpa filter type)
@@ -74,9 +93,17 @@ export const financeRouter = createTRPCRouter({
       const totalPengeluaran = pengeluaran._sum.amount ?? 0;
       const netPeriode = totalPemasukan - totalPengeluaran;
 
-      // Ambil semua record dengan filter dasar
+      // cek apakah rentang waktu lebih dari harian, mingguan, bulanan, atau tahunan (gunakan date-fns)
+      const periode = calendarPeriod(start, end);
+
+      // buat interval dates berdasarkan periode
+      const intervalDates = generateIntervalDates(start, end, periode);
+
+      // Ambil semua record berdasarkan filter
       const records = await ctx.db.schoolFinance.findMany({
-        where: baseFilter,
+        where: {
+          ...baseFilter,
+        },
         select: {
           id: true,
           type: true,
@@ -88,52 +115,83 @@ export const financeRouter = createTRPCRouter({
         orderBy: { date: "desc" },
       });
 
-      // Siapkan data kuartal
-      const quartals: Record<
-        `Q${1 | 2 | 3 | 4}`,
-        {
-          pemasukan: number;
-          pengeluaran: number;
-          startDate: Date;
-          endDate: Date;
-        }
-      > = {
-        Q1: {
-          pemasukan: 0,
-          pengeluaran: 0,
-          startDate: startOfQuarter(new Date(start.getFullYear(), 0, 1)),
-          endDate: endOfQuarter(new Date(start.getFullYear(), 0, 1)),
-        },
-        Q2: {
-          pemasukan: 0,
-          pengeluaran: 0,
-          startDate: startOfQuarter(new Date(start.getFullYear(), 3, 1)),
-          endDate: endOfQuarter(new Date(start.getFullYear(), 3, 1)),
-        },
-        Q3: {
-          pemasukan: 0,
-          pengeluaran: 0,
-          startDate: startOfQuarter(new Date(start.getFullYear(), 6, 1)),
-          endDate: endOfQuarter(new Date(start.getFullYear(), 6, 1)),
-        },
-        Q4: {
-          pemasukan: 0,
-          pengeluaran: 0,
-          startDate: startOfQuarter(new Date(start.getFullYear(), 9, 1)),
-          endDate: endOfQuarter(new Date(start.getFullYear(), 9, 1)),
-        },
+      type AggregatedFinance = {
+        intervalName: string;
+        start: Date;
+        end: Date;
+        totalIncome: number;
+        totalExpense: number;
       };
 
-      // Hitung total per kuartal
-      for (const item of records) {
-        const q =
-          `Q${getQuarter(new Date(item.date))}` as keyof typeof quartals;
+      // Aggregate data berdasarkan interval
+      const aggregated: AggregatedFinance[] = [];
+      for (let i = 0; i < intervalDates.length; i++) {
+        const currentStart = intervalDates[i];
 
-        if (item.type === "PEMASUKAN") {
-          quartals[q].pemasukan += item.amount;
-        } else if (item.type === "PENGELUARAN") {
-          quartals[q].pengeluaran += item.amount;
+        let range;
+        switch (periode) {
+          case Period.Daily:
+            range = {
+              start: startOfDay(currentStart),
+              end: endOfDay(currentStart),
+            };
+            break;
+          case Period.Weekly:
+            range = {
+              start: startOfWeek(currentStart, { weekStartsOn: 1 }),
+              end: endOfWeek(currentStart, { weekStartsOn: 1 }),
+            };
+            break;
+          case Period.Monthly:
+            range = {
+              start: startOfMonth(currentStart),
+              end: endOfMonth(currentStart),
+            };
+            break;
+          case Period.Yearly:
+            range = {
+              start: startOfQuarter(currentStart),
+              end: endOfQuarter(currentStart),
+            };
+            break;
+          default:
+            range = {
+              start: currentStart,
+              end: currentStart,
+            };
         }
+
+        // Clamp the end of the interval to the requested end date
+        if (range.end > end) {
+          range.end = end;
+        }
+
+        // Clamp the start of the interval to the requested start date (for first interval)
+        if (range.start < start) {
+          range.start = start;
+        }
+
+        const itemsInInterval = records.filter((r) =>
+          isWithinInterval(r.date, range),
+        );
+
+        const intervalName = getIntervalName(periode, currentStart, range);
+
+        const totalIncome = itemsInInterval
+          .filter((r) => r.type === "PEMASUKAN")
+          .reduce((sum, r) => sum + r.amount, 0);
+
+        const totalExpense = itemsInInterval
+          .filter((r) => r.type === "PENGELUARAN")
+          .reduce((sum, r) => sum + r.amount, 0);
+
+        aggregated.push({
+          intervalName,
+          start: range.start,
+          end: range.end,
+          totalIncome,
+          totalExpense,
+        });
       }
 
       return {
@@ -141,64 +199,145 @@ export const financeRouter = createTRPCRouter({
         totalPemasukan,
         totalPengeluaran,
         netPeriode,
-        perKuartal: quartals,
+        financeOverTime: {
+          periode,
+          data: aggregated,
+        },
         transactions: records,
       };
     }),
-  topUpBalance: adminProcedure
-    .input(
-      z.object({
-        amount: z.number().min(1, "Jumlah top up harus lebih dari Rp 0"),
-        description: z.string().optional(),
-      }),
-    )
+  createTransaction: adminProcedure
+    .input(createTransactionSchema)
     .mutation(async ({ ctx, input }) => {
-      const { amount, description } = input;
+      const { type, amount, date, description, category } = input;
 
-      if (amount <= 0) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Jumlah top up harus lebih dari Rp 0",
+      // handle masing-masing tipe transaksi
+      if (type === "PENGELUARAN") {
+        // Jika tipe pengeluaran, cek apakah saldo cukup
+        const balance = await ctx.db.schoolBalance.findFirst({
+          where: { id: 1 },
+          select: { amount: true },
         });
-      }
 
-      // Tambah ke school balance
-      const updatedBalance = await ctx.db.$transaction(async (tx) => {
-        // Update atau create balance
-        const balance = await tx.schoolBalance.upsert({
-          where: { id: 1 }, // Asumsi hanya ada satu record
-          create: {
-            amount: amount,
-            description: "Initial balance",
+        if (!balance || balance.amount < input.amount) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `Saldo tidak mencukupi. Saldo saat ini ${formatIDR(
+              balance?.amount ?? 0,
+            )}.`,
+          });
+        }
+
+        // Buat transaksi pengeluaran
+        await ctx.db.schoolFinance.create({
+          data: {
+            type: "PENGELUARAN",
+            amount,
+            date,
+            description,
+            category,
+            userId: ctx.session.user.id,
           },
-          update: {
+        });
+
+        // Kurangi saldo
+        await ctx.db.schoolBalance.update({
+          where: { id: 1 },
+          data: {
             amount: {
-              increment: amount,
+              decrement: amount,
             },
-            updatedAt: new Date(),
-          },
-          select: {
-            amount: true,
-            updatedAt: true,
           },
         });
 
-        // Buat record pemasukan
-        await tx.schoolFinance.create({
+        return {
+          message: "Transaksi pengeluaran berhasil dibuat.",
+        };
+      } else if (type === "PEMASUKAN") {
+        // Buat transaksi pemasukan
+        await ctx.db.schoolFinance.create({
           data: {
             type: "PEMASUKAN",
             amount,
-            date: new Date(),
-            category: "TOP_UP",
+            date,
             description,
+            category,
+            userId: ctx.session.user.id,
           },
         });
 
-        return balance;
+        // Tambah saldo
+        await ctx.db.schoolBalance.update({
+          where: { id: 1 },
+          data: {
+            amount: {
+              increment: amount,
+            },
+          },
+        });
+
+        return {
+          message: "Transaksi pemasukan berhasil dibuat.",
+        };
+      } else {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Tipe transaksi tidak valid.",
+        });
+      }
+    }),
+  deleteTransaction: adminProcedure
+    .input(deleteTransactionSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { transactionId } = input;
+
+      // Cari transaksi
+      const transaction = await ctx.db.schoolFinance.findUnique({
+        where: { id: transactionId },
+        select: {
+          id: true,
+          type: true,
+          amount: true,
+        },
       });
 
+      if (!transaction) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Transaksi tidak ditemukan.",
+        });
+      }
+
+      // Hapus transaksi
+      await ctx.db.schoolFinance.delete({
+        where: { id: transactionId },
+      });
+
+      // Update saldo berdasarkan tipe transaksi
+      if (transaction.type === "PEMASUKAN") {
+        // Jika pemasukan, kurangi saldo
+        await ctx.db.schoolBalance.update({
+          where: { id: 1 },
+          data: {
+            amount: {
+              decrement: transaction.amount,
+            },
+          },
+        });
+      } else if (transaction.type === "PENGELUARAN") {
+        // Jika pengeluaran, tambah saldo
+        await ctx.db.schoolBalance.update({
+          where: { id: 1 },
+          data: {
+            amount: {
+              increment: transaction.amount,
+            },
+          },
+        });
+      }
+
       return {
-        message: `Berhasil melakukan top up saldo sebesar ${formatIDR(updatedBalance.amount)}`,
+        message: "Transaksi berhasil dihapus.",
       };
     }),
 });

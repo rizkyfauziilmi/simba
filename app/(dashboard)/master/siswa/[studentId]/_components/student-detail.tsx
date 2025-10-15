@@ -15,8 +15,9 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { enumToReadable, formattedDate } from "@/lib/string";
+import { enumToReadable } from "@/lib/string";
 import { GetStudentStatusBadge } from "../../_components/get-student-status-badge";
+import { formattedDate } from "@/lib/date";
 
 export function StudentDetail() {
   const params = useParams<{ studentId: string }>();

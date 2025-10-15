@@ -1,126 +1,130 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { FinanceType } from "@/lib/generated/prisma";
-import { parseAsString, parseAsStringEnum, useQueryState } from "nuqs";
-import { enumToReadable } from "@/lib/string";
-import { FilterX, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useQueryState } from "nuqs";
+import { CalendarIcon, CalendarX } from "lucide-react";
 import { expenseCategories, incomeCategories } from "@/constants/categories";
+import { formattedDate, now, startOfLastYear } from "@/lib/date";
+import { isSameDay } from "date-fns";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { id } from "date-fns/locale";
+import { filterSearchParams } from "@/lib/searchParams";
+import { MultiSelect } from "@/components/multi-select";
+import { useEffect } from "react";
 
 export function FinanceFilters() {
-  const [type, setType] = useQueryState(
-    "type",
-    parseAsStringEnum<FinanceType>(Object.values(FinanceType)),
+  const [categories, setCategories] = useQueryState(
+    "categories",
+    filterSearchParams.categories,
   );
-  const [category, setCategory] = useQueryState("category", parseAsString);
+  const [fromDate, setFromDate] = useQueryState(
+    "from",
+    filterSearchParams.from,
+  );
+  const [toDate, setToDate] = useQueryState("to", filterSearchParams.to);
 
-  const clearFilters = () => {
-    setType(null);
-    setCategory(null);
-  };
+  const groupedOptions = [
+    {
+      heading: "Pengeluaran",
+      options: expenseCategories.map((category) => ({
+        value: category,
+        label: category,
+      })),
+    },
+    {
+      heading: "Pemasukan",
+      options: incomeCategories.map((category) => ({
+        value: category,
+        label: category,
+      })),
+    },
+  ];
 
-  const isNoFilterApplied = !type && !category;
+  const isNotSelectDateRange =
+    isSameDay(fromDate, startOfLastYear) && isSameDay(toDate, now);
+
+  useEffect(() => {
+    if (categories && categories.length === 0) setCategories(null);
+  }, [categories, setCategories]);
 
   return (
-    <div className="rounded-lg border border-border bg-card p-4 text-card-foreground">
-      <div
-        className={cn(
-          "grid grid-cols-1 gap-4",
-          isNoFilterApplied ? "md:grid-cols-4" : "md:grid-cols-5",
-        )}
-      >
+    <div className="rounded-lg border border-border bg-card p-4 text-card-foreground space-y-4">
+      <div className="grid grid-cols-1 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="type">Tipe</Label>
-          <div className="flex items-center gap-2">
-            <Select
-              onValueChange={(value: FinanceType) => setType(value)}
-              value={type || ""}
-            >
-              <SelectTrigger value={""} className="w-full">
-                <SelectValue placeholder="Pilih tipe" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.values(FinanceType).map((value) => (
-                  <SelectItem key={value} value={value}>
-                    {enumToReadable(value)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            {type && (
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setType(null)}
-              >
-                <X />
-              </Button>
-            )}
+          <Label>Kategori</Label>
+          <MultiSelect
+            options={groupedOptions}
+            onValueChange={(value) => setCategories(value)}
+            responsive={true}
+            placeholder="Pilih kategori"
+          />
+        </div>
+
+        <div className="flex items-end gap-2">
+          <div className="space-y-2 flex-1">
+            <Label>Rentang Tanggal</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  data-empty={
+                    isSameDay(fromDate, startOfLastYear) &&
+                    isSameDay(toDate, now)
+                  }
+                  className="data-[empty=true]:text-muted-foreground w-full justify-start text-left font-normal"
+                >
+                  <CalendarIcon />
+                  {fromDate ? (
+                    `${formattedDate(fromDate)} - ${formattedDate(toDate)}`
+                  ) : (
+                    <span>Pilih rentang tanggal</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="range"
+                  numberOfMonths={2}
+                  defaultMonth={fromDate || undefined}
+                  disabled={(date) => date > now}
+                  selected={{
+                    from: fromDate,
+                    to: toDate,
+                  }}
+                  locale={id}
+                  onSelect={(date) => {
+                    if (date?.from) {
+                      setFromDate(date.from);
+                    }
+
+                    if (date?.to) {
+                      setToDate(date.to);
+                    }
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
-        </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="category">Kategori</Label>
-          <Select
-            onValueChange={(value) => setCategory(value)}
-            value={category || ""}
-          >
-            <SelectTrigger value="" className="w-full">
-              <SelectValue placeholder="Pilih kategori" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Pemasukan</SelectLabel>
-                {incomeCategories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-              <SelectGroup>
-                <SelectLabel>Pengeluaran</SelectLabel>
-                {expenseCategories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          {!isNotSelectDateRange && (
+            <Button
+              variant="destructive"
+              size="icon"
+              onClick={() => {
+                setFromDate(startOfLastYear);
+                setToDate(now);
+              }}
+            >
+              <CalendarX />
+            </Button>
+          )}
         </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="from">Dari Tanggal</Label>
-          <Input id="from" type="date" className="bg-background" />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="to">Sampai Tanggal</Label>
-          <Input id="to" type="date" className="bg-background" />
-        </div>
-
-        {!isNoFilterApplied && (
-          <Button
-            type="button"
-            variant="destructive"
-            className="mt-auto"
-            onClick={clearFilters}
-          >
-            <FilterX />
-          </Button>
-        )}
       </div>
     </div>
   );

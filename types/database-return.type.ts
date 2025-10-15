@@ -14,3 +14,14 @@ export type ClassWithWaliAndCount = Prisma.ClassGetPayload<{
     };
   };
 }>;
+
+export type TransactionFinanceRecord = Prisma.SchoolFinanceGetPayload<{
+  select: {
+    id: true;
+    type: true;
+    amount: true;
+    date: true;
+    category: true;
+    description: true;
+  };
+}>;

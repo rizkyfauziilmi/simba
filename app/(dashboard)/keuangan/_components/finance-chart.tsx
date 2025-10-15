@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
 import {
@@ -19,15 +18,16 @@ import {
 } from "@/components/ui/chart";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { formatDate, formatDistance } from "date-fns";
-import { id } from "date-fns/locale";
+import { filterSearchParams } from "@/lib/searchParams";
+import { useQueryState } from "nuqs";
+import { formatDistanceDate, periodEnumToString } from "@/lib/date";
 
 const chartConfig = {
-  desktop: {
+  pengeluaran: {
     label: "Pengeluaran",
     color: "var(--chart-1)",
   },
-  mobile: {
+  pemasukan: {
     label: "Pemasukan",
     color: "var(--chart-2)",
   },
@@ -35,47 +35,41 @@ const chartConfig = {
 
 export function FinanceChart() {
   const trpc = useTRPC();
+  const [categories] = useQueryState(
+    "categories",
+    filterSearchParams.categories,
+  );
+  const [fromDate] = useQueryState("from", filterSearchParams.from);
+  const [toDate] = useQueryState("to", filterSearchParams.to);
   const { data } = useSuspenseQuery(
-    trpc.finance.getFinanceSummary.queryOptions({}),
+    trpc.finance.getFinanceSummary.queryOptions({
+      categories: categories ?? undefined,
+      startDate: fromDate,
+      endDate: toDate,
+    }),
   );
 
-  const { perKuartal } = data;
+  const { financeOverTime } = data;
 
-  const chartData = Object.entries(perKuartal).map(([quarter, data]) => ({
-    quarter,
-    start: data.startDate,
-    end: data.endDate,
-    pengeluaran: data.pengeluaran,
-    pemasukan: data.pemasukan,
+  const chartData = financeOverTime.data.map((item) => ({
+    interval: item.intervalName,
+    pemasukan: item.totalIncome,
+    pengeluaran: item.totalExpense,
   }));
 
-  // get first and last quarter
-  const firstQuarter = chartData[0];
-  const lastQuarter = chartData[chartData.length - 1];
+  const firstInterval = financeOverTime.data[0];
+  const lastInterval = financeOverTime.data[financeOverTime.data.length - 1];
+  // calculate trend percentage and direction (for pengeluaran and pemasukan)
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>
-          Pemasukan & Pengeluaran per Kuartal
-          {formatDate(new Date(firstQuarter.start), " dd MMMM yyyy", {
-            locale: id,
-          })}{" "}
-          -{" "}
-          {formatDate(new Date(lastQuarter.end), " dd MMMM yyyy", {
-            locale: id,
-          })}
+          Pemasukan & Pengeluaran {periodEnumToString(financeOverTime.periode)}
         </CardTitle>
         <CardDescription>
           Perbandingan pemasukan dan pengeluaran selama{" "}
-          {formatDistance(
-            new Date(firstQuarter.start),
-            new Date(lastQuarter.end),
-            {
-              locale: id,
-            },
-          )}
-          .
+          {formatDistanceDate(firstInterval.start, lastInterval.end)}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -83,11 +77,10 @@ export function FinanceChart() {
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="quarter"
+              dataKey="interval"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip
               cursor={false}
@@ -103,12 +96,7 @@ export function FinanceChart() {
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="text-muted-foreground leading-none">
-          Showing total visitors for the last 6 months
-        </div>
+        <div className="text-muted-foreground leading-none"></div>
       </CardFooter>
     </Card>
   );

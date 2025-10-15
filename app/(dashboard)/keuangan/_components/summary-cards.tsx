@@ -1,16 +1,28 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { filterSearchParams } from "@/lib/searchParams";
 import { formatIDR } from "@/lib/string";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import { id } from "date-fns/locale";
+import { useQueryState } from "nuqs";
 
 export function SummaryCards() {
   const trpc = useTRPC();
+  const [categories] = useQueryState(
+    "categories",
+    filterSearchParams.categories,
+  );
+  const [fromDate] = useQueryState("from", filterSearchParams.from);
+  const [toDate] = useQueryState("to", filterSearchParams.to);
   const { data } = useSuspenseQuery(
-    trpc.finance.getFinanceSummary.queryOptions({}),
+    trpc.finance.getFinanceSummary.queryOptions({
+      categories: categories ?? undefined,
+      startDate: fromDate,
+      endDate: toDate,
+    }),
   );
 
   const { balance, totalPemasukan, totalPengeluaran, netPeriode } = data;
