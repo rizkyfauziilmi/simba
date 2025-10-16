@@ -1,7 +1,6 @@
 import {
   startOfYear,
   subYears,
-  differenceInDays,
   format,
   getQuarter,
   formatDistance,
@@ -10,6 +9,9 @@ import {
   eachMonthOfInterval,
   eachQuarterOfInterval,
   formatDistanceToNow,
+  differenceInWeeks,
+  differenceInMonths,
+  differenceInDays,
 } from "date-fns";
 import { id } from "date-fns/locale";
 
@@ -37,18 +39,16 @@ export function periodEnumToString(period: Period): string {
       return "Tidak diketahui";
   }
 }
-// Fungsi ini menebak periode berdasarkan jarak antara start dan end
-export function calendarPeriod(start: Date, end: Date): Period {
-  const days = differenceInDays(end, start);
 
-  // shows daily if range is 2 week - 1 day or less
-  if (days <= 13) return Period.Daily;
-  // shows weekly if range is 2 month - 1 day or less
-  if (days <= 59) return Period.Weekly;
-  // shows monthly if range is 1 year - 1 day or less
-  if (days <= 364) return Period.Monthly;
-  // shows yearly if range is more than 1 year
-  return Period.Yearly;
+export function calendarPeriod(start: Date, end: Date): Period {
+  const days = differenceInDays(end, start) + 1;
+  const weeks = differenceInWeeks(end, start) + 1;
+  const months = differenceInMonths(end, start) + 1;
+
+  if (days <= 7) return Period.Daily; // daily display for up to 7 days
+  if (weeks <= 4) return Period.Weekly; // weekly display for up to 1 month
+  if (months <= 12) return Period.Monthly; // monthly display for up to 12 months
+  return Period.Yearly; // display quarterly for more than 1 year
 }
 
 export function getIntervalName(
@@ -66,7 +66,7 @@ export function getIntervalName(
         { locale: id },
       )}`;
     case Period.Monthly:
-      return format(start, "MMMM yyyy", { locale: id });
+      return format(start, "MMMM", { locale: id });
     case Period.Yearly:
       return `Q${getQuarter(start)} ${format(start, "yyyy")}`;
     default:

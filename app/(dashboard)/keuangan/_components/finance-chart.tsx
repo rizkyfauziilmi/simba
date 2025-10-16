@@ -20,7 +20,7 @@ import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { filterSearchParams } from "@/lib/searchParams";
 import { useQueryState } from "nuqs";
-import { formatDistanceDate, periodEnumToString } from "@/lib/date";
+import { formatDistanceDate, Period, periodEnumToString } from "@/lib/date";
 
 const chartConfig = {
   pengeluaran: {
@@ -81,6 +81,14 @@ export function FinanceChart() {
               tickLine={false}
               tickMargin={10}
               axisLine={false}
+              tickFormatter={(value) => {
+                if (
+                  financeOverTime.periode === Period.Weekly ||
+                  financeOverTime.periode === Period.Yearly
+                )
+                  return value;
+                return value.slice(0, 3);
+              }}
             />
             <ChartTooltip
               cursor={false}
