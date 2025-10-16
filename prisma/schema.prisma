@@ -184,17 +184,19 @@ model Subject {
 }
 
 model ClassSchedule {
-  id             String   @id @default(cuid())
-  classId        String
-  subjectId      String
-  hari           Hari
-  jamMulai       String // Bisa diganti ke DateTime jika kamu pakai tipe waktu lengkap
-  jamSelesai     String // Sama seperti di atas
+  id         String @id @default(cuid())
+  hari       Hari
+  jamMulai   String // Bisa diganti ke DateTime jika kamu pakai tipe waktu lengkap
+  jamSelesai String // Sama seperti di atas
+
   guruPengampuId String?
   guruPengampu   Teacher? @relation(fields: [guruPengampuId], references: [id])
 
-  class   Class   @relation(fields: [classId], references: [id])
-  subject Subject @relation(fields: [subjectId], references: [id])
+  kelasId String
+  kelas   Class  @relation(fields: [kelasId], references: [id])
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id])
 }
 
 // Enum untuk hari, misalnya:

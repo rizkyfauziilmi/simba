@@ -1,6 +1,3 @@
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
-
 export function getAvatarFallback(name: string): string {
   if (!name) return "";
   const words = name.trim().split(/\s+/);
@@ -38,4 +35,18 @@ export function formatIDR(amount: number) {
     currency: "IDR",
     maximumFractionDigits: 0,
   }).format(amount);
+}
+
+export function generateKodeMatpel(nama: string): string {
+  const inisial = nama
+    .split(" ")
+    .map((kata) => kata[0].toUpperCase())
+    .join("")
+    .slice(0, 2);
+
+  const waktu = Date.now();
+  const random = Math.floor(Math.random() * 10);
+  const uniqueNumber = ((waktu % 1000) + random).toString().padStart(3, "0");
+
+  return `${inisial}${uniqueNumber}`;
 }

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { DownloadIcon, UserPlus } from "lucide-react";
+import { DownloadIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 export const MasterSubjectHeader = () => {
   return (
@@ -15,11 +16,7 @@ export const MasterSubjectHeader = () => {
       <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
         Daftar Mata Pelajaran
       </h3>
-      <div className="space-x-4">
-        <Button variant="outline">
-          <UserPlus />
-          Tambah Mata Pelajaran
-        </Button>
+      <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary">
@@ -35,6 +32,9 @@ export const MasterSubjectHeader = () => {
             <DropdownMenuItem>PDF</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        <Button variant="outline" asChild>
+          <Link href="/master/mapel/tambah">Tambah Mata Pelajaran</Link>
+        </Button>
       </div>
     </div>
   );

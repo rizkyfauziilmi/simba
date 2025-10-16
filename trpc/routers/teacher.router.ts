@@ -15,6 +15,15 @@ export const teacherRouter = createTRPCRouter({
     const teachers = await ctx.db.teacher.findMany();
     return teachers;
   }),
+  getActiveTeachers: adminProcedure.query(async ({ ctx }) => {
+    const teachers = await ctx.db.teacher.findMany({
+      where: {
+        status: "AKTIF",
+      },
+    });
+
+    return teachers;
+  }),
   getNotHomeRoomTeachers: adminProcedure
     .input(getNotHomeRoomTeachersSchema)
     .query(async ({ ctx, input: currentClassId }) => {

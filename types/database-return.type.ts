@@ -25,3 +25,13 @@ export type TransactionFinanceRecord = Prisma.SchoolFinanceGetPayload<{
     description: true;
   };
 }>;
+
+export type SubjectWithScheduleCount = Prisma.SubjectGetPayload<{
+  include: {
+    _count: {
+      select: {
+        schedules: true;
+      };
+    };
+  };
+}>;

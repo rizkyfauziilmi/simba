@@ -2,6 +2,7 @@ import { createTRPCRouter } from "../init";
 import { classRouter } from "./class.router";
 import { financeRouter } from "./finance.router";
 import { studentRouter } from "./student.router";
+import { subjectRouter } from "./subject.router";
 import { teacherRouter } from "./teacher.router";
 
 export const appRouter = createTRPCRouter({
@@ -9,6 +10,7 @@ export const appRouter = createTRPCRouter({
   teacher: teacherRouter,
   class: classRouter,
   finance: financeRouter,
+  subject: subjectRouter,
 });
 
 // export type definition of API
