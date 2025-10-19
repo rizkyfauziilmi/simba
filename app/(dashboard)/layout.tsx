@@ -18,7 +18,7 @@ export default function DashboardLayout({
       <AppSidebar />
       <SidebarInset className="overflow-hidden">
         <main className="h-[calc(100vh_-_1rem)] overflow-y-auto space-y-4">
-          <header className="flex pr-4 justify-between h-16 shrink-0 items-center gap-2 sticky top-0 z-10 bg-background backdrop-blur-sm border-b">
+          <header className="flex pr-4 z-30 justify-between h-16 shrink-0 items-center gap-2 sticky top-0 bg-background backdrop-blur-sm border-b">
             <div className="flex items-center gap-2 px-4">
               <SidebarTrigger className="-ml-1" />
               <Separator

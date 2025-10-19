@@ -156,6 +156,11 @@ async function createTeachers(amount: number, classIds: string[]) {
 
     const data = await response.json();
 
+    await db.user.update({
+      where: { id: data.user.id },
+      data: { role: "teacher" },
+    });
+
     const teacher = await db.teacher.create({
       data: {
         userId: data.user.id,

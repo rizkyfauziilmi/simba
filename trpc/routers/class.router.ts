@@ -1,4 +1,4 @@
-import { adminProcedure, createTRPCRouter } from "../init";
+import { adminProcedure, createTRPCRouter, teacherProcedure } from "../init";
 import {
   createClassSchema,
   deleteClassSchema,
@@ -109,6 +109,33 @@ export const classRouter = createTRPCRouter({
 
       return kelas;
     }),
+  getTeacherSchedules: teacherProcedure.query(async ({ ctx }) => {
+    const jadwalMengajar = await ctx.db.classSchedule.findMany({
+      where: {
+        guruPengampuId: ctx.session.teacherId,
+      },
+      select: {
+        hari: true,
+        jamMulai: true,
+        jamSelesai: true,
+        kelas: {
+          select: {
+            namaKelas: true,
+            tingkat: true,
+            ruang: true,
+          },
+        },
+        subject: {
+          select: {
+            nama: true,
+            kode: true,
+          },
+        },
+      },
+    });
+
+    return jadwalMengajar;
+  }),
   createClass: adminProcedure
     .input(createClassSchema)
     .mutation(async ({ ctx, input }) => {

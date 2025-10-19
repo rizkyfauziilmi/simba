@@ -100,3 +100,77 @@ export const adminProcedure = t.procedure
       },
     });
   });
+
+export const teacherProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(async ({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Kamu harus login untuk mengakses sumber daya ini.",
+      });
+    }
+
+    const teacher = await ctx.db.teacher.findUnique({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!teacher || ctx.session.user.role !== "teacher") {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "Kamu harus guru untuk menggunakan fitur ini.",
+      });
+    }
+
+    return next({
+      ctx: {
+        session: {
+          ...ctx.session,
+          user: ctx.session.user,
+          teacherId: teacher.id,
+        },
+      },
+    });
+  });
+
+export const studentProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(async ({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Kamu harus login untuk mengakses sumber daya ini.",
+      });
+    }
+
+    const student = await ctx.db.student.findUnique({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!student || ctx.session.user.role !== "student") {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "Kamu harus siswa untuk menggunakan fitur ini.",
+      });
+    }
+
+    return next({
+      ctx: {
+        session: {
+          ...ctx.session,
+          user: ctx.session.user,
+          studentId: student.id,
+        },
+      },
+    });
+  });
