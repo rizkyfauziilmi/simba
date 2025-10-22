@@ -14,6 +14,7 @@ import {
   differenceInDays,
 } from "date-fns";
 import { id } from "date-fns/locale";
+import { Hari } from "./generated/prisma";
 
 export const startOfLastYear = startOfYear(subYears(new Date(), 1));
 export const now = new Date();
@@ -103,4 +104,25 @@ export function formatDistanceDate(start: Date, end: Date) {
 
 export function formattedDate(date: Date) {
   return format(date, "dd MMM yyyy", { locale: id });
+}
+
+export function getTodayHariEnum() {
+  // get current day in Hari enum
+  const today = new Date().getDay();
+  switch (today) {
+    case 1:
+      return Hari.SENIN;
+    case 2:
+      return Hari.SELASA;
+    case 3:
+      return Hari.RABU;
+    case 4:
+      return Hari.KAMIS;
+    case 5:
+      return Hari.JUMAT;
+    case 6:
+      return Hari.SABTU;
+    default:
+      return null;
+  }
 }

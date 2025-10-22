@@ -35,3 +35,13 @@ export type SubjectWithScheduleCount = Prisma.SubjectGetPayload<{
     };
   };
 }>;
+
+export type SchoolSchedule = Prisma.ClassScheduleGetPayload<{
+  select: {
+    hari: true;
+    jamMulai: true;
+    jamSelesai: true;
+    subject: { select: { nama: true } };
+    guruPengampu: { select: { nama: true } };
+  };
+}>;

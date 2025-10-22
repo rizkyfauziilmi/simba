@@ -1,5 +1,5 @@
 import { generateKodeMatpel } from "@/lib/string";
-import { adminProcedure, createTRPCRouter } from "../init";
+import { adminProcedure, createTRPCRouter, teacherProcedure } from "../init";
 import {
   createSubjectSchema,
   deleteSubjectSchema,
@@ -20,6 +20,36 @@ export const subjectRouter = createTRPCRouter({
       },
     });
     return subjects;
+  }),
+  getTeacherSchedules: teacherProcedure.query(async ({ ctx }) => {
+    const jadwalMengajar = await ctx.db.classSchedule.findMany({
+      where: {
+        guruPengampuId: ctx.session.teacherId,
+        kelas: {
+          status: "AKTIF",
+        },
+      },
+      select: {
+        hari: true,
+        jamMulai: true,
+        jamSelesai: true,
+        kelas: {
+          select: {
+            namaKelas: true,
+            tingkat: true,
+            ruang: true,
+          },
+        },
+        subject: {
+          select: {
+            nama: true,
+            kode: true,
+          },
+        },
+      },
+    });
+
+    return jadwalMengajar;
   }),
   getSubjectById: adminProcedure
     .input(deleteSubjectSchema)
