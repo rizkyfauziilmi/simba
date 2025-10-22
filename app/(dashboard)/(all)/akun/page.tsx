@@ -1,3 +1,9 @@
+import SessionSettings from "./_components/session-settings";
+
 export default function AkunPage() {
-  return <div>Akun Page</div>;
+  return (
+    <div>
+      <SessionSettings />
+    </div>
+  );
 }

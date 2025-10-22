@@ -1,3 +1,9 @@
+import ThemeSettings from "./_components/theme-settings";
+
 export default function PengaturanPage() {
-  return <div>Pengaturan Page</div>;
+  return (
+    <div className="space-y-8">
+      <ThemeSettings />
+    </div>
+  );
 }

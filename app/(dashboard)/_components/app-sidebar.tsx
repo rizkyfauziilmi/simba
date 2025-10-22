@@ -20,6 +20,7 @@ import { UserDropdownSkeleton } from "./user-dropdown-skeleton";
 import { NavMainSkeleton } from "./nav-main-skeleton";
 import { routeData } from "@/constants/sidebar-item-data";
 import Link from "next/link";
+import { NavSecondarySkeleton } from "./nav-secondary-skeleton";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session, isPending } = authClient.useSession();
@@ -57,7 +58,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             currentRole={session.user.role ?? "student"}
           />
         )}
-        <NavSecondary items={routeData.navSecondary} className="mt-auto" />
+        {isSessionLoading ? (
+          <NavSecondarySkeleton />
+        ) : (
+          <NavSecondary
+            items={routeData.navSecondary}
+            currentRole={session.user.role ?? "student"}
+            className="mt-auto"
+          />
+        )}
       </SidebarContent>
       <SidebarFooter>
         {isSessionLoading ? (

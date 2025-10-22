@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/client";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
+import { themes as themeConfig } from "@/constants/theme";
 
 export const metadata: Metadata = {
   title: "SIMBA - Sistem Informasi Manajemen Bustanul Arifin",
@@ -24,12 +19,13 @@ export default function RootLayout({
   return (
     <TRPCReactProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${inter.variable} antialiased`}>
+        <body className="antialiased">
           <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
+            defaultTheme="default-light"
+            enableColorScheme
+            themes={Object.values(themeConfig).flatMap((variant) =>
+              Object.values(variant.modes).map((mode) => mode.value),
+            )}
           >
             <NuqsAdapter>
               <main>{children}</main>

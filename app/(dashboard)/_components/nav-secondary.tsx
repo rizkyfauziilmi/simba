@@ -14,21 +14,30 @@ import Link from "next/link";
 
 export function NavSecondary({
   items,
+  currentRole,
   ...props
 }: {
+  currentRole: string;
   items: {
     title: string;
     url: string;
     icon: LucideIcon;
+    role: string[];
+    items: never[];
   }[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const pathname = usePathname();
+
+  // Filter parent items sesuai role
+  const filteredItems = items.filter(
+    (item) => !item.role || item.role.includes(currentRole),
+  );
 
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => (
+          {filteredItems.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 asChild

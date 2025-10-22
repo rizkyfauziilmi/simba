@@ -50,3 +50,46 @@ export function generateKodeMatpel(nama: string): string {
 
   return `${inisial}${uniqueNumber}`;
 }
+
+interface ParsedUserAgent {
+  platform: string | null;
+  os: string | null;
+  browser: string | null;
+  browserVersion: string | null;
+}
+
+export function parseUserAgent(ua?: string): ParsedUserAgent {
+  const result: ParsedUserAgent = {
+    platform: null,
+    os: null,
+    browser: null,
+    browserVersion: null,
+  };
+
+  if (!ua) return result;
+
+  // --- Extract platform & OS ---
+  const platformOsMatch = ua.match(/\((.*?)\)/);
+  if (platformOsMatch) {
+    const platformOs = platformOsMatch[1];
+    const parts = platformOs.split(";").map((p) => p.trim());
+    if (parts.length > 0) result.platform = parts[0] || null;
+    if (parts.length > 1) result.os = parts[1] || null;
+  }
+
+  // --- Extract browser name & version ---
+  const browserMatch = ua.match(/(Chrome|Firefox|Safari|Edg|OPR)\/([\d\.]+)/);
+  if (browserMatch) {
+    let browserName = browserMatch[1];
+    const browserVersion = browserMatch[2];
+
+    // Normalize browser names
+    if (browserName === "OPR") browserName = "Opera";
+    if (browserName === "Edg") browserName = "Microsoft Edge";
+
+    result.browser = browserName;
+    result.browserVersion = browserVersion;
+  }
+
+  return result;
+}

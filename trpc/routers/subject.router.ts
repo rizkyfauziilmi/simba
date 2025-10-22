@@ -103,7 +103,7 @@ export const subjectRouter = createTRPCRouter({
             throw new TRPCError({
               code: "CONFLICT",
               message:
-                `Jadwal bentrok di kelas (ID: ${kelasId}) pada hari ${hari}: ` +
+                `Jadwal bentrok di kelas pada hari ${hari}: ` +
                 `${jamMulai}-${jamSelesai} bertabrakan dengan ${existing.jamMulai}-${existing.jamSelesai}`,
             });
           }
@@ -128,9 +128,9 @@ export const subjectRouter = createTRPCRouter({
               throw new TRPCError({
                 code: "CONFLICT",
                 message:
-                  `Jadwal bentrok guru (ID: ${guruPengampuId}) pada hari ${hari}: ` +
+                  `Jadwal bentrok guru pada hari ${hari}: ` +
                   `${jamMulai}-${jamSelesai} bertabrakan dengan ` +
-                  `${existing.jamMulai}-${existing.jamSelesai} di kelas (ID: ${existing.kelasId})`,
+                  `${existing.jamMulai}-${existing.jamSelesai}`,
               });
             }
           }
@@ -212,7 +212,7 @@ export const subjectRouter = createTRPCRouter({
               throw new TRPCError({
                 code: "CONFLICT",
                 message:
-                  `Jadwal bentrok di kelas (ID: ${kelasId}) pada hari ${hari}: ` +
+                  `Jadwal bentrok di kelas pada hari ${hari}: ` +
                   `${jamMulai}-${jamSelesai} bertabrakan dengan ${existing.jamMulai}-${existing.jamSelesai}`,
               });
             }
@@ -238,9 +238,9 @@ export const subjectRouter = createTRPCRouter({
                 throw new TRPCError({
                   code: "CONFLICT",
                   message:
-                    `Jadwal bentrok guru (ID: ${guruPengampuId}) pada hari ${hari}: ` +
+                    `Jadwal bentrok guru pada hari ${hari}: ` +
                     `${jamMulai}-${jamSelesai} bertabrakan dengan ` +
-                    `${existing.jamMulai}-${existing.jamSelesai} di kelas (ID: ${existing.kelasId})`,
+                    `${existing.jamMulai}-${existing.jamSelesai}`,
                 });
               }
             }
