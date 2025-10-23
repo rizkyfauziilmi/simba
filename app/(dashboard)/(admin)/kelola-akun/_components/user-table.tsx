@@ -18,7 +18,6 @@ import { formattedDate } from "@/lib/date";
 import { SetUserPasswordDialog } from "./set-user-password-dialog";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { useEffect } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -29,12 +28,11 @@ import { DeleteUserAlertDialog } from "./delete-user-alert-dialog";
 import { UnbanButton } from "./unban-button";
 import { ImpersonateButton } from "./impersonate-button";
 import { RevokeAllUserSessionAlertDialog } from "./revoke-all-user-session-alert-dialog";
+import { useDebounce } from "@uidotdev/usehooks";
 
 export function UserTable() {
   const [searchEmail, setSearchEmail] = useState<string | undefined>(undefined);
-  const [debouncedSearchEmail, setDebouncedSearchEmail] = useState<
-    string | undefined
-  >(undefined);
+  const debouncedEmail = useDebounce(searchEmail, 300);
   const [isOpenDialogPs, setIsOpenDialogPs] = useState(false);
   const [isOpenDialogBan, setIsOpenDialogBan] = useState(false);
   const [isOpenDialogDelete, setIsOpenDialogDelete] = useState(false);
@@ -42,26 +40,16 @@ export function UserTable() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const { data: session } = authClient.useSession();
 
-  // Debounce logic
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearchEmail(searchEmail);
-    }, 500);
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchEmail]);
-
   const {
     data: usersData,
     isPending,
     error,
   } = useQuery({
-    queryKey: ["users", debouncedSearchEmail],
+    queryKey: ["users", debouncedEmail],
     queryFn: async () => {
       const users = await authClient.admin.listUsers({
         query: {
-          searchValue: debouncedSearchEmail,
+          searchValue: debouncedEmail,
           searchField: "email",
           searchOperator: "contains",
           filterField: "id",
@@ -80,6 +68,7 @@ export function UserTable() {
   return (
     <div>
       <Input
+        type="text"
         placeholder="Cari berdasarkan email..."
         className="mb-4"
         value={searchEmail ?? ""}

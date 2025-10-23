@@ -20,7 +20,7 @@ export function ImpersonateIndicator() {
     const { error } = await authClient.admin.stopImpersonating();
 
     if (error) {
-      toast.error("Gagal menghentikan impersonasi", {
+      toast.error("Gagal menghentikan penyamaran", {
         description: error.message,
       });
       return;
@@ -35,13 +35,13 @@ export function ImpersonateIndicator() {
         setIsLoading(true);
         stopImpersonation().finally(() => {
           setIsLoading(false);
-          toast.success("Impersonasi dihentikan");
+          toast.success("Penyamaran dihentikan");
           window.location.href = "/kelola-akun";
         });
       }}
     >
       {isLoading ? <Loader2Icon className="animate-spin" /> : <LockOpen />}
-      {isLoading ? "Memproses..." : "Berhenti Impersonasi"}
+      {isLoading ? "Memproses..." : "Berhenti Penyamaran"}
     </Button>
   );
 }
