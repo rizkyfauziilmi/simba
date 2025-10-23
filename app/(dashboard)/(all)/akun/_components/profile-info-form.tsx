@@ -80,7 +80,9 @@ export default function ProfileInfoForm({
 
   async function onSubmit(dataForm: z.infer<typeof updateProfileInfoSchema>) {
     const { error } = await authClient.updateUser({
-      image: isNotValidImageUrl(dataForm.image || "") ? null : dataForm.image,
+      image: isNotValidImageUrl(dataForm.image || "")
+        ? undefined
+        : dataForm.image,
       name: dataForm.name,
       displayUsername: dataForm.displayUsername,
       username: dataForm.username,
@@ -94,7 +96,15 @@ export default function ProfileInfoForm({
     }
 
     toast.success("Profil berhasil diperbarui");
-    refreshInfo();
+    onUpdate();
+    form.reset({
+      image: isNotValidImageUrl(dataForm.image || "")
+        ? undefined
+        : dataForm.image,
+      name: dataForm.name,
+      displayUsername: dataForm.displayUsername,
+      username: dataForm.username,
+    });
   }
 
   const isLoading = form.formState.isSubmitting;

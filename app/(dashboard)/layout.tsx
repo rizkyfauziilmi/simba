@@ -7,6 +7,7 @@ import {
 import { AppSidebar } from "./_components/app-sidebar";
 import { RoleBadge } from "./_components/role-badge";
 import { DashboardBreadcrumb } from "./_components/dashboard-breadcrumb";
+import { ImpersonateIndicator } from "@/components/impersonate-indicator";
 
 export default function DashboardLayout({
   children,
@@ -27,7 +28,10 @@ export default function DashboardLayout({
               />
               <DashboardBreadcrumb />
             </div>
-            <RoleBadge />
+            <div className="flex items-center gap-4">
+              <RoleBadge />
+              <ImpersonateIndicator />
+            </div>
           </header>
           <div className="flex flex-1 flex-col gap-4 p-4 md:p-6 pt-0">
             {children}

@@ -12,6 +12,8 @@ import {
   differenceInWeeks,
   differenceInMonths,
   differenceInDays,
+  formatDuration,
+  intervalToDuration,
 } from "date-fns";
 import { id } from "date-fns/locale";
 import { Hari } from "./generated/prisma";
@@ -125,4 +127,15 @@ export function getTodayHariEnum() {
     default:
       return null;
   }
+}
+
+/**
+ * Converts seconds to a human-readable duration string.
+ * @param seconds Number of seconds
+ * @returns Human-readable duration (e.g. "1 hour 5 minutes")
+ */
+export function secondsToReadable(seconds: number): string {
+  return formatDuration(intervalToDuration({ start: 0, end: seconds * 1000 }), {
+    locale: id,
+  });
 }

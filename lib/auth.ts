@@ -16,6 +16,9 @@ export const auth = betterAuth({
   plugins: [
     username(),
     adminPlugin({
+      defaultBanReason: "Tanpa alasan diberikan",
+      bannedUserMessage:
+        "Akun Anda telah dibanned. Silakan hubungi administrator untuk informasi lebih lanjut.",
       defaultRole: "student",
       ac,
       roles: {

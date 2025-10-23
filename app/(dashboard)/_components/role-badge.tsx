@@ -16,6 +16,10 @@ export const RoleBadge = () => {
 
   const role = session.user.role as "admin" | "student" | "teacher";
 
+  return GetRoleBadge(role);
+};
+
+export function GetRoleBadge(role: "admin" | "student" | "teacher") {
   return (
     <Badge
       variant={
@@ -42,4 +46,4 @@ export const RoleBadge = () => {
       )}
     </Badge>
   );
-};
+}
