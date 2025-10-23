@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Loader2Icon } from "lucide-react";
+import { Eye, EyeOff, Loader2Icon, ShieldUser } from "lucide-react";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
@@ -96,7 +96,10 @@ export function CreateAdminDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">Buat Admin</Button>
+        <Button variant="default">
+          <ShieldUser />
+          Buat Admin
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
