@@ -184,7 +184,6 @@ async function createTeachers(amount: number, classIds: string[]) {
           mode: "age",
         }),
         alamat: faker.location.streetAddress(),
-        email: `teacher${count}@example.com`,
         noTelepon: faker.phone.number({
           style: "international",
         }),
@@ -234,7 +233,7 @@ async function createStudents(amount: number, classIds: string[]) {
       body: {
         name: `Student ${count}`,
         email: `student${count}@example.com`,
-        password: "Student123!",
+        password: "student@1234",
         displayUsername: username,
         username: username,
       },
