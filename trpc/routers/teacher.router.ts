@@ -74,7 +74,7 @@ export const teacherRouter = createTRPCRouter({
   createTeacher: adminProcedure
     .input(createTeacherSchema)
     .mutation(async ({ ctx, input }) => {
-      const { nama, nip, email } = input;
+      const { nama, nip } = input;
 
       const isNipExists = await ctx.db.teacher.findFirst({
         where: {
@@ -92,39 +92,11 @@ export const teacherRouter = createTRPCRouter({
         });
       }
 
-      if (email) {
-        const [isEmailExistsInAuth, isEmailExists] = await ctx.db.$transaction([
-          ctx.db.user.findFirst({
-            where: {
-              email,
-            },
-            select: {
-              id: true,
-            },
-          }),
-          ctx.db.teacher.findFirst({
-            where: {
-              email,
-            },
-            select: {
-              id: true,
-            },
-          }),
-        ]);
-
-        if (isEmailExists || isEmailExistsInAuth) {
-          throw new TRPCError({
-            code: "CONFLICT",
-            message: "Email sudah digunakan",
-          });
-        }
-      }
-
       const namaFormatted = nama.toLowerCase().replace(/\s/g, "");
 
       const newUserTeacher = await auth.api.createUser({
         body: {
-          email: email ? email : `${namaFormatted}@example.com`,
+          email: `${namaFormatted}@example.com`,
           password: `${namaFormatted}@1234`,
           name: nama,
           role: "teacher",
@@ -208,42 +180,6 @@ export const teacherRouter = createTRPCRouter({
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "Guru tidak ditemukan",
-        });
-      }
-
-      if (data.email && teacher.user.email !== data.email) {
-        const [isEmailExistsInAuth, isEmailExists] = await ctx.db.$transaction([
-          ctx.db.user.findFirst({
-            where: {
-              email: data.email,
-            },
-            select: {
-              id: true,
-            },
-          }),
-          ctx.db.teacher.findFirst({
-            where: {
-              email: data.email,
-            },
-            select: {
-              id: true,
-            },
-          }),
-        ]);
-
-        if (isEmailExists || isEmailExistsInAuth) {
-          throw new TRPCError({
-            code: "CONFLICT",
-            message: "Email sudah digunakan",
-          });
-        }
-
-        await auth.api.adminUpdateUser({
-          body: {
-            userId: teacher.userId,
-            data: { email: data.email },
-          },
-          headers: await headers(),
         });
       }
 

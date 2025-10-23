@@ -18,7 +18,6 @@ export const createTeacherSchema = z.object({
   }),
   tanggalLahir: z.date("Tanggal lahir wajib diisi"),
   alamat: z.string().optional(),
-  email: z.email("Email tidak valid").optional(),
   noTelepon: z
     .string()
     .regex(

@@ -79,12 +79,6 @@ export function ClassHeader() {
                 {kelas.waliKelas.nip}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Email</span>
-              <span className="text-sm font-medium text-foreground">
-                {kelas.waliKelas.email}
-              </span>
-            </div>
           </div>
         </div>
       </CardContent>

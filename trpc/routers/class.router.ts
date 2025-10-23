@@ -123,7 +123,6 @@ export const classRouter = createTRPCRouter({
             id: true,
             nama: true,
             nip: true,
-            email: true,
             userId: true,
           },
         },

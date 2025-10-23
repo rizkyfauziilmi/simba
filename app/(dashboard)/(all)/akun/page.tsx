@@ -1,9 +1,9 @@
-import SessionSettings from "./_components/session-settings";
+import ProfileSettings from "./_components/profile-settings";
 
 export default function AkunPage() {
   return (
     <div>
-      <SessionSettings />
+      <ProfileSettings />
     </div>
   );
 }

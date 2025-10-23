@@ -132,7 +132,6 @@ model Teacher {
   jenisKelamin Gender
   tanggalLahir DateTime
   alamat       String?
-  email        String?       @unique
   noTelepon    String?
   status       TeacherStatus @default(AKTIF)
   tanggalMasuk DateTime
