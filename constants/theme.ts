@@ -56,62 +56,6 @@ export const themes = {
       },
     },
   },
-  corporate: {
-    name: "Corporate",
-    description: "Tema profesional dan modern untuk lingkungan bisnis.",
-    modes: {
-      light: {
-        value: "corporate-light",
-        name: "Corporate Light",
-        description: "Tema Corporate (terang)",
-        colors: [
-          "oklch(0.48 0.2 260.47)", // --primary
-          "oklch(0.97 0 0)", // --secondary
-          "oklch(0.95 0.02 260.18)", // --accent
-          "oklch(0.93 0.01 261.82)", // --border
-        ],
-      },
-      dark: {
-        value: "corporate-dark",
-        name: "Corporate Dark",
-        description: "Tema Corporate (gelap)",
-        colors: [
-          "oklch(0.56 0.24 260.92)", // --primary
-          "oklch(0.35 0.04 261.4)", // --secondary
-          "oklch(0.33 0.04 264.63)", // --accent
-          "oklch(0.35 0.04 261.4)", // --border
-        ],
-      },
-    },
-  },
-  "art-deco": {
-    name: "Art Deco",
-    description: "Tema bergaya art-deco, elegan dan klasik.",
-    modes: {
-      light: {
-        value: "art-deco-light",
-        name: "Art Deco Light",
-        description: "Tema Art Deco (terang)",
-        colors: [
-          "oklch(0.77 0.14 91.27)", // --primary
-          "oklch(0.67 0.13 61.58)", // --secondary
-          "oklch(0.89 0.18 95.47)", // --accent
-          "oklch(0.83 0.11 93.01)", // --border
-        ],
-      },
-      dark: {
-        value: "art-deco-dark",
-        name: "Art Deco Dark",
-        description: "Tema Art Deco (gelap)",
-        colors: [
-          "oklch(0.84 0.17 83.07)", // --primary
-          "oklch(0.47 0.11 50.64)", // --secondary
-          "oklch(0.66 0.14 79.74)", // --accent
-          "oklch(0.47 0.11 50.64)", // --border
-        ],
-      },
-    },
-  },
   "neo-brutalism": {
     name: "Neo Brutalism",
     description: "Tema neo-brutalism, tegas dan berani.",
@@ -121,10 +65,10 @@ export const themes = {
         name: "Neo Brutalism Light",
         description: "Tema Neo Brutalism (terang)",
         colors: [
-          "oklch(0.65 0.24 26.92)", // --primary
-          "oklch(0.97 0.21 109.74)", // --secondary
-          "oklch(0.56 0.24 260.83)", // --accent
-          "oklch(0 0 0)", // --border
+          "#ff3333", // --primary
+          "#ffff00", // --secondary
+          "#0066ff", // --accent
+          "#000000", // --border
         ],
       },
       dark: {
@@ -132,10 +76,10 @@ export const themes = {
         name: "Neo Brutalism Dark",
         description: "Tema Neo Brutalism (gelap)",
         colors: [
-          "oklch(0.7 0.19 23.04)", // --primary
-          "oklch(0.97 0.2 109.61)", // --secondary
-          "oklch(0.68 0.18 251.63)", // --accent
-          "oklch(1 0 0)", // --border
+          "#ff6666", // --primary
+          "#ffff33", // --secondary
+          "#3399ff", // --accent
+          "#ffffff", // --border
         ],
       },
     },
@@ -164,6 +108,118 @@ export const themes = {
           "oklch(0.39 0.03 143.09)", // --secondary
           "oklch(0.58 0.14 144.14)", // --accent
           "oklch(0.39 0.03 143.09)", // --border
+        ],
+      },
+    },
+  },
+  caffeine: {
+    name: "Caffeine",
+    description: "Tema hangat dan energik, cocok untuk suasana produktif.",
+    modes: {
+      light: {
+        value: "caffeine-light",
+        name: "Caffeine Light",
+        description: "Tema Caffeine (terang)",
+        colors: [
+          "oklch(0.4341 0.0392 41.9938)", // --primary
+          "oklch(0.92 0.0651 74.3695)", // --secondary
+          "oklch(0.931 0 0)", // --accent
+          "oklch(0.8822 0 0)", // --border
+        ],
+      },
+      dark: {
+        value: "caffeine-dark",
+        name: "Caffeine Dark",
+        description: "Tema Caffeine (gelap)",
+        colors: [
+          "oklch(0.9247 0.0524 66.1732)", // --primary
+          "oklch(0.3163 0.019 63.6992)", // --secondary
+          "oklch(0.285 0 0)", // --accent
+          "oklch(0.2351 0.0115 91.7467)", // --border
+        ],
+      },
+    },
+  },
+  "bold-tech": {
+    name: "Bold Tech",
+    description: "Tema modern dan berani untuk suasana teknologi.",
+    modes: {
+      light: {
+        value: "bold-tech-light",
+        name: "Bold Tech Light",
+        description: "Tema Bold Tech (terang)",
+        colors: [
+          "oklch(0.6056 0.2189 292.7172)", // --primary
+          "oklch(0.9618 0.0202 295.1913)", // --secondary
+          "oklch(0.9319 0.0316 255.5855)", // --accent
+          "oklch(0.9299 0.0334 272.7879)", // --border
+        ],
+      },
+      dark: {
+        value: "bold-tech-dark",
+        name: "Bold Tech Dark",
+        description: "Tema Bold Tech (gelap)",
+        colors: [
+          "oklch(0.6056 0.2189 292.7172)", // --primary
+          "oklch(0.2573 0.0861 281.2883)", // --secondary
+          "oklch(0.4568 0.2146 277.0229)", // --accent
+          "oklch(0.2827 0.1351 291.0894)", // --border
+        ],
+      },
+    },
+  },
+  "mocha-mousse": {
+    name: "Mocha Mousse",
+    description: "Tema lembut dan creamy seperti mousse coklat.",
+    modes: {
+      light: {
+        value: "mocha-mousse-light",
+        name: "Mocha Mousse Light",
+        description: "Tema Mocha Mousse (terang)",
+        colors: [
+          "oklch(0.6083 0.0623 44.3588)", // --primary
+          "oklch(0.7473 0.0387 80.5476)", // --secondary
+          "oklch(0.8502 0.0389 49.0874)", // --accent
+          "oklch(0.7473 0.0387 80.5476)", // --border
+        ],
+      },
+      dark: {
+        value: "mocha-mousse-dark",
+        name: "Mocha Mousse Dark",
+        description: "Tema Mocha Mousse (gelap)",
+        colors: [
+          "oklch(0.7272 0.0539 52.332)", // --primary
+          "oklch(0.5416 0.0512 37.2132)", // --secondary
+          "oklch(0.7473 0.0387 80.5476)", // --accent
+          "oklch(0.4063 0.0255 40.3627)", // --border
+        ],
+      },
+    },
+  },
+  catppuccin: {
+    name: "Catppuccin",
+    description: "Tema pastel yang terinspirasi dari Catppuccin.",
+    modes: {
+      light: {
+        value: "catppuccin-light",
+        name: "Catppuccin Light",
+        description: "Tema Catppuccin (terang)",
+        colors: [
+          "oklch(0.5547 0.2503 297.0156)", // --primary
+          "oklch(0.8575 0.0145 268.4756)", // --secondary
+          "oklch(0.682 0.1448 235.3822)", // --accent
+          "oklch(0.8083 0.0174 271.1982)", // --border
+        ],
+      },
+      dark: {
+        value: "catppuccin-dark",
+        name: "Catppuccin Dark",
+        description: "Tema Catppuccin (gelap)",
+        colors: [
+          "oklch(0.7871 0.1187 304.7693)", // --primary
+          "oklch(0.4765 0.034 278.643)", // --secondary
+          "oklch(0.8467 0.0833 210.2545)", // --accent
+          "oklch(0.324 0.0319 281.9784)", // --border
         ],
       },
     },
