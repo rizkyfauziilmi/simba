@@ -29,8 +29,7 @@ export const themes = {
   },
   ghibli: {
     name: "Ghibli",
-    description:
-      description: "Lembut, hangat, dan penuh warna seperti film Studio Ghibli.",
+    description: "Lembut, hangat, dan penuh warna seperti film Studio Ghibli.",
     modes: {
       light: {
         value: "ghibli-light",
@@ -58,7 +57,8 @@ export const themes = {
   },
   "neo-brutalism": {
     name: "Neo Brutalism",
-    description: "Warna-warna kontras dan tegas, cocok untuk gaya modern yang berani.",
+    description:
+      "Warna-warna kontras dan tegas, cocok untuk gaya modern yang berani.",
     modes: {
       light: {
         value: "neo-brutalism-light",
@@ -170,7 +170,8 @@ export const themes = {
   },
   "mocha-mousse": {
     name: "Mocha Mousse",
-    description: "Lembut dan creamy, memberikan nuansa nyaman seperti dessert coklat.",
+    description:
+      "Lembut dan creamy, memberikan nuansa nyaman seperti dessert coklat.",
     modes: {
       light: {
         value: "mocha-mousse-light",
