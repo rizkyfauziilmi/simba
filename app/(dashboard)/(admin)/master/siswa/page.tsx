@@ -10,9 +10,9 @@ export default async function MasterSiswaPage() {
   prefetch(trpc.student.getAllStudents.queryOptions());
 
   return (
-    <div className="space-y-4">
-      <MasterStudentHeader />
-      <HydrateClient>
+    <HydrateClient>
+      <div className="space-y-4">
+        <MasterStudentHeader />
         <ErrorBoundary
           fallback={
             <EmptyError
@@ -25,7 +25,7 @@ export default async function MasterSiswaPage() {
             <MasterStudentTable />
           </Suspense>
         </ErrorBoundary>
-      </HydrateClient>
-    </div>
+      </div>
+    </HydrateClient>
   );
 }

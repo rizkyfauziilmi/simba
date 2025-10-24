@@ -10,9 +10,9 @@ export default async function MasterGuruPage() {
   prefetch(trpc.teacher.getAllTeachers.queryOptions());
 
   return (
-    <div className="space-y-4">
-      <MasterTeacherHeader />
-      <HydrateClient>
+    <HydrateClient>
+      <div className="space-y-4">
+        <MasterTeacherHeader />
         <ErrorBoundary
           fallback={
             <EmptyError
@@ -25,7 +25,7 @@ export default async function MasterGuruPage() {
             <MasterTeacherTable />
           </Suspense>
         </ErrorBoundary>
-      </HydrateClient>
-    </div>
+      </div>
+    </HydrateClient>
   );
 }

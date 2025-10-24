@@ -10,9 +10,9 @@ export default async function MasterKelasPage() {
   prefetch(trpc.class.getAllClasses.queryOptions());
 
   return (
-    <div className="space-y-4">
-      <MasterClassHeader />
-      <HydrateClient>
+    <HydrateClient>
+      <div className="space-y-4">
+        <MasterClassHeader />
         <ErrorBoundary
           fallback={
             <EmptyError
@@ -25,7 +25,7 @@ export default async function MasterKelasPage() {
             <MasterClassTable />
           </Suspense>
         </ErrorBoundary>
-      </HydrateClient>
-    </div>
+      </div>
+    </HydrateClient>
   );
 }

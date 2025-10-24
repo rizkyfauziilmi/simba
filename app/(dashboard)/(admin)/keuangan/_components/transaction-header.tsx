@@ -62,9 +62,17 @@ import { CalendarIcon } from "lucide-react";
 import { expenseCategories, incomeCategories } from "@/constants/categories";
 import CurrencyInputIDR from "@/components/currency-input-idr";
 import { useTRPC } from "@/trpc/client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { useQueryState } from "nuqs";
+import { filterSearchParams } from "@/lib/searchParams";
+import { downloadCSV, downloadExcel, downloadPDF } from "@/lib/download";
+import { formattedDate } from "@/lib/date";
 
 export function TransactionHeader() {
   const [open, setOpen] = useState(false);
@@ -79,6 +87,19 @@ export function TransactionHeader() {
 
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const [categories] = useQueryState(
+    "categories",
+    filterSearchParams.categories,
+  );
+  const [fromDate] = useQueryState("from", filterSearchParams.from);
+  const [toDate] = useQueryState("to", filterSearchParams.to);
+  const { data } = useSuspenseQuery(
+    trpc.finance.getFinanceSummary.queryOptions({
+      categories: categories ?? undefined,
+      startDate: fromDate,
+      endDate: toDate,
+    }),
+  );
 
   const createTransactionMutationOptions =
     trpc.finance.createTransaction.mutationOptions({
@@ -126,9 +147,36 @@ export function TransactionHeader() {
           <DropdownMenuContent>
             <DropdownMenuLabel>Format File</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>CSV</DropdownMenuItem>
-            <DropdownMenuItem>Excel</DropdownMenuItem>
-            <DropdownMenuItem>PDF</DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() =>
+                downloadCSV(
+                  data.transactions,
+                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
+                )
+              }
+            >
+              CSV
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() =>
+                downloadExcel(
+                  data.transactions,
+                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
+                )
+              }
+            >
+              Excel
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() =>
+                downloadPDF(
+                  data.transactions,
+                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
+                )
+              }
+            >
+              PDF
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
         <Dialog open={open} onOpenChange={setOpen}>

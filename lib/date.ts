@@ -109,6 +109,14 @@ export function formattedDate(date: Date) {
   return format(date, "dd MMM yyyy", { locale: id });
 }
 
+/**
+ * Formats a date for use in filenames, using a safe and sortable pattern.
+ * Example: "2024-06-07_14-32-10"
+ */
+export function formatDateForFilename(date: Date) {
+  return format(date, "yyyy-MM-dd_HH-mm-ss");
+}
+
 export function getTodayHariEnum() {
   // get current day in Hari enum
   const today = new Date().getDay();

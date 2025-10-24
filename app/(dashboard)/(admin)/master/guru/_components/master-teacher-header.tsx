@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { DownloadIcon, UserPlus } from "lucide-react";
 import {
@@ -9,8 +11,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { downloadCSV, downloadExcel, downloadPDF } from "@/lib/download";
 
 export const MasterTeacherHeader = () => {
+  const trpc = useTRPC();
+  const { data: teachers } = useSuspenseQuery(
+    trpc.teacher.getAllTeachers.queryOptions(),
+  );
+
   return (
     <div className="flex items-center justify-between">
       <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
@@ -33,9 +43,21 @@ export const MasterTeacherHeader = () => {
           <DropdownMenuContent>
             <DropdownMenuLabel>Format File</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>CSV</DropdownMenuItem>
-            <DropdownMenuItem>Excel</DropdownMenuItem>
-            <DropdownMenuItem>PDF</DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() => downloadCSV(teachers, "data-guru")}
+            >
+              CSV
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() => downloadExcel(teachers, "data-guru")}
+            >
+              Excel
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() => downloadPDF(teachers, "data-guru")}
+            >
+              PDF
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

@@ -10,9 +10,9 @@ export default async function MasterMapelPage() {
   prefetch(trpc.subject.getAllSubjects.queryOptions());
 
   return (
-    <div className="space-y-4">
-      <MasterSubjectHeader />
-      <HydrateClient>
+    <HydrateClient>
+      <div className="space-y-4">
+        <MasterSubjectHeader />
         <ErrorBoundary
           fallback={
             <EmptyError
@@ -25,7 +25,7 @@ export default async function MasterMapelPage() {
             <MasterSubjectTable />
           </Suspense>
         </ErrorBoundary>
-      </HydrateClient>
-    </div>
+      </div>
+    </HydrateClient>
   );
 }
