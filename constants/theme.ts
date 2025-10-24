@@ -1,7 +1,7 @@
 export const themes = {
   default: {
     name: "Default",
-    description: "Tema bawaan aplikasi",
+    description: "Tampilan standar yang bersih dan netral.",
     modes: {
       light: {
         value: "default-light",
@@ -30,7 +30,7 @@ export const themes = {
   ghibli: {
     name: "Ghibli",
     description:
-      "Tema terinspirasi Studio Ghibli: lembut, hangat, dan penuh warna.",
+      description: "Lembut, hangat, dan penuh warna seperti film Studio Ghibli.",
     modes: {
       light: {
         value: "ghibli-light",
@@ -58,7 +58,7 @@ export const themes = {
   },
   "neo-brutalism": {
     name: "Neo Brutalism",
-    description: "Tema neo-brutalism, tegas dan berani.",
+    description: "Warna-warna kontras dan tegas, cocok untuk gaya modern yang berani.",
     modes: {
       light: {
         value: "neo-brutalism-light",
@@ -86,7 +86,7 @@ export const themes = {
   },
   nature: {
     name: "Nature",
-    description: "Tema alam, segar dan natural.",
+    description: "Segar dan natural, terinspirasi dari warna-warna alam.",
     modes: {
       light: {
         value: "nature-light",
@@ -114,7 +114,7 @@ export const themes = {
   },
   caffeine: {
     name: "Caffeine",
-    description: "Tema hangat dan energik, cocok untuk suasana produktif.",
+    description: "Hangat dan energik, memberikan semangat seperti kopi.",
     modes: {
       light: {
         value: "caffeine-light",
@@ -142,7 +142,7 @@ export const themes = {
   },
   "bold-tech": {
     name: "Bold Tech",
-    description: "Tema modern dan berani untuk suasana teknologi.",
+    description: "Modern, berani, dan dinamis, cocok untuk nuansa teknologi.",
     modes: {
       light: {
         value: "bold-tech-light",
@@ -170,7 +170,7 @@ export const themes = {
   },
   "mocha-mousse": {
     name: "Mocha Mousse",
-    description: "Tema lembut dan creamy seperti mousse coklat.",
+    description: "Lembut dan creamy, memberikan nuansa nyaman seperti dessert coklat.",
     modes: {
       light: {
         value: "mocha-mousse-light",
@@ -198,7 +198,7 @@ export const themes = {
   },
   catppuccin: {
     name: "Catppuccin",
-    description: "Tema pastel yang terinspirasi dari Catppuccin.",
+    description: "Pastel lembut dan harmonis, terinspirasi dari Catppuccin.",
     modes: {
       light: {
         value: "catppuccin-light",
