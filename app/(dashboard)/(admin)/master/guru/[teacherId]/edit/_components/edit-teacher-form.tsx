@@ -29,7 +29,6 @@ import {
 } from "@/components/ui/select";
 import { enumToReadable } from "@/lib/string";
 import { Button } from "@/components/ui/button";
-import { LoaderIcon } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -43,6 +42,7 @@ import { Gender, TeacherStatus } from "@/lib/generated/prisma";
 import { cn } from "@/lib/utils";
 import { PhoneInput } from "@/components/phone-input";
 import { updateTeacherSchema } from "@/trpc/schemas/teacher.schema";
+import { Spinner } from "@/components/ui/spinner";
 
 export function EditTeacherForm() {
   const params = useParams<{ teacherId: string }>();
@@ -58,7 +58,6 @@ export function EditTeacherForm() {
     resolver: zodResolver(updateTeacherSchema),
     defaultValues: {
       nip: teacher?.nip,
-      email: teacher?.email || "",
       alamat: teacher?.alamat || "",
       noTelepon: teacher?.noTelepon || "",
       tanggalMasuk: teacher?.tanggalMasuk,
@@ -129,23 +128,6 @@ export function EditTeacherForm() {
                   <FormLabel>Nama Lengkap</FormLabel>
                   <FormControl>
                     <Input {...field} placeholder="Masukkan nama lengkap" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Alamat Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      {...field}
-                      placeholder="Masukkan nama lengkap"
-                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -360,7 +342,7 @@ export function EditTeacherForm() {
               Kembali
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading && <LoaderIcon className="animate-spin" />}
+              {isLoading && <Spinner />}
               {isLoading ? "Memperbarui..." : "Perbarui"}
             </Button>
           </div>

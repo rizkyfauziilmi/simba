@@ -1,13 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  BookUser,
-  Loader2,
-  MoreHorizontal,
-  Trash,
-  UserPen,
-} from "lucide-react";
+import { BookUser, MoreHorizontal, Trash, UserPen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,6 +18,7 @@ import { useState } from "react";
 import { DeleteSubjectAlertDialog } from "./delete-subject-alert-dialog";
 import { useRouter } from "next/navigation";
 import { SubjectWithScheduleCount } from "@/types/database-return.type";
+import { Spinner } from "@/components/ui/spinner";
 
 export const subjectMasterColumns: ColumnDef<SubjectWithScheduleCount>[] = [
   {
@@ -98,7 +93,7 @@ export const subjectMasterColumns: ColumnDef<SubjectWithScheduleCount>[] = [
               >
                 <span className="sr-only">Open menu</span>
                 {isLoading ? (
-                  <Loader2 className="animate-spin" />
+                  <Spinner />
                 ) : (
                   <MoreHorizontal className="h-4 w-4" />
                 )}

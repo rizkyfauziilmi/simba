@@ -29,7 +29,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Check, ChevronsUpDown, LoaderIcon } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { ClassStatus, StudentGrade } from "@/lib/generated/prisma";
 import { enumToReadable, getAvatarFallback } from "@/lib/string";
 import { cn } from "@/lib/utils";
@@ -50,6 +50,7 @@ import React from "react";
 import { NoUserError } from "@/components/no-user-error";
 import { Switch } from "@/components/ui/switch";
 import { FormInputSkeleton } from "@/components/skeleton/form-input-skeleton";
+import { Spinner } from "@/components/ui/spinner";
 
 export function CreateClassForm() {
   const trpc = useTRPC();
@@ -445,7 +446,7 @@ export function CreateClassForm() {
             Kembali
           </Button>
           <Button type="submit" disabled={isLoading || isPending}>
-            {isLoading && <LoaderIcon className="animate-spin" />}
+            {isLoading && <Spinner />}
             {isLoading ? "Menyimpan..." : "Simpan"}
           </Button>
         </div>

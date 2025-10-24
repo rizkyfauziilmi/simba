@@ -1,13 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import {
-  BookUser,
-  Loader2,
-  MoreHorizontal,
-  Trash,
-  UserPen,
-} from "lucide-react";
+import { BookUser, MoreHorizontal, Trash, UserPen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,15 +14,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Student } from "@/lib/generated/prisma";
 import { useState } from "react";
-import { enumToReadable } from "@/lib/string";
+import { enumToReadable, getAvatarFallback } from "@/lib/string";
 import { DeleteStudentAlertDialog } from "./delete-student-alert-dialog";
 import { useRouter } from "next/navigation";
 import { GetStudentStatusBadge } from "./get-student-status-badge";
 import { formattedDate } from "@/lib/date";
+import { StudentWithImage } from "@/types/database-return.type";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Spinner } from "@/components/ui/spinner";
 
-export const studentMasterColumns: ColumnDef<Student>[] = [
+export const studentMasterColumns: ColumnDef<StudentWithImage>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -62,6 +58,19 @@ export const studentMasterColumns: ColumnDef<Student>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nama" />
     ),
+    cell: ({ row }) => {
+      const { nama, user } = row.original;
+
+      return (
+        <div className="flex items-center gap-3">
+          <Avatar className="size-8">
+            <AvatarImage src={user.image ?? undefined} />
+            <AvatarFallback>{getAvatarFallback(nama)}</AvatarFallback>
+          </Avatar>
+          {nama}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "jenisKelamin",
@@ -109,7 +118,7 @@ export const studentMasterColumns: ColumnDef<Student>[] = [
               >
                 <span className="sr-only">Open menu</span>
                 {isLoading ? (
-                  <Loader2 className="animate-spin" />
+                  <Spinner />
                 ) : (
                   <MoreHorizontal className="h-4 w-4" />
                 )}

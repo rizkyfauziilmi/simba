@@ -32,7 +32,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, LoaderIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { Gender, StudentGrade, StudentStatus } from "@/lib/generated/prisma";
@@ -42,6 +42,7 @@ import { useRouter } from "next/navigation";
 import { PhoneInput } from "@/components/phone-input";
 import { FormInputSkeleton } from "@/components/skeleton/form-input-skeleton";
 import { NoUserError } from "@/components/no-user-error";
+import { Spinner } from "@/components/ui/spinner";
 
 export function CreateStudentForm() {
   const trpc = useTRPC();
@@ -350,7 +351,7 @@ export function CreateStudentForm() {
             Kembali
           </Button>
           <Button type="submit" disabled={isLoading || isPending}>
-            {isLoading && <LoaderIcon className="animate-spin" />}
+            {isLoading && <Spinner />}
             {isLoading ? "Menyimpan..." : "Simpan"}
           </Button>
         </div>

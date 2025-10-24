@@ -2,6 +2,8 @@ import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { JadwalPelajaran } from "./_components/jadwal-pelajaran";
+import { EmptyError } from "@/components/empty-error";
+import { EmptyLoading } from "@/components/empty-loading";
 
 export default async function JadwalPelajaranPage() {
   prefetch(trpc.class.getMySchoolTimeable.queryOptions());
@@ -17,8 +19,22 @@ export default async function JadwalPelajaranPage() {
           Lihat jadwal kelas dan guru pengampu
         </p>
       </div>
-      <ErrorBoundary fallback={<div>Terjadi kesalahan.</div>}>
-        <Suspense fallback={<div>Memuat jadwal pelajaran...</div>}>
+      <ErrorBoundary
+        fallback={
+          <EmptyError
+            title="Gagal memuat jadwal pelajaran"
+            description="Terjadi kesalahan saat memuat jadwal pelajaran. Silakan coba lagi."
+          />
+        }
+      >
+        <Suspense
+          fallback={
+            <EmptyLoading
+              title="Memuat jadwal pelajaran"
+              description="Mohon tunggu sementara kami memuat jadwal pelajaran."
+            />
+          }
+        >
           <JadwalPelajaran />
         </Suspense>
       </ErrorBoundary>

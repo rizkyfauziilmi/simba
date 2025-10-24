@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff, Loader2Icon, X, Check } from "lucide-react";
+import { Eye, EyeOff, X, Check } from "lucide-react";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
+import { Spinner } from "@/components/ui/spinner";
 
 const changePasswordSchema = z
   .object({
@@ -325,9 +326,7 @@ export default function PasswordChangeForm() {
                 Batal
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading && (
-                  <Loader2Icon className="animate-spin mr-2 h-4 w-4" />
-                )}
+                {isLoading && <Spinner />}
                 {isLoading ? "Memproses..." : "Ubah Kata Sandi"}
               </Button>
             </div>

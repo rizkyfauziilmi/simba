@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { DownloadIcon } from "lucide-react";
+import { DownloadIcon, Plus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +17,12 @@ export const MasterSubjectHeader = () => {
         Daftar Mata Pelajaran
       </h3>
       <div className="flex items-center gap-2">
+        <Button variant="outline" asChild>
+          <Link href="/master/mapel/tambah">
+            <Plus />
+            Tambah Mata Pelajaran
+          </Link>
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary">
@@ -32,9 +38,6 @@ export const MasterSubjectHeader = () => {
             <DropdownMenuItem>PDF</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button variant="outline" asChild>
-          <Link href="/master/mapel/tambah">Tambah Mata Pelajaran</Link>
-        </Button>
       </div>
     </div>
   );

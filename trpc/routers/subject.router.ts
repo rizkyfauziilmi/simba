@@ -59,7 +59,22 @@ export const subjectRouter = createTRPCRouter({
       const subject = await ctx.db.subject.findUnique({
         where: { id },
         include: {
-          schedules: true,
+          schedules: {
+            include: {
+              kelas: {
+                select: {
+                  namaKelas: true,
+                  ruang: true,
+                },
+              },
+              guruPengampu: {
+                select: {
+                  nama: true,
+                },
+              },
+            },
+            orderBy: [{ hari: "asc" }, { jamMulai: "asc" }],
+          },
         },
       });
 

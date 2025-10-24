@@ -1,6 +1,8 @@
-import { GalleryVerticalEnd } from "lucide-react";
 import { LoginForm } from "./_components/login-form";
 import Link from "next/link";
+import logo from "@/public/logo.png";
+import banner from "@/public/banner.png";
+import Image from "next/image";
 
 export default function LoginPage() {
   return (
@@ -8,9 +10,7 @@ export default function LoginPage() {
       <div className="flex flex-col gap-4 p-6 md:p-10">
         <div className="flex justify-center gap-2 md:justify-start">
           <Link href="#" className="flex items-center gap-2 font-medium">
-            <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
-              <GalleryVerticalEnd className="size-4" />
-            </div>
+            <Image src={logo} alt="Logo" width={32} height={32} />
             Bustanul Arifin.
           </Link>
         </div>
@@ -21,9 +21,9 @@ export default function LoginPage() {
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
-        <img
-          src="/placeholder.svg"
-          alt="Image"
+        <Image
+          src={banner}
+          alt="Banner"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
       </div>

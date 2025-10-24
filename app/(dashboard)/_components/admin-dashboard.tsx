@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -5,161 +7,295 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
-  Clock,
-  GraduationCap,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import {
   Users,
-  BookOpen,
+  GraduationCap,
+  Building2,
   TrendingUp,
+  Wallet,
+  BookOpen,
+  UserCog,
+  Settings,
+  User,
 } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarFallback } from "@/lib/string";
+import { GetBadgeTransactionType } from "@/components/get-badge-transaction-type";
+import { formattedDate } from "@/lib/date";
 
 export function AdminDashboard() {
+  const trpc = useTRPC();
+  const { data: adminDashboardData } = useSuspenseQuery(
+    trpc.roleData.getAdminDashboardData.queryOptions(),
+  );
+
   return (
-    <>
-      {/* Admin Dashboard Stats */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="rounded-2xl">
+    <div className="space-y-8">
+      <div className="mb-8 space-y-2">
+        <h1 className="text-4xl font-bold">Dashboard Admin</h1>
+        <p className="text-muted-foreground">
+          Selamat datang di sistem manajemen sekolah
+        </p>
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Aksi Cepat</CardTitle>
+          <CardDescription>Akses cepat ke fitur utama</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 md:grid-cols-4">
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/keuangan">
+                <Wallet className="h-6 w-6" />
+                <span>Kelola Keuangan</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/master/guru">
+                <Users className="h-6 w-6" />
+                <span>Kelola Guru</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/master/siswa">
+                <GraduationCap className="h-6 w-6" />
+                <span>Kelola Siswa</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/master/kelas">
+                <Building2 className="h-6 w-6" />
+                <span>Kelola Kelas</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/master/mapel">
+                <BookOpen className="h-6 w-6" />
+                <span>Kelola Mata Pelajaran</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/kelola-akun">
+                <UserCog className="h-6 w-6" />
+                <span>Kelola Akun</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/pengaturan">
+                <Settings className="h-6 w-6" />
+                <span>Pengaturan</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/akun">
+                <User className="h-6 w-6" />
+                <span>Profil</span>
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Siswa</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,245</div>
-            <p className="text-xs text-muted-foreground">
-              +12% dari bulan lalu
-            </p>
+            <div className="text-2xl font-bold">
+              {adminDashboardData.studentCount}
+            </div>
+            <p className="text-xs text-muted-foreground">Siswa aktif</p>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl">
+
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Guru</CardTitle>
             <GraduationCap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">87</div>
-            <p className="text-xs text-muted-foreground">
-              +2 guru baru bulan ini
-            </p>
+            <div className="text-2xl font-bold">
+              {adminDashboardData.teacherCount}
+            </div>
+            <p className="text-xs text-muted-foreground">Guru aktif</p>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl">
+
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Kelas</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <Building2 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">42</div>
-            <p className="text-xs text-muted-foreground">Dari kelas 1 - 12</p>
+            <div className="text-2xl font-bold">
+              {adminDashboardData.classCount}
+            </div>
+            <p className="text-xs text-muted-foreground">Kelas aktif</p>
           </CardContent>
         </Card>
-        <Card className="rounded-2xl">
+
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Absensi Hari Ini
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Saldo Sekolah</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">94.8%</div>
-            <p className="text-xs text-muted-foreground">+1.2% dari kemarin</p>
+            <div className="text-2xl font-bold">
+              {formatCurrency(adminDashboardData.schoolBalance)}
+            </div>
+            <p className="text-xs text-muted-foreground">Saldo saat ini</p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7">
-        {/* Recent Activity */}
-        <Card className="col-span-4 rounded-2xl">
-          <CardHeader>
-            <CardTitle>Aktivitas Terbaru</CardTitle>
-            <CardDescription>
-              Ringkasan aktivitas sistem dalam 24 jam terakhir
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center space-x-4">
-              <div className="flex h-2 w-2 rounded-full bg-primary"></div>
-              <div className="flex-1 space-y-1">
-                <p className="text-sm font-medium leading-none">
-                  Data siswa baru telah ditambahkan
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  25 siswa baru terdaftar hari ini
-                </p>
-              </div>
-              <div className="text-sm text-muted-foreground">2 jam lalu</div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex h-2 w-2 rounded-full bg-primary"></div>
-              <div className="flex-1 space-y-1">
-                <p className="text-sm font-medium leading-none">
-                  Absensi kelas X-A telah diperbarui
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Oleh Budi Santoso, S.Pd
-                </p>
-              </div>
-              <div className="text-sm text-muted-foreground">4 jam lalu</div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex h-2 w-2 rounded-full bg-primary"></div>
-              <div className="flex-1 space-y-1">
-                <p className="text-sm font-medium leading-none">
-                  Nilai ulangan Matematika telah diinput
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Untuk kelas IX-B
-                </p>
-              </div>
-              <div className="text-sm text-muted-foreground">6 jam lalu</div>
-            </div>
-          </CardContent>
-        </Card>
+      <Tabs defaultValue="transaksi" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="transaksi">Transaksi Terbaru</TabsTrigger>
+          <TabsTrigger value="siswa">Siswa Terbaru</TabsTrigger>
+        </TabsList>
 
-        {/* Quick Actions */}
-        <Card className="col-span-3 rounded-2xl">
-          <CardHeader>
-            <CardTitle>Aksi Cepat</CardTitle>
-            <CardDescription>
-              Shortcut ke fitur yang sering digunakan
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="grid gap-3">
-              <Link
-                href="/master/siswa"
-                className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent transition-colors"
-              >
-                <div className="flex items-center space-x-2">
-                  <Users className="h-4 w-4" />
-                  <span className="text-sm font-medium">Data Siswa</span>
-                </div>
-                <span className="text-xs text-muted-foreground">Kelola</span>
-              </Link>
-              <Link
-                href="/absensi"
-                className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent transition-colors"
-              >
-                <div className="flex items-center space-x-2">
-                  <Clock className="h-4 w-4" />
-                  <span className="text-sm font-medium">Absensi</span>
-                </div>
-                <span className="text-xs text-muted-foreground">Lihat</span>
-              </Link>
-              <Link
-                href="/laporan"
-                className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent transition-colors"
-              >
-                <div className="flex items-center space-x-2">
-                  <TrendingUp className="h-4 w-4" />
-                  <span className="text-sm font-medium">Laporan</span>
-                </div>
-                <span className="text-xs text-muted-foreground">Buat</span>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </>
+        <TabsContent value="transaksi" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Transaksi Keuangan Terbaru</CardTitle>
+              <CardDescription>
+                Daftar transaksi pemasukan dan pengeluaran sekolah
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Tanggal</TableHead>
+                    <TableHead>Tipe</TableHead>
+                    <TableHead>Kategori</TableHead>
+                    <TableHead>Keterangan</TableHead>
+                    <TableHead className="text-right">Jumlah</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {adminDashboardData.newestTransactions.map((transaction) => (
+                    <TableRow key={transaction.id}>
+                      <TableCell>{formattedDate(transaction.date)}</TableCell>
+                      <TableCell>
+                        {GetBadgeTransactionType({
+                          type: transaction.type,
+                        })}
+                      </TableCell>
+                      <TableCell>{transaction.category}</TableCell>
+                      <TableCell>{transaction.description ?? "-"}</TableCell>
+                      <TableCell className="text-right font-medium">
+                        {formatCurrency(transaction.amount)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="siswa" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Siswa Terbaru</CardTitle>
+              <CardDescription>
+                Daftar siswa yang baru terdaftar
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>NISN</TableHead>
+                    <TableHead>Nama</TableHead>
+                    <TableHead>Kelas</TableHead>
+                    <TableHead>Status</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {adminDashboardData.newestStudents.map((student) => (
+                    <TableRow key={student.nisn}>
+                      <TableCell className="font-medium">
+                        {student.nisn}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="size-8">
+                            <AvatarImage
+                              src={student.user.image ?? undefined}
+                            />
+                            <AvatarFallback>
+                              {getAvatarFallback(student.nama)}
+                            </AvatarFallback>
+                          </Avatar>
+                          {student.nama}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {student.kelas ? student.kelas.namaKelas : "-"}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="default">{student.status}</Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }

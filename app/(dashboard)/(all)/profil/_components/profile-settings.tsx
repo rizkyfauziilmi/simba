@@ -7,39 +7,38 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { AlertCircle } from "lucide-react";
 import ProfileInfoForm from "./profile-info-form";
 import PasswordChangeForm from "./password-change-form";
 import SessionManagment from "./session-managment";
 import { authClient } from "@/lib/auth-client";
 import { formattedDate } from "@/lib/date";
+import { EmptyLoading } from "@/components/empty-loading";
+import { EmptyError } from "@/components/empty-error";
 
 export default function ProfileSettings() {
-  const {
-    data: session,
-    isPending, //loading state
-    error, //error object
-    refetch, //refetch the session
-  } = authClient.useSession();
+  const { data: session, isPending, error, refetch } = authClient.useSession();
 
   const handleProfileUpdate = () => {
     refetch();
   };
 
   if (isPending) {
-    return <div>Memuat data profil...</div>;
+    return (
+      <EmptyLoading
+        title="Memuat data profil"
+        description="Mohon tunggu sementara kami memuat data profil Anda."
+      />
+    );
   }
 
   if (error || !session) {
     return (
-      <Alert variant="destructive" className="mb-4">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          Terjadi kesalahan saat memuat data profil
-        </AlertDescription>
-      </Alert>
+      <EmptyError
+        title="Gagal memuat data profil"
+        description="Terjadi kesalahan saat memuat data profil Anda. Silakan coba lagi."
+        onAction={() => refetch()}
+      />
     );
   }
 

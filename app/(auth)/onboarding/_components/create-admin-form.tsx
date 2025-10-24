@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff, LoaderCircle, UserPen } from "lucide-react";
+import { Eye, EyeOff, UserPen } from "lucide-react";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { createAdmin } from "../_actions/actions";
 import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 const createAdminSchema = z
   .object({
@@ -196,11 +197,7 @@ export function CreateAdminForm({
                 )}
               />
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
-                  <LoaderCircle className="animate-spin" />
-                ) : (
-                  <UserPen />
-                )}
+                {isLoading ? <Spinner /> : <UserPen />}
                 {isLoading ? "Membuat Akun..." : "Buat Akun Admin"}
               </Button>
             </form>

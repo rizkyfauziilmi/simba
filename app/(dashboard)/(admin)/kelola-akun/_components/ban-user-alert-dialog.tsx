@@ -25,10 +25,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
 import { secondsToReadable } from "@/lib/date";
+import { Spinner } from "@/components/ui/spinner";
 
 interface BanUserAlertDialogProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  onStart?: () => void;
+  onComplete?: () => void;
   userId: string;
 }
 
@@ -60,6 +63,8 @@ export function BanUserAlertDialog({
   isOpen,
   setIsOpen,
   userId,
+  onStart,
+  onComplete,
 }: BanUserAlertDialogProps) {
   const [banReason, setBanReason] = useState("");
   const [banDurationSelect, setBanDurationSelect] = useState("Permanen");
@@ -154,12 +159,16 @@ export function BanUserAlertDialog({
           <AlertDialogCancel disabled={isSubmitting}>Batal</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
+              onStart?.();
               setIsSubmitting(true);
-              banUser().finally(() => setIsSubmitting(false));
+              banUser().finally(() => {
+                setIsSubmitting(false);
+                onComplete?.();
+              });
             }}
             disabled={isSubmitting}
           >
-            {isSubmitting && <Loader2Icon className="animate-spin" />}
+            {isSubmitting && <Spinner />}
             {isSubmitting ? "Memblokir..." : "Konfirmasi Pemblokiran"}
           </AlertDialogAction>
         </AlertDialogFooter>

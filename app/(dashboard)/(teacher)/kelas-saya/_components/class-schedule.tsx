@@ -12,6 +12,9 @@ import {
 } from "@/components/ui/table";
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { getTodayHariEnum } from "@/lib/date";
+import { cn } from "@/lib/utils";
+import { enumToReadable } from "@/lib/string";
 
 export function ClassSchedule() {
   const trpc = useTRPC();
@@ -51,24 +54,37 @@ export function ClassSchedule() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {schedules.map((schedule) => (
-                <TableRow key={schedule.id}>
-                  <TableCell className="font-medium">{schedule.hari}</TableCell>
-                  <TableCell>
-                    {schedule.jamMulai} - {schedule.jamSelesai}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{schedule.subject.nama}</Badge>
-                  </TableCell>
-                  {schedule.guruPengampu === null ? (
-                    <TableCell className="text-sm">-</TableCell>
-                  ) : (
-                    <TableCell className="text-sm">
-                      {schedule.guruPengampu.nama}
+              {schedules.map((schedule) => {
+                const todayEnum = getTodayHariEnum();
+
+                return (
+                  <TableRow
+                    key={schedule.id}
+                    className={cn(
+                      schedule.hari === todayEnum
+                        ? "bg-accent hover:bg-accent/80"
+                        : "",
+                    )}
+                  >
+                    <TableCell className="font-medium">
+                      {enumToReadable(schedule.hari)}
                     </TableCell>
-                  )}
-                </TableRow>
-              ))}
+                    <TableCell>
+                      {schedule.jamMulai} - {schedule.jamSelesai}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline">{schedule.subject.nama}</Badge>
+                    </TableCell>
+                    {schedule.guruPengampu === null ? (
+                      <TableCell className="text-sm">-</TableCell>
+                    ) : (
+                      <TableCell className="text-sm">
+                        {schedule.guruPengampu.nama}
+                      </TableCell>
+                    )}
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>

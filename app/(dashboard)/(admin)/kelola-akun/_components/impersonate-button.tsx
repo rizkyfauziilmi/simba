@@ -1,14 +1,20 @@
-import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
-import { Loader2Icon, VenetianMask } from "lucide-react";
+import { VenetianMask } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 interface ImpersonateButtonProps {
   userId: string;
+  onStart?: () => void;
+  onComplete?: () => void;
 }
 
-export function ImpersonateButton({ userId }: ImpersonateButtonProps) {
+export function ImpersonateButton({
+  userId,
+  onStart,
+  onComplete,
+}: ImpersonateButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   const impersonateUser = async (userId: string) => {
@@ -28,17 +34,20 @@ export function ImpersonateButton({ userId }: ImpersonateButtonProps) {
   };
 
   return (
-    <Button
-      type="button"
-      size="icon"
-      variant="outline"
+    <div
       onClick={() => {
+        onStart?.();
         setIsLoading(true);
-        impersonateUser(userId).finally(() => setIsLoading(false));
+        impersonateUser(userId).finally(() => {
+          setIsLoading(false);
+          onComplete?.();
+        });
       }}
-      disabled={isLoading}
+      aria-disabled={isLoading}
+      className="flex items-center gap-2 aria-disabled:opacity-50 cursor-pointer aria-disabled:cursor-not-allowed"
     >
-      {isLoading ? <Loader2Icon className="animate-spin" /> : <VenetianMask />}
-    </Button>
+      {isLoading ? <Spinner /> : <VenetianMask />}
+      {isLoading ? "Menyamar..." : "Menyamar sebagai pengguna"}
+    </div>
   );
 }

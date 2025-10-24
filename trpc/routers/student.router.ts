@@ -12,7 +12,15 @@ import { headers } from "next/headers";
 
 export const studentRouter = createTRPCRouter({
   getAllStudents: adminProcedure.query(async ({ ctx }) => {
-    const students = await ctx.db.student.findMany();
+    const students = await ctx.db.student.findMany({
+      include: {
+        user: {
+          select: {
+            image: true,
+          },
+        },
+      },
+    });
     return students;
   }),
   getAllStudentsWithNoClass: adminProcedure
@@ -52,6 +60,20 @@ export const studentRouter = createTRPCRouter({
       const student = await ctx.db.student.findUnique({
         where: {
           id: studentId,
+        },
+        include: {
+          kelas: {
+            select: {
+              namaKelas: true,
+              tingkat: true,
+              ruang: true,
+              waliKelas: {
+                select: {
+                  nama: true,
+                },
+              },
+            },
+          },
         },
       });
 

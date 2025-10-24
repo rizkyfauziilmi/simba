@@ -10,14 +10,16 @@ import {
   AlertDialogTitle,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import { Loader2Icon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
+import { Spinner } from "@/components/ui/spinner";
 
 interface RevokeAllUserSessionAlertDialogProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  onStart?: () => void;
+  onComplete?: () => void;
   userId: string;
 }
 
@@ -25,6 +27,8 @@ export function RevokeAllUserSessionAlertDialog({
   isOpen,
   setIsOpen,
   userId,
+  onStart,
+  onComplete,
 }: RevokeAllUserSessionAlertDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -61,12 +65,16 @@ export function RevokeAllUserSessionAlertDialog({
           <AlertDialogCancel disabled={isSubmitting}>Batal</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
+              onStart?.();
               setIsSubmitting(true);
-              revokeAllSession().finally(() => setIsSubmitting(false));
+              revokeAllSession().finally(() => {
+                setIsSubmitting(false);
+                onComplete?.();
+              });
             }}
             disabled={isSubmitting}
           >
-            {isSubmitting && <Loader2Icon className="animate-spin" />}
+            {isSubmitting && <Spinner />}
             {isSubmitting ? "Memproses..." : "Cabut Semua Sesi"}
           </AlertDialogAction>
         </AlertDialogFooter>

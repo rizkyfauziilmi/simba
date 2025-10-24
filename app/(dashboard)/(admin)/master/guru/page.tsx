@@ -4,6 +4,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Suspense } from "react";
 import { MasterTeacherTable } from "./_components/master-teacher-table";
 import { TableSkeleton } from "@/components/skeleton/table-skeleton";
+import { EmptyError } from "@/components/empty-error";
 
 export default async function MasterGuruPage() {
   prefetch(trpc.teacher.getAllTeachers.queryOptions());
@@ -12,7 +13,14 @@ export default async function MasterGuruPage() {
     <div className="space-y-4">
       <MasterTeacherHeader />
       <HydrateClient>
-        <ErrorBoundary fallback={<div>Something went wrong</div>}>
+        <ErrorBoundary
+          fallback={
+            <EmptyError
+              title="Gagal memuat data guru"
+              description="Terjadi kesalahan saat memuat data guru. Silakan coba lagi."
+            />
+          }
+        >
           <Suspense fallback={<TableSkeleton />}>
             <MasterTeacherTable />
           </Suspense>

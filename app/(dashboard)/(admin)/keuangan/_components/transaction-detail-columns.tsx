@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Loader2, MoreHorizontal, Trash } from "lucide-react";
+import { MoreHorizontal, Trash } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -16,9 +16,10 @@ import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { useState } from "react";
 import { formatIDR } from "@/lib/string";
 import { TransactionFinanceRecord } from "@/types/database-return.type";
-import { GetTransactionTypeBadge } from "./get-transaction-type-badge";
 import { formattedDate } from "@/lib/date";
 import { DeleteTransactionAlertDialog } from "./delete-transaction-alert-dialog";
+import { GetBadgeTransactionType } from "@/components/get-badge-transaction-type";
+import { Spinner } from "@/components/ui/spinner";
 
 export const transactionDetailColumns: ColumnDef<TransactionFinanceRecord>[] = [
   {
@@ -34,7 +35,7 @@ export const transactionDetailColumns: ColumnDef<TransactionFinanceRecord>[] = [
       <DataTableColumnHeader column={column} title="Tipe" />
     ),
     cell: ({ row }) =>
-      GetTransactionTypeBadge({
+      GetBadgeTransactionType({
         type: row.getValue("type"),
       }),
   },
@@ -80,7 +81,7 @@ export const transactionDetailColumns: ColumnDef<TransactionFinanceRecord>[] = [
               >
                 <span className="sr-only">Open menu</span>
                 {isLoading ? (
-                  <Loader2 className="animate-spin" />
+                  <Spinner />
                 ) : (
                   <MoreHorizontal className="h-4 w-4" />
                 )}

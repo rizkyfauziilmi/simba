@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import {
   BookUser,
   GraduationCap,
-  Loader2,
   MoreHorizontal,
   Trash,
   UserPen,
@@ -28,6 +27,7 @@ import { GetStudentGradeBadge } from "./get-student-grade-badge";
 import { GetClassStatusBadge } from "./get-class-status-badge";
 import { DeleteClassAlertDialog } from "./delete-class-alert-dialog";
 import { GraduateClassAlertDialog } from "./graduate-class-alert-dialog";
+import { Spinner } from "@/components/ui/spinner";
 
 export const classMasterColumns: ColumnDef<ClassWithWaliAndCount>[] = [
   {
@@ -137,7 +137,7 @@ export const classMasterColumns: ColumnDef<ClassWithWaliAndCount>[] = [
               >
                 <span className="sr-only">Open menu</span>
                 {isLoading ? (
-                  <Loader2 className="animate-spin" />
+                  <Spinner />
                 ) : (
                   <MoreHorizontal className="h-4 w-4" />
                 )}

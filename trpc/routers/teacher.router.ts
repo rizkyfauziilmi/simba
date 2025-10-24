@@ -12,7 +12,15 @@ import { headers } from "next/headers";
 
 export const teacherRouter = createTRPCRouter({
   getAllTeachers: adminProcedure.query(async ({ ctx }) => {
-    const teachers = await ctx.db.teacher.findMany();
+    const teachers = await ctx.db.teacher.findMany({
+      include: {
+        user: {
+          select: {
+            image: true,
+          },
+        },
+      },
+    });
     return teachers;
   }),
   getActiveTeachers: adminProcedure.query(async ({ ctx }) => {
@@ -66,6 +74,34 @@ export const teacherRouter = createTRPCRouter({
       const teacher = await ctx.db.teacher.findUnique({
         where: {
           id: teacherId,
+        },
+        include: {
+          waliKelas: {
+            select: {
+              namaKelas: true,
+              tingkat: true,
+              ruang: true,
+            },
+          },
+          ClassSchedule: {
+            select: {
+              hari: true,
+              jamMulai: true,
+              jamSelesai: true,
+              subject: {
+                select: {
+                  nama: true,
+                },
+              },
+              kelas: {
+                select: {
+                  namaKelas: true,
+                  ruang: true,
+                },
+              },
+            },
+            orderBy: [{ hari: "asc" }, { jamMulai: "asc" }],
+          },
         },
       });
 

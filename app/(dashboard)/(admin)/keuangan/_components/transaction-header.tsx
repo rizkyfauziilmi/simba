@@ -1,6 +1,6 @@
 "use client";
 
-import { DownloadIcon, Loader2 } from "lucide-react";
+import { DownloadIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -64,6 +64,7 @@ import CurrencyInputIDR from "@/components/currency-input-idr";
 import { useTRPC } from "@/trpc/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 export function TransactionHeader() {
   const [open, setOpen] = useState(false);
@@ -328,7 +329,7 @@ export function TransactionHeader() {
                     </Button>
                   </DialogClose>
                   <Button type="submit" disabled={isLoading}>
-                    {isLoading && <Loader2 className="animate-spin" />}
+                    {isLoading && <Spinner />}
                     {isLoading ? "Menyimpan..." : "Simpan Transaksi"}
                   </Button>
                 </DialogFooter>

@@ -32,12 +32,8 @@ export const financeRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const { startDate, endDate, categories } = input;
 
-      const start = startDate ?? startOfLastYear;
-      const end = endDate ?? now;
-
-      // set waktu 00:00 untuk start dan 23:59:59 untuk end
-      start.setHours(0, 0, 0, 0);
-      end.setHours(23, 59, 59, 999);
+      const start = startOfDay(startDate ?? startOfLastYear);
+      const end = endOfDay(endDate ?? now);
 
       let balance = await ctx.db.schoolBalance.findFirst({
         where: { id: 1 },

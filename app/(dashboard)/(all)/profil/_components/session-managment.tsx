@@ -37,12 +37,15 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Session } from "better-auth";
 import { toast } from "sonner";
+import { EmptyLoading } from "@/components/empty-loading";
+import { EmptyError } from "@/components/empty-error";
 
 export default function SessionManagment() {
   const {
     data: sessionsResponse,
     isPending,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["sessions"],
     queryFn: async () => {
@@ -52,7 +55,8 @@ export default function SessionManagment() {
   const [selectedSession, setSelectedSession] = useState<Session | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [showRevokeAllDialog, setShowRevokeAllDialog] = useState(false);
-  const { data: session } = authClient.useSession();
+  const { data: session, refetch: refetchCurrentSession } =
+    authClient.useSession();
   const queryClient = useQueryClient();
 
   const handleRevokeSession = async (session: Session) => {
@@ -127,8 +131,6 @@ export default function SessionManagment() {
   const getBrowserIcon = (browser: string) => {
     const b = browser.toLowerCase();
 
-    console.log("Browser detected:", b);
-
     // 🌐 Chrome
     if (b.includes("chrome")) {
       return <Chrome className="size-8" />;
@@ -158,12 +160,34 @@ export default function SessionManagment() {
     return <HelpCircle className="w-5 h-5 text-gray-400" />;
   };
 
-  if (isPending) return "Loading...";
+  if (isPending)
+    return (
+      <EmptyLoading
+        title="Memuat sesi aktif"
+        description="Mohon tunggu sementara kami memuat sesi aktif Anda."
+      />
+    );
 
-  if (error) return "An error has occurred: " + error.message;
+  if (error)
+    return (
+      <EmptyError
+        title="Gagal memuat sesi aktif"
+        description="Terjadi kesalahan saat memuat sesi aktif Anda. Silakan coba lagi."
+        onAction={() => refetch()}
+      />
+    );
 
   if (!sessionsResponse || !sessionsResponse.data || !session)
-    return "No sessions found.";
+    return (
+      <EmptyError
+        title="Gagal memuat sesi aktif"
+        description="Terjadi kesalahan saat memuat sesi aktif Anda. Silakan coba lagi."
+        onAction={() => {
+          refetch();
+          refetchCurrentSession();
+        }}
+      />
+    );
 
   const { data: sessions } = sessionsResponse;
   const { session: currentSession } = session;

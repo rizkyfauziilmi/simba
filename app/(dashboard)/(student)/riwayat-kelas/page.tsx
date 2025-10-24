@@ -9,6 +9,8 @@ import { StudentHistoryTable } from "./_components/student-history-table";
 import { HydrateClient, prefetch, trpc } from "@/trpc/server";
 import { ErrorBoundary } from "react-error-boundary";
 import { Suspense } from "react";
+import { EmptyLoading } from "@/components/empty-loading";
+import { EmptyError } from "@/components/empty-error";
 
 export default async function HistoryKelasPage() {
   prefetch(trpc.class.getMyClassHistories.queryOptions());
@@ -24,9 +26,21 @@ export default async function HistoryKelasPage() {
         </CardHeader>
         <CardContent>
           <ErrorBoundary
-            fallback={<div>Terjadi kesalahan saat memuat data.</div>}
+            fallback={
+              <EmptyError
+                title="Gagal memuat riwayat kelas"
+                description="Terjadi kesalahan saat memuat riwayat kelas. Silakan coba lagi."
+              />
+            }
           >
-            <Suspense fallback={<div>Memuat riwayat kelas...</div>}>
+            <Suspense
+              fallback={
+                <EmptyLoading
+                  title="Memuat riwayat kelas"
+                  description="Mohon tunggu sementara kami memuat riwayat kelas."
+                />
+              }
+            >
               <StudentHistoryTable />
             </Suspense>
           </ErrorBoundary>

@@ -14,6 +14,7 @@ import {
   differenceInDays,
   formatDuration,
   intervalToDuration,
+  differenceInYears,
 } from "date-fns";
 import { id } from "date-fns/locale";
 import { Hari } from "./generated/prisma";
@@ -139,3 +140,8 @@ export function secondsToReadable(seconds: number): string {
     locale: id,
   });
 }
+
+export const calculateAge = (birthDate: Date) => {
+  const today = new Date();
+  return differenceInYears(today, birthDate);
+};

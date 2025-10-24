@@ -88,8 +88,29 @@ export const classRouter = createTRPCRouter({
           waliKelas: {
             select: {
               nama: true,
+              nip: true,
+              noTelepon: true,
               id: true,
             },
+          },
+          schedules: {
+            select: {
+              hari: true,
+              jamMulai: true,
+              jamSelesai: true,
+              subject: {
+                select: {
+                  nama: true,
+                  kode: true,
+                },
+              },
+              guruPengampu: {
+                select: {
+                  nama: true,
+                },
+              },
+            },
+            orderBy: [{ hari: "asc" }, { jamMulai: "asc" }],
           },
           students: {
             select: {
@@ -97,6 +118,7 @@ export const classRouter = createTRPCRouter({
               nama: true,
               nisn: true,
               status: true,
+              jenisKelamin: true,
             },
             orderBy: {
               nama: "asc",
@@ -136,6 +158,11 @@ export const classRouter = createTRPCRouter({
             alamat: true,
             noTelepon: true,
             status: true,
+            user: {
+              select: {
+                image: true,
+              },
+            },
           },
         },
         schedules: {

@@ -67,14 +67,14 @@ export const routeData = {
     },
     {
       title: "Kelas Saya (Wali Kelas)",
-      url: "/kelas-wali",
+      url: "/kelas-saya",
       icon: GraduationCap,
       role: ["teacher"],
       items: [],
     },
     {
-      title: "History Kelas",
-      url: "/history-kelas",
+      title: "Riwayat Kelas",
+      url: "/riwayat-kelas",
       icon: History,
       role: ["student"],
       items: [],
@@ -97,7 +97,7 @@ export const routeData = {
     },
     {
       title: "Profil / Akun",
-      url: "/akun",
+      url: "/profil",
       icon: CircleUser,
       role: ["admin", "teacher", "student"],
       items: [],

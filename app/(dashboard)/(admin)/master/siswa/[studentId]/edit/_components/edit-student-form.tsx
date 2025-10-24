@@ -33,7 +33,7 @@ import {
 } from "@/components/ui/select";
 import { enumToReadable } from "@/lib/string";
 import { Button } from "@/components/ui/button";
-import { LoaderIcon } from "lucide-react";
+
 import {
   Popover,
   PopoverContent,
@@ -48,6 +48,7 @@ import { cn } from "@/lib/utils";
 import { PhoneInput } from "@/components/phone-input";
 import { NoUserError } from "@/components/no-user-error";
 import { FormInputSkeleton } from "@/components/skeleton/form-input-skeleton";
+import { Spinner } from "@/components/ui/spinner";
 
 export function EditStudentForm() {
   const params = useParams<{ studentId: string }>();
@@ -373,7 +374,7 @@ export function EditStudentForm() {
               Kembali
             </Button>
             <Button type="submit" disabled={isLoading || isPending}>
-              {isLoading && <LoaderIcon className="animate-spin" />}
+              {isLoading && <Spinner />}
               {isLoading ? "Memperbarui..." : "Perbarui"}
             </Button>
           </div>

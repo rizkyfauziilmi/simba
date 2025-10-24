@@ -9,6 +9,7 @@ import { useTRPC } from "@/trpc/client";
 import { Hari, StudentGrade } from "@/lib/generated/prisma";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { enumToReadable } from "@/lib/string";
+import { getTodayHariEnum } from "@/lib/date";
 
 const hariOrder: Record<Hari, number> = {
   SENIN: 1,
@@ -29,7 +30,9 @@ export function TeacherSchedules() {
   const [selectedGrade, setSelectedGrade] = useState<StudentGrade | "all">(
     "all",
   );
-  const [selectedDay, setSelectedDay] = useState<Hari | "all">("all");
+  const [selectedDay, setSelectedDay] = useState<Hari | "all">(
+    getTodayHariEnum() ?? "all",
+  );
   const trpc = useTRPC();
   const { data: schedules } = useSuspenseQuery(
     trpc.subject.getTeacherSchedules.queryOptions(),
@@ -50,14 +53,6 @@ export function TeacherSchedules() {
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">
-          Jadwal Mengajar
-        </h1>
-        <p className="text-muted-foreground">lihat jadwal mengajar Anda</p>
-      </div>
-
       {/* Filters */}
       <Card className="mb-6 border-border">
         <CardHeader>
@@ -112,6 +107,7 @@ export function TeacherSchedules() {
                     className="text-sm"
                   >
                     {enumToReadable(day)}
+                    {getTodayHariEnum() === day ? " (Hari ini)" : ""}
                   </Button>
                 ))}
               </div>

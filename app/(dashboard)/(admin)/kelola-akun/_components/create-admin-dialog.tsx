@@ -13,11 +13,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Loader2Icon, ShieldUser } from "lucide-react";
+import { Eye, EyeOff, ShieldUser } from "lucide-react";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { Spinner } from "@/components/ui/spinner";
 
 export function CreateAdminDialog() {
   const [isOpen, setIsOpen] = useState(false);
@@ -223,7 +224,7 @@ export function CreateAdminDialog() {
             onClick={createAdmin}
             disabled={!email || !name || passwordStrength < 4 || isSubmitting}
           >
-            {isSubmitting && <Loader2Icon className="animate-spin" />}
+            {isSubmitting && <Spinner />}
             {isSubmitting ? "Membuat..." : "Buat"}
           </Button>
         </DialogFooter>

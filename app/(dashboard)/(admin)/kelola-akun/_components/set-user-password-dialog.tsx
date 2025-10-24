@@ -12,14 +12,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, Loader2Icon } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 interface SetUserPasswordDialogProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  onStart?: () => void;
+  onComplete?: () => void;
   userId: string;
 }
 
@@ -27,6 +30,8 @@ export function SetUserPasswordDialog({
   userId,
   isOpen,
   setIsOpen,
+  onStart,
+  onComplete,
 }: SetUserPasswordDialogProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
@@ -102,7 +107,9 @@ export function SetUserPasswordDialog({
           <div className="relative">
             <Input
               id="newPassword"
+              name="newPasswordField"
               type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -189,12 +196,16 @@ export function SetUserPasswordDialog({
           <Button
             type="button"
             onClick={() => {
+              onStart?.();
               setIsSubmitting(true);
-              changePassword().finally(() => setIsSubmitting(false));
+              changePassword().finally(() => {
+                setIsSubmitting(false);
+                onComplete?.();
+              });
             }}
             disabled={passwordStrength < 4 || isSubmitting}
           >
-            {isSubmitting && <Loader2Icon className="animate-spin" />}
+            {isSubmitting && <Spinner />}
             {isSubmitting ? "Menyimpan..." : "Simpan Kata Sandi"}
           </Button>
         </DialogFooter>

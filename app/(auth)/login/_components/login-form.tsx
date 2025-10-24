@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Eye,
-  EyeOff,
-  GalleryVerticalEnd,
-  LoaderCircle,
-  LogIn,
-} from "lucide-react";
+import { Eye, EyeOff, LogIn } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -27,6 +21,9 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import logo from "@/public/logo.png";
+import Image from "next/image";
+import { Spinner } from "@/components/ui/spinner";
 
 const loginSchema = z.object({
   usernameOrEmail: z.string().min(1, "Nama Pengguna atau Email harus diisi"),
@@ -98,14 +95,11 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
         <Link href="/" className="flex flex-col items-center gap-2 font-medium">
-          <div className="flex size-8 items-center justify-center rounded-md">
-            <GalleryVerticalEnd className="size-6" />
-          </div>
+          <Image src={logo} alt="SIMBA Logo" width={48} height={48} />
           <span className="sr-only">Bustanul Arifin</span>
         </Link>
         <h1 className="text-xl font-bold">
-          Selamat datang di <br />
-          SIMBA.
+          Selamat datang di <br /> SIMBA
         </h1>
       </div>
       <Form {...form}>
@@ -152,7 +146,7 @@ export function LoginForm({
             )}
           />
           <Button type="submit" className="w-full" disabled={isLoading}>
-            {isLoading ? <LoaderCircle className="animate-spin" /> : <LogIn />}
+            {isLoading ? <Spinner /> : <LogIn />}
             {isLoading ? "Memproses..." : "Masuk"}
           </Button>
         </form>

@@ -1,187 +1,314 @@
+"use client";
+
 import {
   Card,
-  CardHeader,
-  CardTitle,
   CardContent,
   CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
-import { Calendar, Award, Clock, FileText, Bell } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  Calendar,
+  Clock,
+  GraduationCap,
+  User,
+  Users,
+  History,
+  Settings,
+} from "lucide-react";
+import { useTRPC } from "@/trpc/client";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { EmptyError } from "@/components/empty-error";
+import { getAvatarFallback } from "@/lib/string";
+import { calculateAge, formattedDate } from "@/lib/date";
+import Link from "next/link";
 
 export function StudentDashboard() {
+  const trpc = useTRPC();
+  const { data: studentDashboardData, refetch } = useSuspenseQuery(
+    trpc.roleData.getStudentDashboardData.queryOptions(),
+  );
+
+  const { studentInfo, jadwalPelajaran, kelasInfo, temanSekelas } =
+    studentDashboardData;
+
   return (
-    <>
-      {/* Student Dashboard Cards */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Jadwal Hari Ini
-            </CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">7</div>
-            <p className="text-xs text-muted-foreground">Jam pelajaran</p>
-          </CardContent>
-        </Card>
-        <Card className="rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Nilai Rata-rata
-            </CardTitle>
-            <Award className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">85.4</div>
-            <p className="text-xs text-muted-foreground">
-              +2.1 dari semester lalu
-            </p>
-          </CardContent>
-        </Card>
-        <Card className="rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Kehadiran</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">96%</div>
-            <p className="text-xs text-muted-foreground">Bulan ini</p>
-          </CardContent>
-        </Card>
-        <Card className="rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tugas Selesai</CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12/15</div>
-            <p className="text-xs text-muted-foreground">3 tugas tertunda</p>
-          </CardContent>
-        </Card>
+    <div className="space-y-8">
+      <div className="mb-8 space-y-2">
+        <h1 className="text-4xl font-bold">Dashboard Siswa</h1>
+        <p className="text-muted-foreground">
+          Selamat datang, {studentInfo?.nama}!
+        </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Today's Schedule */}
-        <Card className="rounded-2xl">
-          <CardHeader>
-            <CardTitle>Jadwal Pelajaran Hari Ini</CardTitle>
-            <CardDescription>
-              Rabu, 18 Desember 2024 - Kelas XI IPA 2
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between p-3 rounded-lg border">
-              <div>
-                <p className="font-medium">Matematika</p>
-                <p className="text-sm text-muted-foreground">
-                  07:30 - 09:00 • Pak Budi
-                </p>
-              </div>
-              <span className="text-xs bg-green-500 text-white px-2 py-1 rounded">
-                Selesai
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border-l-4 border-l-primary">
-              <div>
-                <p className="font-medium">Fisika</p>
-                <p className="text-sm text-muted-foreground">
-                  09:15 - 10:45 • Bu Sari
-                </p>
-              </div>
-              <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
-                Sedang Berlangsung
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg border">
-              <div>
-                <p className="font-medium">Kimia</p>
-                <p className="text-sm text-muted-foreground">
-                  11:00 - 12:30 • Pak Andi
-                </p>
-              </div>
-              <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                Selanjutnya
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg border">
-              <div>
-                <p className="font-medium">Bahasa Indonesia</p>
-                <p className="text-sm text-muted-foreground">
-                  13:30 - 15:00 • Bu Maya
-                </p>
-              </div>
-              <span className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                Nanti
-              </span>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Recent Grades & Announcements */}
-        <Card className="rounded-2xl">
-          <CardHeader>
-            <CardTitle>Nilai Terbaru</CardTitle>
-            <CardDescription>Update nilai dan pengumuman</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-green-500/5 border-l-4 border-l-green-500">
-              <div>
-                <p className="font-medium">Matematika - Ulangan Harian</p>
-                <p className="text-sm text-muted-foreground">
-                  16 Desember 2024
-                </p>
-              </div>
-              <span className="text-lg font-bold text-green-600">88</span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-blue-500/5 border-l-4 border-l-blue-500">
-              <div>
-                <p className="font-medium">Fisika - Praktikum</p>
-                <p className="text-sm text-muted-foreground">
-                  14 Desember 2024
-                </p>
-              </div>
-              <span className="text-lg font-bold text-blue-600">92</span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-orange-500/5 border-l-4 border-l-orange-500">
-              <div>
-                <p className="font-medium">Kimia - Tugas Kelompok</p>
-                <p className="text-sm text-muted-foreground">
-                  12 Desember 2024
-                </p>
-              </div>
-              <span className="text-lg font-bold text-orange-600">85</span>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Announcements */}
-      <Card className="rounded-2xl">
+      <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Bell className="h-5 w-5" />
-            Pengumuman Penting
-          </CardTitle>
+          <CardTitle>Aksi Cepat</CardTitle>
+          <CardDescription>Akses cepat ke fitur utama</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            <div className="rounded-lg border-l-4 border-l-red-500 bg-red-500/5 p-4">
-              <h4 className="font-medium">Ujian Tengah Semester</h4>
-              <p className="text-sm text-muted-foreground mt-1">
-                UTS akan dilaksanakan mulai tanggal 20 Desember 2024. Pastikan
-                untuk belajar dan mempersiapkan diri dengan baik.
-              </p>
-            </div>
-            <div className="rounded-lg border-l-4 border-l-blue-500 bg-blue-500/5 p-4">
-              <h4 className="font-medium">Libur Semester</h4>
-              <p className="text-sm text-muted-foreground mt-1">
-                Libur semester akan dimulai pada tanggal 25 Desember 2024 hingga
-                8 Januari 2025.
-              </p>
-            </div>
+          <div className="grid gap-3 md:grid-cols-4">
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/riwayat-kelas">
+                <History className="h-6 w-6" />
+                <span>Riwayat Kelas</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/jadwal-pelajaran">
+                <Calendar className="h-6 w-6" />
+                <span>Jadwal Pelajaran</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/pengaturan">
+                <Settings className="h-6 w-6" />
+                <span>Pengaturan</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="h-auto flex-col gap-2 p-4"
+              asChild
+            >
+              <Link href="/profil">
+                <User className="h-6 w-6" />
+                <span>Profil</span>
+              </Link>
+            </Button>
           </div>
         </CardContent>
       </Card>
-    </>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {studentInfo ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Informasi Pribadi</CardTitle>
+              <CardDescription>Data diri siswa</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <Avatar className="size-16">
+                  <AvatarImage src={studentInfo.user.image ?? undefined} />
+                  <AvatarFallback>
+                    {getAvatarFallback(studentInfo.nama)}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="text-lg font-semibold">{studentInfo.nama}</p>
+                  <p className="text-sm text-muted-foreground">
+                    NISN: {studentInfo.nisn}
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Tanggal Lahir</span>
+                  <span className="font-medium">
+                    {formattedDate(studentInfo.tanggalLahir)} (
+                    {calculateAge(studentInfo.tanggalLahir)} tahun)
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Jenis Kelamin</span>
+                  <span className="font-medium">
+                    {studentInfo.jenisKelamin === "LAKI_LAKI"
+                      ? "Laki-laki"
+                      : "Perempuan"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">No. Telepon</span>
+                  <span className="font-medium">{studentInfo.noTelepon}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Status</span>
+                  <Badge variant="default">{studentInfo.status}</Badge>
+                </div>
+              </div>
+              <div className="pt-2 border-t">
+                <p className="text-sm text-muted-foreground">Alamat</p>
+                <p className="text-sm font-medium">{studentInfo.alamat}</p>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <EmptyError
+            title="Data siswa tidak ditemukan."
+            description="Tidak dapat memuat informasi siswa. Silakan coba lagi."
+            onAction={() => refetch()}
+          />
+        )}
+
+        {kelasInfo ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Informasi Kelas</CardTitle>
+              <CardDescription>Kelas dan wali kelas</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <GraduationCap className="h-5 w-5 text-muted-foreground" />
+                    <p className="text-2xl font-bold">{kelasInfo.namaKelas}</p>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {kelasInfo.tingkat}
+                  </p>
+                </div>
+                <Badge variant="outline">{kelasInfo.ruang}</Badge>
+              </div>
+              {kelasInfo.waliKelas ? (
+                <div className="space-y-2 p-4 bg-muted rounded-lg">
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    <p className="text-sm font-medium">Wali Kelas</p>
+                  </div>
+                  <p className="text-lg font-semibold">
+                    {kelasInfo.waliKelas.nama}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    No. Telepon: {kelasInfo.waliKelas.noTelepon}
+                  </p>
+                </div>
+              ) : (
+                <EmptyError
+                  title="Kelas belum memiliki wali kelas."
+                  description="Silakan hubungi administrator untuk informasi lebih lanjut."
+                />
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          <EmptyError
+            title="Anda belum tergabung di kelas manapun."
+            description="Silakan hubungi wali kelas atau administrator untuk informasi lebih lanjut."
+            onAction={() => refetch()}
+          />
+        )}
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Jadwal Pelajaran
+          </CardTitle>
+          <CardDescription>Jadwal pelajaran minggu ini</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Hari</TableHead>
+                <TableHead>Waktu</TableHead>
+                <TableHead>Mata Pelajaran</TableHead>
+                <TableHead>Guru Pengajar</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {jadwalPelajaran.map((jadwal, index) => (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{jadwal.hari}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-sm">
+                        {jadwal.jamMulai} - {jadwal.jamSelesai}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{jadwal.mataPelajaran}</Badge>
+                  </TableCell>
+                  <TableCell className="text-sm">
+                    {jadwal.guruPengampu ? jadwal.guruPengampu.nama : "-"}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      {kelasInfo ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Teman Sekelas
+            </CardTitle>
+            <CardDescription>
+              Daftar teman sekelas di {kelasInfo.namaKelas}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>NISN</TableHead>
+                  <TableHead>Nama</TableHead>
+                  <TableHead>Jenis Kelamin</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {temanSekelas.map((teman) => (
+                  <TableRow key={teman.nisn}>
+                    <TableCell className="font-medium">{teman.nisn}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar className="size-8">
+                          <AvatarImage src={teman.user.image ?? undefined} />
+                          <AvatarFallback>
+                            {getAvatarFallback(teman.nama)}
+                          </AvatarFallback>
+                        </Avatar>
+                        {teman.nama}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {teman.jenisKelamin === "LAKI_LAKI"
+                        ? "Laki-laki"
+                        : "Perempuan"}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      ) : (
+        <EmptyError
+          title="Anda belum tergabung di kelas manapun."
+          description="Silakan hubungi wali kelas atau administrator untuk informasi lebih lanjut."
+          onAction={() => refetch()}
+        />
+      )}
+    </div>
   );
 }

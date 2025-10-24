@@ -4,6 +4,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Suspense } from "react";
 import { MasterClassTable } from "./_components/master-class-table";
 import { TableSkeleton } from "@/components/skeleton/table-skeleton";
+import { EmptyError } from "@/components/empty-error";
 
 export default async function MasterKelasPage() {
   prefetch(trpc.class.getAllClasses.queryOptions());
@@ -12,7 +13,14 @@ export default async function MasterKelasPage() {
     <div className="space-y-4">
       <MasterClassHeader />
       <HydrateClient>
-        <ErrorBoundary fallback={<div>Something went wrong</div>}>
+        <ErrorBoundary
+          fallback={
+            <EmptyError
+              title="Gagal memuat data kelas"
+              description="Terjadi kesalahan saat memuat data kelas. Silakan coba lagi."
+            />
+          }
+        >
           <Suspense fallback={<TableSkeleton />}>
             <MasterClassTable />
           </Suspense>

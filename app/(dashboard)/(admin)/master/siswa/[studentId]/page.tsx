@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { StudentDetail } from "./_components/student-detail";
+import { EmptyError } from "@/components/empty-error";
+import { EmptyLoading } from "@/components/empty-loading";
 
 export default async function SiswaDetailPage({
   params,
@@ -21,8 +23,22 @@ export default async function SiswaDetailPage({
 
   return (
     <HydrateClient>
-      <ErrorBoundary fallback={<div>Something went wrong</div>}>
-        <Suspense fallback={<div>Loading...</div>}>
+      <ErrorBoundary
+        fallback={
+          <EmptyError
+            title="Gagal memuat data siswa"
+            description="Terjadi kesalahan saat memuat data siswa. Silakan coba lagi."
+          />
+        }
+      >
+        <Suspense
+          fallback={
+            <EmptyLoading
+              title="Memuat data siswa"
+              description="Mohon tunggu sementara kami memuat data siswa."
+            />
+          }
+        >
           <StudentDetail />
         </Suspense>
       </ErrorBoundary>

@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LoaderIcon, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +24,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { Spinner } from "@/components/ui/spinner";
 
 interface ProfileInfoFormProps {
   user: Pick<Session, "user">["user"];
@@ -33,9 +34,21 @@ interface ProfileInfoFormProps {
 const updateProfileInfoSchema = z.object({
   image: z
     .url({ message: "Harus berupa URL gambar yang valid" })
-    .refine((val) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(val), {
-      message: "URL harus berakhiran dengan ekstensi gambar (.jpg, .png, dll)",
-    })
+    // .refine((val) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(val), {
+    //   message: "URL harus berakhiran dengan ekstensi gambar (.jpg, .png, dll)",
+    // })
+    .refine(
+      async (url) => {
+        try {
+          const res = await fetch(url, { method: "HEAD" });
+          const contentType = res.headers.get("content-type");
+          return contentType?.startsWith("image/");
+        } catch {
+          return false;
+        }
+      },
+      { message: "URL harus mengarah ke sumber gambar yang valid" },
+    )
     .optional(),
   name: z.string().min(2, "Nama harus terdiri dari minimal 2 karakter"),
   displayUsername: z
@@ -235,9 +248,7 @@ export default function ProfileInfoForm({
                 Refresh
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading && (
-                  <LoaderIcon className="animate-spin mr-2 h-4 w-4" />
-                )}
+                {isLoading && <Spinner />}
                 {isLoading ? "Menyimpan..." : "Simpan Perubahan"}
               </Button>
             </div>

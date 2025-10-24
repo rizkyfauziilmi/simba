@@ -65,6 +65,7 @@ async function createAdmin(amount: number) {
 
     const response = await auth.api.signUpEmail({
       body: {
+        image: faker.image.avatar(),
         name: `Admin ${count}`,
         email: `admin${count}@example.com`,
         password: "admin@1234",
@@ -149,6 +150,7 @@ async function createTeachers(amount: number, classIds: string[]) {
 
     const response = await auth.api.signUpEmail({
       body: {
+        image: faker.image.avatar(),
         name: `Teacher ${count}`,
         email: `teacher${count}@example.com`,
         password: "teacher@1234",
@@ -231,6 +233,7 @@ async function createStudents(amount: number, classIds: string[]) {
 
     const response = await auth.api.signUpEmail({
       body: {
+        image: faker.image.avatar(),
         name: `Student ${count}`,
         email: `student${count}@example.com`,
         password: "student@1234",

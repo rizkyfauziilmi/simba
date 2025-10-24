@@ -10,15 +10,17 @@ import {
   AlertDialogTitle,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
-import { Loader2Icon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth-client";
+import { Spinner } from "@/components/ui/spinner";
 
 interface DeleteUserAlertDialogProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
+  onStart?: () => void;
+  onComplete?: () => void;
   userId: string;
 }
 
@@ -26,6 +28,8 @@ export function DeleteUserAlertDialog({
   isOpen,
   setIsOpen,
   userId,
+  onStart,
+  onComplete,
 }: DeleteUserAlertDialogProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const queryClient = useQueryClient();
@@ -64,12 +68,16 @@ export function DeleteUserAlertDialog({
           <AlertDialogCancel disabled={isSubmitting}>Batal</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
+              onStart?.();
               setIsSubmitting(true);
-              deleteUser().finally(() => setIsSubmitting(false));
+              deleteUser().finally(() => {
+                setIsSubmitting(false);
+                onComplete?.();
+              });
             }}
             disabled={isSubmitting}
           >
-            {isSubmitting && <Loader2Icon className="animate-spin" />}
+            {isSubmitting && <Spinner />}
             {isSubmitting ? "Menghapus..." : "Hapus Pengguna"}
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -29,7 +29,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, LoaderIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { Gender, TeacherStatus } from "@/lib/generated/prisma";
@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { PhoneInput } from "@/components/phone-input";
 import { createTeacherSchema } from "@/trpc/schemas/teacher.schema";
+import { Spinner } from "@/components/ui/spinner";
 
 export function CreateTeacherForm() {
   const trpc = useTRPC();
@@ -51,7 +52,6 @@ export function CreateTeacherForm() {
       nama: "",
       alamat: "",
       noTelepon: "",
-      email: "",
       status: "AKTIF",
     },
   });
@@ -110,23 +110,6 @@ export function CreateTeacherForm() {
                 <FormLabel>Nama Lengkap</FormLabel>
                 <FormControl>
                   <Input {...field} placeholder="Masukkan nama lengkap" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Alamat Email</FormLabel>
-                <FormControl>
-                  <Input
-                    type="email"
-                    {...field}
-                    placeholder="Masukkan nama lengkap"
-                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -341,7 +324,7 @@ export function CreateTeacherForm() {
             Kembali
           </Button>
           <Button type="submit" disabled={isLoading}>
-            {isLoading && <LoaderIcon className="animate-spin" />}
+            {isLoading && <Spinner />}
             {isLoading ? "Menyimpan..." : "Simpan"}
           </Button>
         </div>

@@ -1,5 +1,25 @@
 import { Prisma } from "@/lib/generated/prisma";
 
+export type StudentWithImage = Prisma.StudentGetPayload<{
+  include: {
+    user: {
+      select: {
+        image: true;
+      };
+    };
+  };
+}>;
+
+export type TeacherWithImage = Prisma.TeacherGetPayload<{
+  include: {
+    user: {
+      select: {
+        image: true;
+      };
+    };
+  };
+}>;
+
 export type ClassWithWaliAndCount = Prisma.ClassGetPayload<{
   include: {
     waliKelas: {

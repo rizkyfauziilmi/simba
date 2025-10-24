@@ -3,8 +3,9 @@
 import { authClient } from "@/lib/auth-client";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
-import { Loader2Icon, LockOpen } from "lucide-react";
+import { LockOpen } from "lucide-react";
 import { useState } from "react";
+import { Spinner } from "./ui/spinner";
 
 export function ImpersonateIndicator() {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +41,7 @@ export function ImpersonateIndicator() {
         });
       }}
     >
-      {isLoading ? <Loader2Icon className="animate-spin" /> : <LockOpen />}
+      {isLoading ? <Spinner /> : <LockOpen />}
       {isLoading ? "Memproses..." : "Berhenti Penyamaran"}
     </Button>
   );

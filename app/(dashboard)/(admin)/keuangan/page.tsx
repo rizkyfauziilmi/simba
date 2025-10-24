@@ -11,6 +11,7 @@ import { TransactionHeader } from "./_components/transaction-header";
 import { FinanceCardSkeletonList } from "./_components/skeleton/finance-card-skeleton";
 import { FinanceChartSkeleton } from "./_components/skeleton/finance-chart-skeleton";
 import { TableSkeleton } from "@/components/skeleton/table-skeleton";
+import { EmptyError } from "@/components/empty-error";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +37,14 @@ export default async function KeuanganPage({ searchParams }: PageProps) {
 
         <section className="mb-6">
           <h2 className="sr-only">Ringkasan</h2>
-          <ErrorBoundary fallback={<div>Error loading summary cards.</div>}>
+          <ErrorBoundary
+            fallback={
+              <EmptyError
+                title="Gagal memuat ringkasan keuangan"
+                description="Terjadi kesalahan saat memuat ringkasan keuangan. Silakan coba lagi."
+              />
+            }
+          >
             <Suspense fallback={<FinanceCardSkeletonList />}>
               <SummaryCards />
             </Suspense>
@@ -52,7 +60,14 @@ export default async function KeuanganPage({ searchParams }: PageProps) {
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-lg font-medium">Tren Transaksi</h2>
           </div>
-          <ErrorBoundary fallback={<div>Error loading chart.</div>}>
+          <ErrorBoundary
+            fallback={
+              <EmptyError
+                title="Gagal memuat grafik keuangan"
+                description="Terjadi kesalahan saat memuat grafik keuangan. Silakan coba lagi."
+              />
+            }
+          >
             <Suspense fallback={<FinanceChartSkeleton />}>
               <FinanceChart />
             </Suspense>
@@ -64,7 +79,14 @@ export default async function KeuanganPage({ searchParams }: PageProps) {
             <h2 className="text-lg font-medium">Transaksi Detail</h2>
           </div>
 
-          <ErrorBoundary fallback={<div>Error loading transactions.</div>}>
+          <ErrorBoundary
+            fallback={
+              <EmptyError
+                title="Gagal memuat tabel transaksi"
+                description="Terjadi kesalahan saat memuat tabel transaksi. Silakan coba lagi."
+              />
+            }
+          >
             <Suspense fallback={<TableSkeleton />}>
               <TransactionDetailTable />
             </Suspense>

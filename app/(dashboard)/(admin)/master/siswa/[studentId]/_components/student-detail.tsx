@@ -3,20 +3,18 @@
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import {
-  ArrowLeft,
-  Calendar,
-  Hash,
-  MapPin,
-  Phone,
-  User,
-  Users,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { enumToReadable } from "@/lib/string";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { GetStudentStatusBadge } from "../../_components/get-student-status-badge";
+import { EmptyError } from "@/components/empty-error";
+import { Separator } from "@/components/ui/separator";
 import { formattedDate } from "@/lib/date";
 
 export function StudentDetail() {
@@ -24,125 +22,143 @@ export function StudentDetail() {
   const router = useRouter();
 
   const trpc = useTRPC();
-  const { data: student } = useSuspenseQuery(
+  const { data: student, refetch } = useSuspenseQuery(
     trpc.student.getStudentById.queryOptions({ studentId: params.studentId }),
   );
 
-  if (!student) return null;
+  if (!student)
+    return (
+      <EmptyError
+        title="Siswa tidak ditemukan"
+        description="Siswa yang Anda cari tidak ada atau telah dihapus."
+        onAction={() => refetch()}
+      />
+    );
 
   return (
     <div>
-      {/* Header */}
-      <div className="mb-8">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="mb-4 -ml-2"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft />
-          Kembali
-        </Button>
+      <Button variant="ghost" onClick={() => router.back()} className="mb-6">
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Kembali
+      </Button>
 
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-              {student.nama}
-            </h1>
-            <p className="mt-1 text-muted-foreground">Detail informasi siswa</p>
-          </div>
-          {GetStudentStatusBadge({
-            status: student.status,
-          })}
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Personal Information */}
+      <div className="grid gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <User className="h-5 w-5 text-muted-foreground" />
-              Informasi Pribadi
-            </CardTitle>
+            <div className="flex items-start justify-between">
+              <div>
+                <CardTitle className="text-2xl">{student.nama}</CardTitle>
+                <CardDescription>NISN: {student.nisn}</CardDescription>
+              </div>
+              {GetStudentStatusBadge({
+                status: student.status,
+              })}
+            </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-1">
-              <dt className="text-sm font-medium text-muted-foreground">
-                Nama Lengkap
-              </dt>
-              <dd className="text-base text-foreground">{student.nama}</dd>
-            </div>
+          <CardContent>
+            <div className="grid gap-4">
+              <div>
+                <h3 className="font-semibold mb-2">Informasi Pribadi</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Tanggal Lahir
+                    </p>
+                    <p className="text-sm font-medium">
+                      {formattedDate(student.tanggalLahir)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Jenis Kelamin
+                    </p>
+                    <p className="text-sm font-medium">
+                      {student.jenisKelamin === "LAKI_LAKI"
+                        ? "Laki-laki"
+                        : "Perempuan"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">No. Telepon</p>
+                    <p className="text-sm font-medium">{student.noTelepon}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-sm text-muted-foreground">Alamat</p>
+                    <p className="text-sm font-medium">{student.alamat}</p>
+                  </div>
+                </div>
+              </div>
 
-            <div className="space-y-1">
-              <dt className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <Hash className="h-4 w-4" />
-                NISN
-              </dt>
-              <dd className="font-mono text-base text-foreground">
-                {student.nisn}
-              </dd>
-            </div>
+              <Separator />
 
-            <div className="space-y-1">
-              <dt className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <Calendar className="h-4 w-4" />
-                Tanggal Lahir
-              </dt>
-              <dd className="text-base text-foreground">
-                {formattedDate(student.tanggalLahir)}
-              </dd>
-            </div>
+              {student.kelas ? (
+                <div>
+                  <h3 className="font-semibold mb-2">Informasi Kelas</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Kelas</p>
+                      <p className="text-sm font-medium">
+                        {student.kelas.namaKelas}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Tingkat</p>
+                      <p className="text-sm font-medium">
+                        {student.kelas.tingkat}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Ruangan</p>
+                      <p className="text-sm font-medium">
+                        {student.kelas.ruang}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">
+                        Wali Kelas
+                      </p>
+                      <p className="text-sm font-medium">
+                        {student.kelas.waliKelas
+                          ? student.kelas.waliKelas.nama
+                          : "-"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <EmptyError
+                  title="Anda belum tergabung di kelas manapun"
+                  description="Hubungi administrator untuk menambahkan Anda ke dalam kelas."
+                  onAction={() => refetch()}
+                />
+              )}
 
-            <div className="space-y-1">
-              <dt className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <Users className="h-4 w-4" />
-                Jenis Kelamin
-              </dt>
-              <dd className="text-base text-foreground">
-                {enumToReadable(student.jenisKelamin)}
-              </dd>
+              <Separator />
+
+              <div>
+                <h3 className="font-semibold mb-2">Informasi Sistem</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Terdaftar Sejak
+                    </p>
+                    <p className="text-sm font-medium">
+                      {formattedDate(student.createdAt)}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Terakhir Diperbarui
+                    </p>
+                    <p className="text-sm font-medium">
+                      {formattedDate(student.updatedAt)}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
-
-        {/* Contact Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Phone className="h-5 w-5 text-muted-foreground" />
-              Informasi Kontak
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-1">
-              <dt className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <Phone className="h-4 w-4" />
-                Nomor Telepon
-              </dt>
-              <dd className="text-base text-foreground">{student.noTelepon}</dd>
-            </div>
-
-            <div className="space-y-1">
-              <dt className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                <MapPin className="h-4 w-4" />
-                Alamat
-              </dt>
-              <dd className="text-base leading-relaxed text-foreground">
-                {student.alamat}
-              </dd>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="mt-8 flex gap-3">
-        <Button asChild>
-          <Link href={`/master/siswa/${student.id}/edit`}>Edit Data Siswa</Link>
-        </Button>
-        <Button variant="outline">Cetak Profil</Button>
       </div>
     </div>
   );

@@ -1,15 +1,17 @@
-import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth-client";
 import { useQueryClient } from "@tanstack/react-query";
-import { Loader2Icon, Undo2 } from "lucide-react";
+import { Undo2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 interface UnbanButtonProps {
+  onStart?: () => void;
+  onComplete?: () => void;
   userId: string;
 }
 
-export function UnbanButton({ userId }: UnbanButtonProps) {
+export function UnbanButton({ userId, onStart, onComplete }: UnbanButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
   const queryClient = useQueryClient();
 
@@ -28,17 +30,20 @@ export function UnbanButton({ userId }: UnbanButtonProps) {
   };
 
   return (
-    <Button
-      type="button"
-      size="icon"
-      variant="secondary"
+    <div
       onClick={() => {
+        onStart?.();
         setIsLoading(true);
-        unbanUser(userId).finally(() => setIsLoading(false));
+        unbanUser(userId).finally(() => {
+          setIsLoading(false);
+          onComplete?.();
+        });
       }}
-      disabled={isLoading}
+      className="flex items-center gap-2 aria-disabled:opacity-50 cursor-pointer aria-disabled:cursor-not-allowed"
+      aria-disabled={isLoading}
     >
-      {isLoading ? <Loader2Icon className="animate-spin" /> : <Undo2 />}
-    </Button>
+      {isLoading ? <Spinner /> : <Undo2 />}
+      {isLoading ? "Memproses..." : "Buka Blokir"}
+    </div>
   );
 }

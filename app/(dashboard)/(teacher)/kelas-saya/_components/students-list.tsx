@@ -13,11 +13,14 @@ import {
 import { useTRPC } from "@/trpc/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { StudentStatus } from "@/lib/generated/prisma";
+import { EmptyError } from "@/components/empty-error";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getAvatarFallback } from "@/lib/string";
 
 export function StudentsList() {
   const trpc = useTRPC();
 
-  const { data: kelas } = useSuspenseQuery(
+  const { data: kelas, refetch } = useSuspenseQuery(
     trpc.class.getMyHomeroomClass.queryOptions(),
   );
 
@@ -34,13 +37,11 @@ export function StudentsList() {
 
   if (!kelas || kelas.students.length === 0) {
     return (
-      <Card className="border-border">
-        <CardContent className="pt-6">
-          <p className="text-muted-foreground">
-            Tidak ada siswa dalam kelas ini.
-          </p>
-        </CardContent>
-      </Card>
+      <EmptyError
+        title="Tidak ada siswa"
+        description="Hubungi administrator untuk menambahkan siswa ke dalam kelas Anda."
+        onAction={() => refetch()}
+      />
     );
   }
 
@@ -66,7 +67,17 @@ export function StudentsList() {
             <TableBody>
               {students.map((student) => (
                 <TableRow key={student.id}>
-                  <TableCell className="font-medium">{student.nama}</TableCell>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="size-8">
+                        <AvatarImage src={student.user.image ?? undefined} />
+                        <AvatarFallback>
+                          {getAvatarFallback(student.nama)}
+                        </AvatarFallback>
+                      </Avatar>
+                      {student.nama}
+                    </div>
+                  </TableCell>
                   <TableCell>{student.nisn}</TableCell>
                   <TableCell>{student.jenisKelamin}</TableCell>
                   <TableCell>
