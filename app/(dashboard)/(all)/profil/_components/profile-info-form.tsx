@@ -42,6 +42,7 @@ const updateProfileInfoSchema = z.object({
         try {
           const res = await fetch(url, { method: "HEAD" });
           const contentType = res.headers.get("content-type");
+          console.log(contentType);
           return contentType?.startsWith("image/");
         } catch {
           return false;
@@ -70,16 +71,12 @@ export default function ProfileInfoForm({
   const form = useForm<z.infer<typeof updateProfileInfoSchema>>({
     resolver: zodResolver(updateProfileInfoSchema),
     defaultValues: {
-      image: user.image ?? undefined,
+      image: user.image ?? "",
       name: user.name,
       displayUsername: user.displayUsername ?? "",
       username: user.username ?? "",
     },
   });
-
-  const isNotValidImageUrl = (url: string) => {
-    return !/\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url);
-  };
 
   const refreshInfo = () => {
     onUpdate();
@@ -93,9 +90,7 @@ export default function ProfileInfoForm({
 
   async function onSubmit(dataForm: z.infer<typeof updateProfileInfoSchema>) {
     const { error } = await authClient.updateUser({
-      image: isNotValidImageUrl(dataForm.image || "")
-        ? undefined
-        : dataForm.image,
+      image: dataForm.image,
       name: dataForm.name,
       displayUsername: dataForm.displayUsername,
       username: dataForm.username,
@@ -111,9 +106,7 @@ export default function ProfileInfoForm({
     toast.success("Profil berhasil diperbarui");
     onUpdate();
     form.reset({
-      image: isNotValidImageUrl(dataForm.image || "")
-        ? undefined
-        : dataForm.image,
+      image: dataForm.image,
       name: dataForm.name,
       displayUsername: dataForm.displayUsername,
       username: dataForm.username,

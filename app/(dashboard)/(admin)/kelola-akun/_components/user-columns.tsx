@@ -5,6 +5,7 @@ import {
   Ban,
   Cookie,
   KeyRound,
+  Mail,
   MoreHorizontal,
   Trash2,
   VenetianMask,
@@ -35,6 +36,7 @@ import { UnbanButton } from "./unban-button";
 import { Spinner } from "@/components/ui/spinner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarFallback } from "@/lib/string";
+import { UpdateEmailDialog } from "./update-email-dialog";
 
 export const userColumns: ColumnDef<UserWithRole>[] = [
   {
@@ -67,7 +69,7 @@ export const userColumns: ColumnDef<UserWithRole>[] = [
     cell: ({ row }) => {
       const { name, image } = row.original;
       return (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Avatar className="size-8">
             <AvatarImage src={image ?? undefined} />
             <AvatarFallback>{getAvatarFallback(name)}</AvatarFallback>
@@ -128,6 +130,8 @@ export const userColumns: ColumnDef<UserWithRole>[] = [
       const [isOpenDialogBan, setIsOpenDialogBan] = useState(false);
       const [isOpenDialogDelete, setIsOpenDialogDelete] = useState(false);
       const [isOpenDialogRevoke, setIsOpenDialogRevoke] = useState(false);
+      const [isOpenDialogUpdateEmail, setIsOpenDialogUpdateEmail] =
+        useState(false);
       const [isLoading, setIsLoading] = useState(false);
 
       return (
@@ -149,6 +153,12 @@ export const userColumns: ColumnDef<UserWithRole>[] = [
               <DropdownMenuItem onSelect={() => setIsOpenDialogPs(true)}>
                 <KeyRound />
                 Atur Ulang Kata Sandi
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={() => setIsOpenDialogUpdateEmail(true)}
+              >
+                <Mail />
+                Atur Ulang Email
               </DropdownMenuItem>
               {banned === true ? (
                 <DropdownMenuItem disabled>
@@ -200,6 +210,13 @@ export const userColumns: ColumnDef<UserWithRole>[] = [
           <SetUserPasswordDialog
             isOpen={isOpenDialogPs}
             setIsOpen={setIsOpenDialogPs}
+            onStart={() => setIsLoading(true)}
+            onComplete={() => setIsLoading(false)}
+            userId={id}
+          />
+          <UpdateEmailDialog
+            isOpen={isOpenDialogUpdateEmail}
+            setIsOpen={setIsOpenDialogUpdateEmail}
             onStart={() => setIsLoading(true)}
             onComplete={() => setIsLoading(false)}
             userId={id}

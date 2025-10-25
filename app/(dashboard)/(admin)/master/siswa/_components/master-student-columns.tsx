@@ -62,7 +62,7 @@ export const studentMasterColumns: ColumnDef<StudentWithImage>[] = [
       const { nama, user } = row.original;
 
       return (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <Avatar className="size-8">
             <AvatarImage src={user.image ?? undefined} />
             <AvatarFallback>{getAvatarFallback(nama)}</AvatarFallback>

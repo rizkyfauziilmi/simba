@@ -135,7 +135,7 @@ export function AdminDashboard() {
               className="h-auto flex-col gap-2 p-4"
               asChild
             >
-              <Link href="/akun">
+              <Link href="/profil">
                 <User className="h-6 w-6" />
                 <span>Profil</span>
               </Link>
@@ -270,7 +270,7 @@ export function AdminDashboard() {
                         {student.nisn}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2">
                           <Avatar className="size-8">
                             <AvatarImage
                               src={student.user.image ?? undefined}

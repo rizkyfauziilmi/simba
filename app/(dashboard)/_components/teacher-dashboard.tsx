@@ -264,7 +264,7 @@ export function TeacherDashboard() {
                   <TableRow key={siswa.nisn}>
                     <TableCell className="font-medium">{siswa.nisn}</TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         <Avatar className="size-8">
                           <AvatarImage src={siswa.user.image ?? undefined} />
                           <AvatarFallback>

@@ -281,7 +281,7 @@ export function StudentDashboard() {
                   <TableRow key={teman.nisn}>
                     <TableCell className="font-medium">{teman.nisn}</TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         <Avatar className="size-8">
                           <AvatarImage src={teman.user.image ?? undefined} />
                           <AvatarFallback>

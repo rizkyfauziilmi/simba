@@ -89,8 +89,8 @@ export function SetUserPasswordDialog({
     }
 
     toast.success("Kata sandi berhasil diperbarui");
-    setIsOpen(false);
     setPassword("");
+    setIsOpen(false);
   };
 
   return (

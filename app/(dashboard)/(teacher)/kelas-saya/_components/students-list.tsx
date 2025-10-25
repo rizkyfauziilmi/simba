@@ -68,7 +68,7 @@ export function StudentsList() {
               {students.map((student) => (
                 <TableRow key={student.id}>
                   <TableCell className="font-medium">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       <Avatar className="size-8">
                         <AvatarImage src={student.user.image ?? undefined} />
                         <AvatarFallback>
