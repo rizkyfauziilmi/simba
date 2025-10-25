@@ -14,7 +14,7 @@ import { EmptyError } from "@/components/empty-error";
 
 export const dynamic = "force-dynamic";
 
-export default async function HistoryKelasPage() {
+export default function HistoryKelasPage() {
   prefetch(trpc.class.getMyClassHistories.queryOptions());
 
   return (

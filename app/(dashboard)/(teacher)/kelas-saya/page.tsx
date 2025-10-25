@@ -9,7 +9,7 @@ import { EmptyLoading } from "@/components/empty-loading";
 
 export const dynamic = "force-dynamic";
 
-export default async function KelasWaliPage() {
+export default function KelasWaliPage() {
   prefetch(trpc.class.getMyHomeroomClass.queryOptions());
 
   return (

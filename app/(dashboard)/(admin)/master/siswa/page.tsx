@@ -8,7 +8,7 @@ import { EmptyError } from "@/components/empty-error";
 
 export const dynamic = "force-dynamic";
 
-export default async function MasterSiswaPage() {
+export default function MasterSiswaPage() {
   prefetch(trpc.student.getAllStudents.queryOptions());
 
   return (

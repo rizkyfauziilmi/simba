@@ -8,7 +8,7 @@ import { EmptyError } from "@/components/empty-error";
 
 export const dynamic = "force-dynamic";
 
-export default async function MasterMapelPage() {
+export default function MasterMapelPage() {
   prefetch(trpc.subject.getAllSubjects.queryOptions());
 
   return (

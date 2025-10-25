@@ -7,7 +7,7 @@ import { EmptyLoading } from "@/components/empty-loading";
 
 export const dynamic = "force-dynamic";
 
-export default async function JadwalPelajaranPage() {
+export default function JadwalPelajaranPage() {
   prefetch(trpc.class.getMySchoolTimeable.queryOptions());
 
   return (

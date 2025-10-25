@@ -8,7 +8,7 @@ import { EmptyError } from "@/components/empty-error";
 
 export const dynamic = "force-dynamic";
 
-export default async function MasterKelasPage() {
+export default function MasterKelasPage() {
   prefetch(trpc.class.getAllClasses.queryOptions());
 
   return (
