@@ -6,6 +6,8 @@ import { MasterSubjectTable } from "./_components/master-subject-table";
 import { TableSkeleton } from "@/components/skeleton/table-skeleton";
 import { EmptyError } from "@/components/empty-error";
 
+export const dynamic = "force-dynamic";
+
 export default async function MasterMapelPage() {
   prefetch(trpc.subject.getAllSubjects.queryOptions());
 

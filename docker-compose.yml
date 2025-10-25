@@ -11,5 +11,19 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  web:
+    build: .
+    depends_on:
+      - postgres
+    command: sh -c "npx prisma migrate deploy && node server.js"
+    environment:
+      - DATABASE_URL=postgresql://user:password@postgres:5432/mydb?schema=public
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+
 volumes:
   postgres_data:

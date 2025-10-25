@@ -11,6 +11,8 @@ interface DashboardVariantsProps {
   userRole: "admin" | "teacher" | "student";
 }
 
+export const dynamic = "force-dynamic";
+
 export async function DashboardVariants({ userRole }: DashboardVariantsProps) {
   if (userRole === "admin") {
     prefetch(trpc.roleData.getAdminDashboardData.queryOptions());

@@ -7,6 +7,8 @@ import { Suspense } from "react";
 import { EmptyError } from "@/components/empty-error";
 import { EmptyLoading } from "@/components/empty-loading";
 
+export const dynamic = "force-dynamic";
+
 export default async function KelasWaliPage() {
   prefetch(trpc.class.getMyHomeroomClass.queryOptions());
 

@@ -6,6 +6,8 @@ import { MasterClassTable } from "./_components/master-class-table";
 import { TableSkeleton } from "@/components/skeleton/table-skeleton";
 import { EmptyError } from "@/components/empty-error";
 
+export const dynamic = "force-dynamic";
+
 export default async function MasterKelasPage() {
   prefetch(trpc.class.getAllClasses.queryOptions());
 

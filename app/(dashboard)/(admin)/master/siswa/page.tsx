@@ -6,6 +6,8 @@ import { MasterStudentTable } from "./_components/master-student-table";
 import { TableSkeleton } from "@/components/skeleton/table-skeleton";
 import { EmptyError } from "@/components/empty-error";
 
+export const dynamic = "force-dynamic";
+
 export default async function MasterSiswaPage() {
   prefetch(trpc.student.getAllStudents.queryOptions());
 

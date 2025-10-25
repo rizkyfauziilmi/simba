@@ -12,6 +12,8 @@ import { Suspense } from "react";
 import { EmptyLoading } from "@/components/empty-loading";
 import { EmptyError } from "@/components/empty-error";
 
+export const dynamic = "force-dynamic";
+
 export default async function HistoryKelasPage() {
   prefetch(trpc.class.getMyClassHistories.queryOptions());
 

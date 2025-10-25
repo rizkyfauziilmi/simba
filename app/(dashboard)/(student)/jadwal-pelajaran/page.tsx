@@ -5,6 +5,8 @@ import { JadwalPelajaran } from "./_components/jadwal-pelajaran";
 import { EmptyError } from "@/components/empty-error";
 import { EmptyLoading } from "@/components/empty-loading";
 
+export const dynamic = "force-dynamic";
+
 export default async function JadwalPelajaranPage() {
   prefetch(trpc.class.getMySchoolTimeable.queryOptions());
 
