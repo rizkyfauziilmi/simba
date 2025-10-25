@@ -42,6 +42,9 @@ export function DeleteTeacherAlertDialog({
         queryClient.invalidateQueries({
           queryKey: trpc.class.pathKey(),
         });
+        queryClient.invalidateQueries({
+          queryKey: trpc.subject.pathKey(),
+        });
         toast.success(data.message);
         setOpen(false);
       },
