@@ -107,9 +107,9 @@ export function TransactionHeader() {
         queryClient.invalidateQueries({
           queryKey: trpc.finance.pathKey(),
         });
-        toast.success(data.message);
         form.reset();
         setOpen(false);
+        toast.success(data.message);
       },
       onError: (error) => {
         toast.error(error.message);

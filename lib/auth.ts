@@ -5,6 +5,8 @@ import { username, admin as adminPlugin } from "better-auth/plugins";
 import { ac, admin, student, teacher } from "@/lib/permissions";
 
 export const auth = betterAuth({
+  secret: process.env.BETTER_AUTH_SECRET,
+  baseURL: process.env.BETTER_AUTH_URL,
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),

@@ -19,6 +19,7 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Spinner } from "@/components/ui/spinner";
+import z from "zod";
 
 export function CreateAdminDialog() {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,6 +65,11 @@ export function CreateAdminDialog() {
       toast.error("Mohon isi semua kolom");
       return;
     }
+    if (!z.email().safeParse(email).success) {
+      toast.error("Email tidak valid");
+      return;
+    }
+
     if (passwordStrength < 4) {
       toast.error("Kata sandi belum cukup kuat", {
         description: "Mohon pilih kata sandi yang lebih kuat sebelum mengirim.",
