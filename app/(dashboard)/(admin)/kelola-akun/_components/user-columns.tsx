@@ -37,6 +37,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getAvatarFallback } from "@/lib/string";
 import { UpdateEmailDialog } from "./update-email-dialog";
+import { authClient } from "@/lib/auth-client";
 
 export const userColumns: ColumnDef<UserWithRole>[] = [
   {
@@ -126,6 +127,7 @@ export const userColumns: ColumnDef<UserWithRole>[] = [
     header: "Aksi",
     cell: function ActionsComponent({ row }) {
       const { id, banned } = row.original;
+      const { data: session } = authClient.useSession();
       const [isOpenDialogPs, setIsOpenDialogPs] = useState(false);
       const [isOpenDialogBan, setIsOpenDialogBan] = useState(false);
       const [isOpenDialogDelete, setIsOpenDialogDelete] = useState(false);
@@ -134,11 +136,13 @@ export const userColumns: ColumnDef<UserWithRole>[] = [
         useState(false);
       const [isLoading, setIsLoading] = useState(false);
 
+      const isMe = session?.user.id === id;
+
       return (
         <>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={isLoading}>
+              <Button variant="ghost" size="icon" disabled={isLoading || isMe}>
                 <span className="sr-only">Open menu</span>
                 {isLoading ? (
                   <Spinner />

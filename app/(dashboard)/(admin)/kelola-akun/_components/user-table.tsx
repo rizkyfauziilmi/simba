@@ -16,7 +16,7 @@ export function UserTable() {
     error,
     refetch,
   } = useQuery({
-    queryKey: ["users"],
+    queryKey: ["users", session?.user.id],
     queryFn: async () => {
       const users = await authClient.admin.listUsers({
         query: {

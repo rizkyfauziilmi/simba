@@ -21,6 +21,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
@@ -164,6 +165,10 @@ export default function PasswordChangeForm() {
                       </Button>
                     </div>
                   </FormControl>
+                  <FormDescription>
+                    CATATAN: Jika lupa kata sandi, silakan hubungi dukungan
+                    admin untuk mengatur ulang kata sandi Anda.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
