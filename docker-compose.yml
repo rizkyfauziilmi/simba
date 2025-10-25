@@ -21,6 +21,7 @@ services:
       context: .
       # add `--no-cache` here for a clean rebuild
       # docker compose build --no-cache
+    restart: always
     depends_on:
       postgres:
         condition: service_healthy
