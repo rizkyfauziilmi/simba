@@ -277,47 +277,47 @@ export function CreateTeacherForm() {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="status"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Status</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  key={field.value}
+                >
+                  <FormControl className="w-full">
+                    <SelectTrigger>
+                      <SelectValue placeholder="Pilih status" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {Object.keys(TeacherStatus).map((status) => (
+                      <SelectItem key={status} value={status}>
+                        {enumToReadable(status)}
+                      </SelectItem>
+                    ))}
+                    {field.value && (
+                      <Button
+                        type="button"
+                        className="w-full"
+                        onClick={() => {
+                          field.onChange("");
+                        }}
+                      >
+                        Hapus Pilihan
+                      </Button>
+                    )}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Status</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                key={field.value}
-              >
-                <FormControl className="w-full">
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih status" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Object.keys(TeacherStatus).map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {enumToReadable(status)}
-                    </SelectItem>
-                  ))}
-                  {field.value && (
-                    <Button
-                      type="button"
-                      className="w-full"
-                      onClick={() => {
-                        field.onChange("");
-                      }}
-                    >
-                      Hapus Pilihan
-                    </Button>
-                  )}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex items-center gap-2 justify-end">
+        <div className="flex md:items-center gap-2 md:justify-end flex-col md:flex-row">
           <Button
             type="button"
             variant="outline"

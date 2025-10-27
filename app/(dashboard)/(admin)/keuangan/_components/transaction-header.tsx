@@ -127,7 +127,7 @@ export function TransactionHeader() {
     createTransactionMutation.isPending || form.formState.isSubmitting;
 
   return (
-    <header className="mb-6 flex items-center justify-between gap-14">
+    <header className="mb-6 flex gap-4 md:items-center md:justify-between md:gap-14 flex-col md:flex-row">
       <div className="space-y-2">
         <h1 className="text-pretty text-2xl font-semibold tracking-tight md:text-3xl">
           Dashboard Keuangan Sekolah

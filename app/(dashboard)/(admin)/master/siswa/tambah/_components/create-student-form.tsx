@@ -344,7 +344,7 @@ export function CreateStudentForm() {
             />
           )
         )}
-        <div className="flex items-center gap-2 justify-end">
+        <div className="flex md:items-center gap-2 md:justify-end flex-col md:flex-row">
           <Button
             type="button"
             variant="outline"

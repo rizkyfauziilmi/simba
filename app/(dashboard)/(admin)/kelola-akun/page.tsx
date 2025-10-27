@@ -13,7 +13,7 @@ import { UserTable } from "./_components/user-table";
 export default function KelolaAkunPage() {
   return (
     <Card>
-      <div className="flex flex-row items-center justify-between px-6">
+      <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-0 md:justify-between px-6">
         <CardHeader className="flex-1 p-0">
           <CardTitle>Kelola Semua Akun</CardTitle>
           <CardDescription>

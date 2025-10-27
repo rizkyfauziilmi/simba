@@ -15,7 +15,7 @@ export function DataTableSearch({
       type="search"
       value={globalFilter ?? ""}
       onChange={(e) => setGlobalFilterAction(e.target.value)}
-      className="max-w-sm"
+      className="lg:max-w-sm w-full"
     />
   );
 }

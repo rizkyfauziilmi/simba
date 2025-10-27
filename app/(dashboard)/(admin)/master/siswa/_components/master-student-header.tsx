@@ -22,12 +22,12 @@ export const MasterStudentHeader = () => {
   );
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex md:items-center md:justify-between flex-col md:flex-row md:gap-0 gap-4">
       <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
         Daftar Siswa
       </h3>
       <div className="flex items-center gap-2">
-        <Button variant="outline" asChild>
+        <Button variant="outline" className="flex-1" asChild>
           <Link href="/master/siswa/tambah">
             <UserPlus />
             Tambah Siswa

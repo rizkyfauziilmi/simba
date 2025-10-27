@@ -237,7 +237,7 @@ export function EditSubjectForm() {
                             - {schedule.jamMulai} - {schedule.jamSelesai}
                           </ItemTitle>
                           <ItemDescription></ItemDescription>
-                          <div className="flex items-center gap-6 py-4">
+                          <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6 py-4">
                             <div className="space-y-2">
                               <Label>Hari</Label>
                               <Select
@@ -256,7 +256,10 @@ export function EditSubjectForm() {
                                   field.onChange(updatedSchedules);
                                 }}
                               >
-                                <SelectTrigger value="" className="w-[180px]">
+                                <SelectTrigger
+                                  value=""
+                                  className="w-full lg:w-[180px]"
+                                >
                                   <SelectValue placeholder="Pilih hari" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -336,7 +339,7 @@ export function EditSubjectForm() {
                               )}
                             </div>
                           </div>
-                          <div className="space-y-4">
+                          <div className="space-y-4 mt-4">
                             {isPendingAvailableClasses ? (
                               <FormInputSkeleton />
                             ) : (
@@ -446,7 +449,7 @@ export function EditSubjectForm() {
                                         variant="outline"
                                         role="combobox"
                                         className={cn(
-                                          "justify-between",
+                                          "w-full justify-between",
                                           !schedule.guruPengampuId &&
                                             "text-muted-foreground",
                                         )}
@@ -462,7 +465,7 @@ export function EditSubjectForm() {
                                       </Button>
                                     </FormControl>
                                   </PopoverTrigger>
-                                  <PopoverContent className="w-full p-0">
+                                  <PopoverContent className="w-[200px] md:w-[300px] lg:w-full p-0">
                                     <Command
                                       filter={(
                                         value: string,
@@ -572,7 +575,7 @@ export function EditSubjectForm() {
             </Card>
           )}
         />
-        <div className="flex items-center gap-2 justify-end">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:justify-end">
           <Button
             type="button"
             variant="outline"
