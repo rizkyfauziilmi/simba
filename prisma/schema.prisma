@@ -54,7 +54,7 @@ model SchoolFinance {
 
   // Jika ingin mengaitkan transaksi dengan user tertentu (opsional)
   userId String?
-  user   User?   @relation(fields: [userId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 }
 
 model Session {
@@ -121,7 +121,7 @@ model Student {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   kelasId String?
-  kelas   Class?  @relation(fields: [kelasId], references: [id])
+  kelas   Class?  @relation(fields: [kelasId], references: [id], onDelete: SetNull)
 
   ClassHistory ClassHistory[]
 }
@@ -156,7 +156,7 @@ model Class {
   isLast    Boolean      @default(false)
 
   waliKelasId String?  @unique
-  waliKelas   Teacher? @relation(fields: [waliKelasId], references: [id])
+  waliKelas   Teacher? @relation(fields: [waliKelasId], references: [id], onDelete: SetNull)
 
   students     Student[]
   ClassHistory ClassHistory[]
@@ -166,9 +166,9 @@ model Class {
 model ClassHistory {
   id        String   @id @default(cuid())
   classId   String
-  class     Class    @relation(fields: [classId], references: [id])
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
   studentId String
-  student   Student  @relation(fields: [studentId], references: [id])
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
   @@unique([classId, studentId])
@@ -190,13 +190,13 @@ model ClassSchedule {
   jamSelesai String // Sama seperti di atas
 
   guruPengampuId String?
-  guruPengampu   Teacher? @relation(fields: [guruPengampuId], references: [id])
+  guruPengampu   Teacher? @relation(fields: [guruPengampuId], references: [id], onDelete: SetNull)
 
   kelasId String
-  kelas   Class  @relation(fields: [kelasId], references: [id])
+  kelas   Class  @relation(fields: [kelasId], references: [id], onDelete: Cascade)
 
   subjectId String
-  subject   Subject @relation(fields: [subjectId], references: [id])
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
 }
 
 // Enum untuk hari, misalnya:
