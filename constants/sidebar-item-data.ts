@@ -8,6 +8,7 @@ import {
   CalendarDays,
   GraduationCap,
   UsersRound,
+  HelpCircle,
 } from "lucide-react";
 
 export const routeData = {
@@ -106,6 +107,13 @@ export const routeData = {
       title: "Pengaturan",
       url: "/pengaturan",
       icon: Settings,
+      role: ["admin", "teacher", "student"],
+      items: [],
+    },
+    {
+      title: "Panduan",
+      url: "/panduan",
+      icon: HelpCircle,
       role: ["admin", "teacher", "student"],
       items: [],
     },
