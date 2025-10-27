@@ -1,7 +1,7 @@
 {
   "name": "simba",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "scripts": {
     "// Next.js": "-------------- Next.js Commands --------------",
     "dev": "next dev --turbopack",
