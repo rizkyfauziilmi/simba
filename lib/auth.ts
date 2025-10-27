@@ -29,6 +29,15 @@ export const auth = betterAuth({
       // });
 
       if (
+        path.startsWith("/admin") &&
+        response.body?.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL"
+      ) {
+        throw new APIError("BAD_REQUEST", {
+          ...response.body,
+          message: "Email sudah digunakan, silakan gunakan email lain",
+        });
+      }
+      if (
         path.startsWith("/sign-in") &&
         response.body?.code === "INVALID_EMAIL_OR_PASSWORD"
       ) {
