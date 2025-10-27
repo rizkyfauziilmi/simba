@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SIMBA - Sistem Informasi Manajemen
 
-## Getting Started
+Aplikasi SIMBA adalah sistem informasi manajemen berbasis web yang dibangun dengan [Next.js](https://nextjs.org).
 
-First, run the development server:
+## Kloning Repositori
+
+Anda dapat mengkloning repositori ini menggunakan metode HTTPS atau SSH:
+
+### Metode HTTPS
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/rizkyfauziilmi/simba.git
+cd simba
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Metode SSH (Disarankan)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Pastikan Anda telah [mengatur SSH key di GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Kloning repositori:
+```bash
+git clone git@github.com:rizkyfauziilmi/simba.git
+cd simba
+```
 
-## Learn More
+## Dokumentasi
 
-To learn more about Next.js, take a look at the following resources:
+Aplikasi ini memiliki dua dokumentasi utama:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. [Panduan Development](docs/DEVELOPMENT.md) - Panduan untuk mengatur environment development lokal
+2. [Panduan Deployment](docs/DEPLOY.md) - Panduan untuk men-deploy aplikasi di server Ubuntu lokal
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Memulai Development
 
-## Deploy on Vercel
+Untuk memulai development, ikuti panduan development di [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) yang mencakup:
+- Instalasi dependencies
+- Konfigurasi environment
+- Menjalankan database PostgreSQL
+- Menjalankan aplikasi
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Teknologi yang Digunakan
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Framework**: [Next.js](https://nextjs.org)
+- **Database**: PostgreSQL [PostgreSQL](https://www.postgresql.org/)
+- **ORM**: Prisma [Prisma](https://www.prisma.io/)
+- **API**: [TRPC](https://trpc.io)
+- **UI**: [Shadcn](https://ui.shadcn.com)
+- **Containerization**: Docker [Docker](https://www.docker.com/)
+- **Styling**: Tailwind CSS [Tailwind CSS](https://tailwindcss.com/)
+- **Authentication**: Better-Auth [Better-Auth](https://better-auth.com/)
+
+## Deployment
+
+Untuk men-deploy aplikasi ke server Ubuntu lokal, ikuti panduan deployment di [Panduan Deployment](docs/DEPLOY.md) yang mencakup:
+- Konfigurasi IP statis
+- Instalasi software yang dibutuhkan
+- Konfigurasi Nginx sebagai reverse proxy
+- Deployment menggunakan Docker Compose

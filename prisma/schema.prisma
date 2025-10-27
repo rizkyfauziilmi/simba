@@ -1,0 +1,244 @@
+generator client {
+  provider   = "prisma-client-js"
+  output     = "../lib/generated/prisma"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  username        String?
+  displayUsername String?
+
+  role          String?
+  banned        Boolean?        @default(false)
+  banReason     String?
+  banExpires    DateTime?
+  student       Student?
+  teacher       Teacher?
+  SchoolFinance SchoolFinance[]
+
+  @@unique([email])
+  @@unique([username])
+}
+
+model SchoolBalance {
+  id          Int      @id @default(autoincrement())
+  amount      Int // Saldo saat ini dalam satuan rupiah
+  updatedAt   DateTime @updatedAt
+  description String?
+}
+
+model SchoolFinance {
+  id          String      @id @default(cuid())
+  type        FinanceType // PEMASUKAN atau PENGELUARAN
+  category    String // Contoh: SPP, Donasi, Gaji, Operasional, dll.
+  amount      Int // Jumlah uang dalam satuan rupiah
+  description String? // Keterangan tambahan
+  date        DateTime // Tanggal transaksi
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Jika ingin mengaitkan transaksi dengan user tertentu (opsional)
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  impersonatedBy String?
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
+}
+
+model Student {
+  id           String        @id @default(cuid())
+  nama         String
+  nisn         String        @unique
+  tanggalLahir DateTime
+  jenisKelamin Gender
+  alamat       String
+  noTelepon    String
+  status       StudentStatus @default(AKTIF)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  kelasId String?
+  kelas   Class?  @relation(fields: [kelasId], references: [id], onDelete: SetNull)
+
+  ClassHistory ClassHistory[]
+}
+
+model Teacher {
+  id           String        @id @default(cuid())
+  nip          String        @unique
+  nama         String
+  jenisKelamin Gender
+  tanggalLahir DateTime
+  alamat       String?
+  noTelepon    String?
+  status       TeacherStatus @default(AKTIF)
+  tanggalMasuk DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  waliKelas     Class?
+  ClassSchedule ClassSchedule[]
+}
+
+model Class {
+  id        String       @id @default(cuid())
+  namaKelas String
+  tingkat   StudentGrade
+  ruang     String?
+  status    ClassStatus  @default(AKTIF)
+  isLast    Boolean      @default(false)
+
+  waliKelasId String?  @unique
+  waliKelas   Teacher? @relation(fields: [waliKelasId], references: [id], onDelete: SetNull)
+
+  students     Student[]
+  ClassHistory ClassHistory[]
+  schedules    ClassSchedule[]
+}
+
+model ClassHistory {
+  id        String   @id @default(cuid())
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([classId, studentId])
+}
+
+model Subject {
+  id        String  @id @default(cuid())
+  nama      String
+  kode      String  @unique
+  deskripsi String?
+
+  schedules ClassSchedule[] // Relasi ke jadwal
+}
+
+model ClassSchedule {
+  id         String @id @default(cuid())
+  hari       Hari
+  jamMulai   String // Bisa diganti ke DateTime jika kamu pakai tipe waktu lengkap
+  jamSelesai String // Sama seperti di atas
+
+  guruPengampuId String?
+  guruPengampu   Teacher? @relation(fields: [guruPengampuId], references: [id], onDelete: SetNull)
+
+  kelasId String
+  kelas   Class  @relation(fields: [kelasId], references: [id], onDelete: Cascade)
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+}
+
+// Enum untuk hari, misalnya:
+enum Hari {
+  SENIN
+  SELASA
+  RABU
+  KAMIS
+  JUMAT
+  SABTU
+}
+
+enum Gender {
+  LAKI_LAKI
+  PEREMPUAN
+}
+
+enum StudentStatus {
+  AKTIF
+  ALUMNI
+  KELUAR
+}
+
+enum TeacherStatus {
+  AKTIF
+  CUTI
+  KELUAR
+  PENSIUN
+}
+
+enum StudentGrade {
+  SD
+  SMP
+  SMK
+}
+
+enum ClassStatus {
+  AKTIF
+  NON_AKTIF
+}
+
+enum FinanceType {
+  PEMASUKAN
+  PENGELUARAN
+}

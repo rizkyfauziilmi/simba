@@ -1,0 +1,113 @@
+import {
+  CircleUser,
+  LucideLayoutDashboard,
+  Settings,
+  Database,
+  Wallet,
+  History,
+  CalendarDays,
+  GraduationCap,
+  UsersRound,
+} from "lucide-react";
+
+export const routeData = {
+  navMain: [
+    {
+      title: "Dashboard",
+      url: "/",
+      icon: LucideLayoutDashboard,
+      role: ["admin", "teacher", "student"],
+      items: [],
+    },
+    {
+      title: "Data Master",
+      url: "/master",
+      icon: Database,
+      role: ["admin"],
+      items: [
+        {
+          title: "Siswa",
+          description: "Kelola data siswa dalam sekolah",
+          url: "/master/siswa",
+          role: ["admin"],
+        },
+        {
+          title: "Guru",
+          description: "Kelola data guru dalam sekolah",
+          url: "/master/guru",
+          role: ["admin"],
+        },
+        {
+          title: "Kelas",
+          description: "Kelola data kelas dalam sekolah",
+          url: "/master/kelas",
+          role: ["admin"],
+        },
+        {
+          title: "Mata Pelajaran",
+          description: "Kelola data mata pelajaran dalam sekolah",
+          url: "/master/mapel",
+          role: ["admin"],
+        },
+      ],
+    },
+    {
+      title: "Keuangan",
+      url: "/keuangan",
+      icon: Wallet,
+      role: ["admin"],
+      items: [],
+    },
+    {
+      title: "Jadwal Mengajar",
+      url: "/jadwal-mengajar",
+      icon: CalendarDays,
+      role: ["teacher"],
+      items: [],
+    },
+    {
+      title: "Kelas Saya (Wali Kelas)",
+      url: "/kelas-saya",
+      icon: GraduationCap,
+      role: ["teacher"],
+      items: [],
+    },
+    {
+      title: "Riwayat Kelas",
+      url: "/riwayat-kelas",
+      icon: History,
+      role: ["student"],
+      items: [],
+    },
+    {
+      title: "Jadwal Pelajaran",
+      url: "/jadwal-pelajaran",
+      icon: CalendarDays,
+      role: ["student"],
+      items: [],
+    },
+  ],
+  navSecondary: [
+    {
+      title: "Kelola Akun",
+      url: "/kelola-akun",
+      icon: UsersRound,
+      role: ["admin"],
+      items: [],
+    },
+    {
+      title: "Profil / Akun",
+      url: "/profil",
+      icon: CircleUser,
+      role: ["admin", "teacher", "student"],
+      items: [],
+    },
+    {
+      title: "Pengaturan",
+      url: "/pengaturan",
+      icon: Settings,
+      role: ["admin", "teacher", "student"],
+      items: [],
+    },
+  ],
+};

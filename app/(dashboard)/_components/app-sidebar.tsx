@@ -1,0 +1,83 @@
+"use client";
+
+import * as React from "react";
+
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import { NavSecondary } from "./nav-secondary";
+import { NavMain } from "./nav-main";
+import { NavUser } from "./nav-user";
+import { authClient } from "@/lib/auth-client";
+import { UserDropdownSkeleton } from "./user-dropdown-skeleton";
+import { NavMainSkeleton } from "./nav-main-skeleton";
+import { routeData } from "@/constants/sidebar-item-data";
+import Link from "next/link";
+import { NavSecondarySkeleton } from "./nav-secondary-skeleton";
+import Image from "next/image";
+import logo from "@/public/logo.png";
+
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session, isPending } = authClient.useSession();
+
+  const isSessionLoading = isPending || !session;
+
+  return (
+    <Sidebar variant="inset" collapsible="icon" {...props}>
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild>
+              <Link href="/">
+                <Image src={logo} alt="Logo" width={32} height={32} />
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">SIMBA</span>
+
+                  <span className="truncate text-xs text-muted-foreground">
+                    Sistem Informasi Manajemen Bustanul Arifin
+                  </span>
+                </div>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        {isSessionLoading ? (
+          <NavMainSkeleton />
+        ) : (
+          <NavMain
+            items={routeData.navMain}
+            currentRole={session.user.role ?? "student"}
+          />
+        )}
+        {isSessionLoading ? (
+          <NavSecondarySkeleton />
+        ) : (
+          <NavSecondary
+            items={routeData.navSecondary}
+            currentRole={session.user.role ?? "student"}
+            className="mt-auto"
+          />
+        )}
+      </SidebarContent>
+      <SidebarFooter>
+        {isSessionLoading ? (
+          <UserDropdownSkeleton />
+        ) : (
+          <NavUser
+            name={session.user.name}
+            email={session.user.email}
+            image={session.user.image}
+          />
+        )}
+      </SidebarFooter>
+    </Sidebar>
+  );
+}
