@@ -14,12 +14,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DataTableColumnHeader } from "@/components/data-table-column-header";
 import { useState } from "react";
-import { formatIDR } from "@/lib/string";
+import { formatIDR, getAvatarFallback } from "@/lib/string";
 import { TransactionFinanceRecord } from "@/types/database-return.type";
 import { formattedDate } from "@/lib/date";
 import { DeleteTransactionAlertDialog } from "./delete-transaction-alert-dialog";
 import { GetBadgeTransactionType } from "@/components/get-badge-transaction-type";
 import { Spinner } from "@/components/ui/spinner";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const transactionDetailColumns: ColumnDef<TransactionFinanceRecord>[] = [
   {
@@ -46,13 +47,6 @@ export const transactionDetailColumns: ColumnDef<TransactionFinanceRecord>[] = [
     ),
   },
   {
-    accessorKey: "amount",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Jumlah" />
-    ),
-    cell: ({ row }) => <div>{formatIDR(row.getValue("amount"))}</div>,
-  },
-  {
     accessorKey: "description",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Keterangan" />
@@ -61,6 +55,47 @@ export const transactionDetailColumns: ColumnDef<TransactionFinanceRecord>[] = [
       const description = row.original.description;
       return <div>{description ? description : "-"}</div>;
     },
+  },
+  {
+    accessorKey: "user",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Pencatat" />
+    ),
+    cell: ({ row }) => {
+      const user = row.original.user;
+
+      if (!user)
+        return (
+          <div className="flex items-center gap-2">
+            <Avatar className="size-8">
+              <AvatarImage src={undefined} />
+              <AvatarFallback>
+                {getAvatarFallback("Tidak Diketahui")}
+              </AvatarFallback>
+            </Avatar>
+            Tidak Diketahui
+          </div>
+        );
+
+      const { name, image } = user;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Avatar className="size-8">
+            <AvatarImage src={image ?? undefined} />
+            <AvatarFallback>{getAvatarFallback(name)}</AvatarFallback>
+          </Avatar>
+          {name}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "amount",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Jumlah" />
+    ),
+    cell: ({ row }) => <div>{formatIDR(row.getValue("amount"))}</div>,
   },
   {
     id: "actions",

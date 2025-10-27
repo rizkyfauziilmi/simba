@@ -107,6 +107,12 @@ export const financeRouter = createTRPCRouter({
           date: true,
           category: true,
           description: true,
+          user: {
+            select: {
+              image: true,
+              name: true,
+            },
+          },
         },
         orderBy: { date: "desc" },
       });

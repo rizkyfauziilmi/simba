@@ -220,6 +220,7 @@ export function AdminDashboard() {
                     <TableHead>Tipe</TableHead>
                     <TableHead>Kategori</TableHead>
                     <TableHead>Keterangan</TableHead>
+                    <TableHead>Pencatat</TableHead>
                     <TableHead className="text-right">Jumlah</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -234,6 +235,31 @@ export function AdminDashboard() {
                       </TableCell>
                       <TableCell>{transaction.category}</TableCell>
                       <TableCell>{transaction.description ?? "-"}</TableCell>
+                      <TableCell>
+                        {!transaction.user ? (
+                          <div className="flex items-center gap-2">
+                            <Avatar className="size-8">
+                              <AvatarImage src={undefined} />
+                              <AvatarFallback>
+                                {getAvatarFallback("Tidak Diketahui")}
+                              </AvatarFallback>
+                            </Avatar>
+                            Tidak Diketahui
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Avatar className="size-8">
+                              <AvatarImage
+                                src={transaction.user.image ?? undefined}
+                              />
+                              <AvatarFallback>
+                                {getAvatarFallback(transaction.user.name)}
+                              </AvatarFallback>
+                            </Avatar>
+                            {transaction.user.name}
+                          </div>
+                        )}
+                      </TableCell>
                       <TableCell className="text-right font-medium">
                         {formatCurrency(transaction.amount)}
                       </TableCell>
