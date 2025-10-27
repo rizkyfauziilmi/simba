@@ -494,6 +494,13 @@ export const classRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { classId, promotedClassId } = input;
 
+      if (classId === promotedClassId) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Kelas tujuan tidak boleh sama dengan kelas asal",
+        });
+      }
+
       const kelas = await ctx.db.class.findUnique({
         where: {
           id: classId,

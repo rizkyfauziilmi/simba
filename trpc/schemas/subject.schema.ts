@@ -17,7 +17,7 @@ export const createSubjectSchema = z.object({
         }),
         jamMulai: z.string().min(1, "Jam mulai wajib diisi"),
         jamSelesai: z.string().min(1, "Jam selesai wajib diisi"),
-        guruPengampuId: z.cuid("ID guru tidak valid").optional(),
+        guruPengampuId: zStringEmptyOptional(z.string()),
         kelasId: z.cuid("ID kelas tidak valid"),
       }),
     )

@@ -167,7 +167,9 @@ export function GraduateClassAlertDialog({
                                     <SelectLabel>{grade}</SelectLabel>
                                     {availableClasses
                                       .filter(
-                                        (aclass) => aclass.tingkat === grade,
+                                        (aclass) =>
+                                          aclass.tingkat === grade &&
+                                          aclass.id !== classId,
                                       )
                                       .map((aclass) => (
                                         <SelectItem

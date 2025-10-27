@@ -14,7 +14,7 @@ export const createClassSchema = z.object({
     })
     .optional(),
   isLast: z.boolean().default(false).optional(),
-  waliKelasId: z.cuid("ID guru tidak valid").optional(),
+  waliKelasId: zStringEmptyOptional(z.string()),
   studentIds: z.array(z.cuid("ID siswa tidak valid")).optional(),
 });
 
