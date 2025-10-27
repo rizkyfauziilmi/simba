@@ -91,7 +91,7 @@ export function FinanceFilters() {
                 <Calendar
                   mode="range"
                   numberOfMonths={2}
-                  defaultMonth={fromDate || undefined}
+                  defaultMonth={toDate || undefined}
                   disabled={(date) => date > now}
                   selected={{
                     from: fromDate,
