@@ -11,7 +11,7 @@ export const createSubjectSchema = z.object({
   schedules: z
     .array(
       z.object({
-        id: z.cuid("ID jadwal tidak valid"),
+        id: z.cuid2("ID jadwal tidak valid"),
         hari: z.enum(Hari, {
           message: "Hari wajib diisi",
         }),
