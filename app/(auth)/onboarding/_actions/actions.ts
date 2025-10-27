@@ -14,11 +14,11 @@ export async function createAdmin(values: {
         name: values.username,
         email: values.email,
         password: values.password,
+        role: "admin",
         data: {
           username: values.username,
           displayUsername: values.username,
         },
-        role: "admin",
       },
       asResponse: true,
     });

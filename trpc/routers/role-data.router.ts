@@ -42,6 +42,12 @@ export const roleDataRouter = createTRPCRouter({
         category: true,
         amount: true,
         description: true,
+        user: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
       },
       take: 5,
       orderBy: { date: "desc" },

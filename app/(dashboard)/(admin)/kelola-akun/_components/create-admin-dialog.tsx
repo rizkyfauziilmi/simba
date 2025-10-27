@@ -82,6 +82,10 @@ export function CreateAdminDialog() {
       password,
       name,
       role: "admin",
+      data: {
+        username: name,
+        displayUsername: name,
+      },
     });
     setIsSubmitting(false);
 

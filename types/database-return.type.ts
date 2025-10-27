@@ -43,6 +43,12 @@ export type TransactionFinanceRecord = Prisma.SchoolFinanceGetPayload<{
     date: true;
     category: true;
     description: true;
+    user: {
+      select: {
+        name: true;
+        image: true;
+      };
+    };
   };
 }>;
 
