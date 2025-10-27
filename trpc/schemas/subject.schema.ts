@@ -1,10 +1,13 @@
 import { Hari } from "@/lib/generated/prisma";
 import { timeStringToSeconds } from "@/lib/time";
+import { zStringEmptyOptional } from "@/lib/zod-utils";
 import z from "zod";
 
 export const createSubjectSchema = z.object({
   nama: z.string().min(1, "Nama kelas wajib diisi"),
-  deskripsi: z.string().max(255, "Deskripsi maksimal 255 karakter").optional(),
+  deskripsi: zStringEmptyOptional(
+    z.string().max(255, "Deskripsi maksimal 255 karakter"),
+  ),
   schedules: z
     .array(
       z.object({

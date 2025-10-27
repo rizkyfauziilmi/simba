@@ -1,4 +1,5 @@
 import { Gender, TeacherStatus } from "@/lib/generated/prisma";
+import { zStringEmptyOptional } from "@/lib/zod-utils";
 import z from "zod";
 
 export const createTeacherSchema = z.object({
@@ -17,14 +18,15 @@ export const createTeacherSchema = z.object({
     message: "Jenis kelamin wajib diisi",
   }),
   tanggalLahir: z.date("Tanggal lahir wajib diisi"),
-  alamat: z.string().optional(),
-  noTelepon: z
-    .string()
-    .regex(
-      /^(?:\+62|62|0)8[1-9][0-9]{6,10}$/,
-      "No. HP/WA harus berupa nomor Indonesia yang valid",
-    )
-    .optional(),
+  alamat: zStringEmptyOptional(z.string()),
+  noTelepon: zStringEmptyOptional(
+    z
+      .string()
+      .regex(
+        /^(?:\+62|62|0)8[1-9][0-9]{6,10}$/,
+        "No. HP/WA harus berupa nomor Indonesia yang valid",
+      ),
+  ),
   status: z
     .enum(TeacherStatus, {
       message: "Status guru wajib diisi",
@@ -33,7 +35,7 @@ export const createTeacherSchema = z.object({
   tanggalMasuk: z.date("Tanggal masuk wajib diisi"),
 });
 
-export const getNotHomeRoomTeachersSchema = z.string().optional();
+export const getNotHomeRoomTeachersSchema = zStringEmptyOptional(z.string());
 
 export const deleteTeacherSchema = z.object({
   teacherId: z.cuid("ID guru wajib diisi"),

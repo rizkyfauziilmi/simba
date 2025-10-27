@@ -1,4 +1,5 @@
 import { ClassStatus, StudentGrade } from "@/lib/generated/prisma";
+import { zStringEmptyOptional } from "@/lib/zod-utils";
 import z from "zod";
 
 export const createClassSchema = z.object({
@@ -6,7 +7,7 @@ export const createClassSchema = z.object({
   tingkat: z.enum(StudentGrade, {
     message: "Tingkat kelas wajib diisi",
   }),
-  ruang: z.string().optional(),
+  ruang: zStringEmptyOptional(z.string()),
   status: z
     .enum(ClassStatus, {
       message: "Status kelas wajib diisi",
@@ -21,7 +22,7 @@ export const updateClassSchema = createClassSchema.partial().extend({
   classId: z.cuid("ID kelas tidak valid"),
 });
 
-export const getAvailableClassesSchema = z.string().optional();
+export const getAvailableClassesSchema = zStringEmptyOptional(z.string());
 
 export const getClassByIdSchema = z.object({
   classId: z.string(),
@@ -33,7 +34,7 @@ export const deleteClassSchema = z.object({
 
 export const markAsPassedSchema = z.object({
   classId: z.cuid("ID kelas tidak valid"),
-  promotedClassId: z.string().optional(),
+  promotedClassId: zStringEmptyOptional(z.string()),
 });
 
 export type CreateClassSchema = z.infer<typeof createClassSchema>;

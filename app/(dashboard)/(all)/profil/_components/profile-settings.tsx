@@ -61,7 +61,7 @@ export default function ProfileSettings() {
         <CardHeader>
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={user.image || undefined} alt={user.name} />
+              <AvatarImage src={user.image ?? undefined} alt={user.name} />
               <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
             </Avatar>
             <div>

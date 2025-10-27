@@ -1,4 +1,5 @@
 import { FinanceType } from "@/lib/generated/prisma";
+import { zStringEmptyOptional } from "@/lib/zod-utils";
 import { endOfYear, startOfYear } from "date-fns";
 import z from "zod";
 
@@ -17,7 +18,7 @@ export const createTransactionSchema = z.object({
   amount: z
     .number("Jumlah tidak valid.")
     .min(1, { message: "Jumlah harus minimal Rp 1." }),
-  description: z.string().optional(),
+  description: zStringEmptyOptional(z.string()),
   date: z.date("Pilih tanggal transaksi."),
 });
 

@@ -1,4 +1,5 @@
 import { Gender, StudentStatus } from "@/lib/generated/prisma";
+import { zStringEmptyOptional } from "@/lib/zod-utils";
 import z from "zod";
 
 export const createStudentSchema = z.object({
@@ -26,10 +27,10 @@ export const createStudentSchema = z.object({
       message: "Status siswa wajib diisi",
     })
     .optional(),
-  kelasId: z.string().optional(),
+  kelasId: zStringEmptyOptional(z.string()),
 });
 
-export const getAllStudentsWithNoClassSchema = z.string().optional();
+export const getAllStudentsWithNoClassSchema = zStringEmptyOptional(z.string());
 
 export const deleteStudentSchema = z.object({
   studentId: z.cuid("ID siswa tidak valid"),

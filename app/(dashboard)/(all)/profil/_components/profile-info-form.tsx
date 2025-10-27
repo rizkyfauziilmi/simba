@@ -25,6 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Spinner } from "@/components/ui/spinner";
+import { zStringEmptyOptional } from "@/lib/zod-utils";
 
 interface ProfileInfoFormProps {
   user: Pick<Session, "user">["user"];
@@ -32,25 +33,30 @@ interface ProfileInfoFormProps {
 }
 
 const updateProfileInfoSchema = z.object({
-  image: z
-    .url({ message: "Harus berupa URL gambar yang valid" })
-    // .refine((val) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(val), {
-    //   message: "URL harus berakhiran dengan ekstensi gambar (.jpg, .png, dll)",
-    // })
-    .refine(
+  image: zStringEmptyOptional(
+    z.string().refine(
       async (url) => {
+        if (!url) return true; // Allow empty/undefined
+
+        // Check if it's a valid URL
+        try {
+          new URL(url);
+        } catch {
+          return false;
+        }
+
+        // Check if it points to an image
         try {
           const res = await fetch(url, { method: "HEAD" });
           const contentType = res.headers.get("content-type");
-          console.log(contentType);
-          return contentType?.startsWith("image/");
+          return contentType?.startsWith("image/") ?? false;
         } catch {
           return false;
         }
       },
       { message: "URL harus mengarah ke sumber gambar yang valid" },
-    )
-    .optional(),
+    ),
+  ),
   name: z.string().min(2, "Nama harus terdiri dari minimal 2 karakter"),
   displayUsername: z
     .string()
@@ -64,11 +70,13 @@ const updateProfileInfoSchema = z.object({
     ),
 });
 
+type UpdateProfileInfoSchema = z.infer<typeof updateProfileInfoSchema>;
+
 export default function ProfileInfoForm({
   user,
   onUpdate,
 }: ProfileInfoFormProps) {
-  const form = useForm<z.infer<typeof updateProfileInfoSchema>>({
+  const form = useForm<UpdateProfileInfoSchema>({
     resolver: zodResolver(updateProfileInfoSchema),
     defaultValues: {
       image: user.image ?? "",
@@ -81,16 +89,16 @@ export default function ProfileInfoForm({
   const refreshInfo = () => {
     onUpdate();
     form.reset({
-      image: user.image ?? undefined,
+      image: user.image ?? "",
       name: user.name,
-      displayUsername: user.displayUsername ?? undefined,
-      username: user.username ?? undefined,
+      displayUsername: user.displayUsername ?? "",
+      username: user.username ?? "",
     });
   };
 
-  async function onSubmit(dataForm: z.infer<typeof updateProfileInfoSchema>) {
+  async function onSubmit(dataForm: UpdateProfileInfoSchema) {
     const { error } = await authClient.updateUser({
-      image: dataForm.image,
+      image: dataForm.image || null,
       name: dataForm.name,
       displayUsername: dataForm.displayUsername,
       username: dataForm.username,
@@ -106,7 +114,7 @@ export default function ProfileInfoForm({
     toast.success("Profil berhasil diperbarui");
     onUpdate();
     form.reset({
-      image: dataForm.image,
+      image: dataForm.image ?? "",
       name: dataForm.name,
       displayUsername: dataForm.displayUsername,
       username: dataForm.username,
@@ -134,7 +142,7 @@ export default function ProfileInfoForm({
                     <div className="flex items-center gap-4">
                       <Avatar className="h-20 w-20">
                         <AvatarImage
-                          src={field.value || undefined}
+                          src={field.value === "" ? undefined : field.value}
                           alt={user.name}
                         />
                         <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
