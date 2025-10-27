@@ -5,8 +5,8 @@ export function TableSkeleton() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Skeleton className="w-2/5 rounded-md h-8" />
-        <Skeleton className="w-1/9 rounded-md h-8" />
+        <Skeleton className="w-full md:w-2/5 rounded-md h-8" />
+        <Skeleton className="w-1/9 hidden md:block rounded-md h-8" />
       </div>
       <div className="flex flex-col gap-4 border rounded-sm py-4">
         <TableRow />

@@ -29,20 +29,42 @@ export function ImpersonateIndicator() {
   };
 
   return (
-    <Button
-      variant="destructive"
-      disabled={isLoading}
-      onClick={() => {
-        setIsLoading(true);
-        stopImpersonation().finally(() => {
-          setIsLoading(false);
-          toast.success("Penyamaran dihentikan");
-          window.location.href = "/kelola-akun";
-        });
-      }}
-    >
-      {isLoading ? <Spinner /> : <LockOpen />}
-      {isLoading ? "Memproses..." : "Berhenti Penyamaran"}
-    </Button>
+    <div>
+      <div className="md:block hidden">
+        <Button
+          variant="destructive"
+          size="sm"
+          disabled={isLoading}
+          onClick={() => {
+            setIsLoading(true);
+            stopImpersonation().finally(() => {
+              setIsLoading(false);
+              toast.success("Penyamaran dihentikan");
+              window.location.href = "/kelola-akun";
+            });
+          }}
+        >
+          {isLoading ? <Spinner /> : <LockOpen />}
+          {isLoading ? "Memproses..." : "Berhenti Penyamaran"}
+        </Button>
+      </div>
+      <div className="md:hidden block">
+        <Button
+          variant="destructive"
+          size="icon"
+          disabled={isLoading}
+          onClick={() => {
+            setIsLoading(true);
+            stopImpersonation().finally(() => {
+              setIsLoading(false);
+              toast.success("Penyamaran dihentikan");
+              window.location.href = "/kelola-akun";
+            });
+          }}
+        >
+          {isLoading ? <Spinner /> : <LockOpen />}
+        </Button>
+      </div>
+    </div>
   );
 }
