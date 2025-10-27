@@ -35,7 +35,7 @@ export const MasterSubjectHeader = () => {
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="secondary">
+            <Button variant="secondary" disabled={subjects.length === 0}>
               <DownloadIcon />
               Unduh Data
             </Button>

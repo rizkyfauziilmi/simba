@@ -137,48 +137,6 @@ export function TransactionHeader() {
         </p>
       </div>
       <div className="flex items-center gap-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="secondary">
-              <DownloadIcon />
-              Unduh Data
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Format File</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onSelect={() =>
-                downloadCSV(
-                  data.transactions,
-                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
-                )
-              }
-            >
-              CSV
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onSelect={() =>
-                downloadExcel(
-                  data.transactions,
-                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
-                )
-              }
-            >
-              Excel
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onSelect={() =>
-                downloadPDF(
-                  data.transactions,
-                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
-                )
-              }
-            >
-              PDF
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
             <Button>Tambah Transaksi</Button>
@@ -385,6 +343,51 @@ export function TransactionHeader() {
             </Form>
           </DialogContent>
         </Dialog>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="secondary"
+              disabled={data.transactions.length === 0}
+            >
+              <DownloadIcon />
+              Unduh Data
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Format File</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onSelect={() =>
+                downloadCSV(
+                  data.transactions,
+                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
+                )
+              }
+            >
+              CSV
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() =>
+                downloadExcel(
+                  data.transactions,
+                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
+                )
+              }
+            >
+              Excel
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() =>
+                downloadPDF(
+                  data.transactions,
+                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
+                )
+              }
+            >
+              PDF
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

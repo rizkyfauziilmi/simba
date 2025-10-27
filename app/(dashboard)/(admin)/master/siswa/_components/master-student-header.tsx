@@ -35,7 +35,7 @@ export const MasterStudentHeader = () => {
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="secondary">
+            <Button variant="secondary" disabled={students.length === 0}>
               <DownloadIcon />
               Unduh Data
             </Button>
