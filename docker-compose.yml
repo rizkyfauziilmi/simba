@@ -17,29 +17,28 @@ services:
       retries: 5
 
   web:
+    platform: "linux/amd64"
     build:
       context: .
-      # add `--no-cache` here for a clean rebuild
-      # docker compose build --no-cache
-    restart: always
+      dockerfile: Dockerfile
     depends_on:
       postgres:
         condition: service_healthy
+    restart: always
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    image: simba
     environment:
       DATABASE_URL: postgresql://user:password@postgres:5432/mydb?schema=public
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL}
       NODE_ENV: production
-    ports:
-      - "3000:3000"
     env_file:
       - .env
     healthcheck:
       test:
-        [
-          "CMD-SHELL",
-          "wget --no-verbose --tries=1 --spider http://127.0.0.1:3000/api/health || exit 1",
-        ]
+        ["CMD-SHELL", "curl -fsS http://localhost:3000/api/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5

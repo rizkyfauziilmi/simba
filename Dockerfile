@@ -1,70 +1,59 @@
-# syntax=docker.io/docker/dockerfile:1
-
-FROM node:20-alpine AS base
-RUN apk add --no-cache libc6-compat
+##### DEPENDENCIES
+FROM node:20-alpine AS deps
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
-# -------------------------------------
-# 1️⃣ Dependencies Layer
-# -------------------------------------
-FROM base AS deps
+# gunakan mirror registry agar cepat dan stabil
+RUN npm config set registry https://registry.npmmirror.com
 
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
-# ! this important because postinstall script (prisma generate)
-COPY prisma ./prisma
+# Install Prisma Client - remove if not using Prisma
+COPY prisma ./
+
+# Install dependencies based on the preferred package manager
+COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
 RUN \
     if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-    elif [ -f package-lock.json ]; then npm ci; \
-    elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
-    else echo "❌ No lockfile found." && exit 1; fi
+    elif [ -f package-lock.json ]; then for i in 1 2 3; do npm ci && break || sleep 5; done; \
+    elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm && pnpm i; \
+    else echo "Lockfile not found." && exit 1; \
+    fi
 
-# uncomment to generate Prisma client (postinstall is not set)
-# RUN npx prisma generate
 
-# -------------------------------------
-# 2️⃣ Build Layer
-# -------------------------------------
-FROM base AS builder
-
+##### BUILDER
+FROM node:20-alpine AS builder
 WORKDIR /app
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# ✅ Ensure Prisma client is up to date before build
-RUN npx prisma generate
 
 RUN \
     if [ -f yarn.lock ]; then yarn build; \
     elif [ -f package-lock.json ]; then npm run build; \
-    elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
-    else echo "❌ No lockfile found." && exit 1; fi
+    elif [ -f pnpm-lock.yaml ]; then npm install -g pnpm && pnpm run build; \
+    else echo "Lockfile not found." && exit 1; \
+    fi
 
-# -------------------------------------
-# 3️⃣ Production Runtime
-# -------------------------------------
-FROM base AS runner
-
+##### RUNNER
+FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-ENV HOSTNAME="0.0.0.0"
-ENV PORT=3000
 
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser --system --uid 1001 nextjs
+# Install curl
+RUN apk add --no-cache curl
 
-# ✅ Copy Prisma client & schema for runtime
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-COPY --from=builder /app/prisma ./prisma
-
-# Copy only what’s needed for production
+COPY --from=builder /app/next.config.ts ./
 COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/prisma ./prisma
+COPY entrypoint.sh ./entrypoint.sh
 
-USER nextjs
+RUN chmod +x ./entrypoint.sh
 
 EXPOSE 3000
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+CMD ["./entrypoint.sh"]
