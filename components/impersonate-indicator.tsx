@@ -1,32 +1,32 @@
-"use client";
+'use client'
 
-import { authClient } from "@/lib/auth-client";
-import { Button } from "./ui/button";
-import { toast } from "sonner";
-import { LockOpen } from "lucide-react";
-import { useState } from "react";
-import { Spinner } from "./ui/spinner";
+import { authClient } from '@/lib/auth-client'
+import { Button } from './ui/button'
+import { toast } from 'sonner'
+import { LockOpen } from 'lucide-react'
+import { useState } from 'react'
+import { Spinner } from './ui/spinner'
 
 export function ImpersonateIndicator() {
-  const [isLoading, setIsLoading] = useState(false);
-  const { data: session, isPending, error } = authClient.useSession();
+  const [isLoading, setIsLoading] = useState(false)
+  const { data: session, isPending, error } = authClient.useSession()
 
-  if (!session || !session.session || isPending || error) return null;
+  if (!session || !session.session || isPending || error) return null
 
-  const isImpersonating = session.session.impersonatedBy !== null;
+  const isImpersonating = session.session.impersonatedBy !== null
 
-  if (!isImpersonating) return null;
+  if (!isImpersonating) return null
 
   const stopImpersonation = async () => {
-    const { error } = await authClient.admin.stopImpersonating();
+    const { error } = await authClient.admin.stopImpersonating()
 
     if (error) {
-      toast.error("Gagal menghentikan penyamaran", {
+      toast.error('Gagal menghentikan penyamaran', {
         description: error.message,
-      });
-      return;
+      })
+      return
     }
-  };
+  }
 
   return (
     <div>
@@ -36,16 +36,16 @@ export function ImpersonateIndicator() {
           size="sm"
           disabled={isLoading}
           onClick={() => {
-            setIsLoading(true);
+            setIsLoading(true)
             stopImpersonation().finally(() => {
-              setIsLoading(false);
-              toast.success("Penyamaran dihentikan");
-              window.location.href = "/kelola-akun";
-            });
+              setIsLoading(false)
+              toast.success('Penyamaran dihentikan')
+              window.location.href = '/kelola-akun'
+            })
           }}
         >
           {isLoading ? <Spinner /> : <LockOpen />}
-          {isLoading ? "Memproses..." : "Berhenti Penyamaran"}
+          {isLoading ? 'Memproses...' : 'Berhenti Penyamaran'}
         </Button>
       </div>
       <div className="md:hidden block">
@@ -54,17 +54,17 @@ export function ImpersonateIndicator() {
           size="icon"
           disabled={isLoading}
           onClick={() => {
-            setIsLoading(true);
+            setIsLoading(true)
             stopImpersonation().finally(() => {
-              setIsLoading(false);
-              toast.success("Penyamaran dihentikan");
-              window.location.href = "/kelola-akun";
-            });
+              setIsLoading(false)
+              toast.success('Penyamaran dihentikan')
+              window.location.href = '/kelola-akun'
+            })
           }}
         >
           {isLoading ? <Spinner /> : <LockOpen />}
         </Button>
       </div>
     </div>
-  );
+  )
 }

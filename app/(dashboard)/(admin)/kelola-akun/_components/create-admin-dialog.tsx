@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   Dialog,
@@ -9,100 +9,92 @@ import {
   DialogFooter,
   DialogDescription,
   DialogClose,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Eye, EyeOff, ShieldUser } from "lucide-react";
-import { useState } from "react";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
-import { useQueryClient } from "@tanstack/react-query";
-import { Spinner } from "@/components/ui/spinner";
-import z from "zod";
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Eye, EyeOff, ShieldUser } from 'lucide-react'
+import { useState } from 'react'
+import { authClient } from '@/lib/auth-client'
+import { toast } from 'sonner'
+import { useQueryClient } from '@tanstack/react-query'
+import { Spinner } from '@/components/ui/spinner'
+import z from 'zod'
 
 export function CreateAdminDialog() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
+  const [password, setPassword] = useState('')
 
   // Password strength logic
   function calculatePasswordStrength(password: string) {
-    let strength = 0;
-    if (password.length >= 8) strength++;
-    if (password.length >= 12) strength++;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-    if (/\d/.test(password)) strength++;
-    if (/[^a-zA-Z\d]/.test(password)) strength++;
-    return strength;
+    let strength = 0
+    if (password.length >= 8) strength++
+    if (password.length >= 12) strength++
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++
+    if (/\d/.test(password)) strength++
+    if (/[^a-zA-Z\d]/.test(password)) strength++
+    return strength
   }
 
-  const passwordStrength = calculatePasswordStrength(password);
+  const passwordStrength = calculatePasswordStrength(password)
   const getPasswordStrengthLabel = () => {
-    const labels = ["Sangat Lemah", "Lemah", "Sedang", "Kuat", "Sangat Kuat"];
-    return password
-      ? labels[passwordStrength - 1] || "Masukkan kata sandi"
-      : "Masukkan kata sandi";
-  };
+    const labels = ['Sangat Lemah', 'Lemah', 'Sedang', 'Kuat', 'Sangat Kuat']
+    return password ? labels[passwordStrength - 1] || 'Masukkan kata sandi' : 'Masukkan kata sandi'
+  }
   const getPasswordStrengthColor = () => {
-    const colors = [
-      "bg-red-500",
-      "bg-orange-500",
-      "bg-yellow-500",
-      "bg-lime-500",
-      "bg-green-500",
-    ];
-    return colors[passwordStrength - 1] || "bg-slate-300";
-  };
+    const colors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-lime-500', 'bg-green-500']
+    return colors[passwordStrength - 1] || 'bg-slate-300'
+  }
 
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const createAdmin = async () => {
     if (!email || !name) {
-      toast.error("Mohon isi semua kolom");
-      return;
+      toast.error('Mohon isi semua kolom')
+      return
     }
     if (!z.email().safeParse(email).success) {
-      toast.error("Email tidak valid");
-      return;
+      toast.error('Email tidak valid')
+      return
     }
 
     if (passwordStrength < 4) {
-      toast.error("Kata sandi belum cukup kuat", {
-        description: "Mohon pilih kata sandi yang lebih kuat sebelum mengirim.",
-      });
-      return;
+      toast.error('Kata sandi belum cukup kuat', {
+        description: 'Mohon pilih kata sandi yang lebih kuat sebelum mengirim.',
+      })
+      return
     }
-    setIsSubmitting(true);
+    setIsSubmitting(true)
     const { error } = await authClient.admin.createUser({
       email,
       password,
       name,
-      role: "admin",
+      role: 'admin',
       data: {
         username: name,
         displayUsername: name,
       },
-    });
-    setIsSubmitting(false);
+    })
+    setIsSubmitting(false)
 
     if (error) {
-      toast.error("Gagal membuat admin", {
+      toast.error('Gagal membuat admin', {
         description: error.message,
-      });
-      return;
+      })
+      return
     }
 
-    queryClient.invalidateQueries({ queryKey: ["users"] });
-    setIsOpen(false);
-    setEmail("");
-    setName("");
-    setPassword("");
-    toast.success("Admin berhasil dibuat");
-  };
+    queryClient.invalidateQueries({ queryKey: ['users'] })
+    setIsOpen(false)
+    setEmail('')
+    setName('')
+    setPassword('')
+    toast.success('Admin berhasil dibuat')
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -125,7 +117,7 @@ export function CreateAdminDialog() {
             id="adminEmail"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={e => setEmail(e.target.value)}
             autoComplete="email"
           />
         </div>
@@ -135,7 +127,7 @@ export function CreateAdminDialog() {
             id="adminName"
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={e => setName(e.target.value)}
             autoComplete="name"
           />
         </div>
@@ -144,9 +136,9 @@ export function CreateAdminDialog() {
           <div className="relative">
             <Input
               id="adminPassword"
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? 'text' : 'password'}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               autoComplete="new-password"
             />
             <Button
@@ -171,14 +163,13 @@ export function CreateAdminDialog() {
                   className={`h-1 flex-1 rounded-full ${
                     i < passwordStrength
                       ? getPasswordStrengthColor()
-                      : "bg-slate-300 dark:bg-slate-700"
+                      : 'bg-slate-300 dark:bg-slate-700'
                   }`}
                 />
               ))}
             </div>
             <p className="text-xs text-muted-foreground">
-              Kekuatan:{" "}
-              <span className="font-medium">{getPasswordStrengthLabel()}</span>
+              Kekuatan: <span className="font-medium">{getPasswordStrengthLabel()}</span>
             </p>
           </div>
         )}
@@ -187,23 +178,23 @@ export function CreateAdminDialog() {
           <ul className="text-sm space-y-1">
             {[
               {
-                label: "Minimal 8 karakter",
+                label: 'Minimal 8 karakter',
                 test: (pw: string) => pw.length >= 8,
               },
               {
-                label: "Huruf besar dan kecil",
+                label: 'Huruf besar dan kecil',
                 test: (pw: string) => /[a-z]/.test(pw) && /[A-Z]/.test(pw),
               },
               {
-                label: "Minimal satu angka",
+                label: 'Minimal satu angka',
                 test: (pw: string) => /\d/.test(pw),
               },
               {
-                label: "Minimal satu karakter khusus (!@#$%^&*)",
+                label: 'Minimal satu karakter khusus (!@#$%^&*)',
                 test: (pw: string) => /[^a-zA-Z\d]/.test(pw),
               },
             ].map((req, idx) => {
-              const passed = req.test(password || "");
+              const passed = req.test(password || '')
               return (
                 <li key={idx} className="flex items-center gap-2">
                   {passed ? (
@@ -211,15 +202,11 @@ export function CreateAdminDialog() {
                   ) : (
                     <span className="text-red-600 font-bold">✗</span>
                   )}
-                  <span
-                    className={
-                      passed ? "text-green-700" : "text-muted-foreground"
-                    }
-                  >
+                  <span className={passed ? 'text-green-700' : 'text-muted-foreground'}>
                     {req.label}
                   </span>
                 </li>
-              );
+              )
             })}
           </ul>
         </div>
@@ -235,10 +222,10 @@ export function CreateAdminDialog() {
             disabled={!email || !name || passwordStrength < 4 || isSubmitting}
           >
             {isSubmitting && <Spinner />}
-            {isSubmitting ? "Membuat..." : "Buat"}
+            {isSubmitting ? 'Membuat...' : 'Buat'}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

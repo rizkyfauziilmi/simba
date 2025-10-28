@@ -1,15 +1,15 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Clock, MapPin, BookOpen, Users } from "lucide-react";
-import { useTRPC } from "@/trpc/client";
-import { Hari, StudentGrade } from "@/lib/generated/prisma";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { enumToReadable } from "@/lib/string";
-import { getTodayHariEnum } from "@/lib/date";
+import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Clock, MapPin, BookOpen, Users } from 'lucide-react'
+import { useTRPC } from '@/trpc/client'
+import { Hari, StudentGrade } from '@/lib/generated/prisma'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { enumToReadable } from '@/lib/string'
+import { getTodayHariEnum } from '@/lib/date'
 
 const hariOrder: Record<Hari, number> = {
   SENIN: 1,
@@ -18,38 +18,31 @@ const hariOrder: Record<Hari, number> = {
   KAMIS: 4,
   JUMAT: 5,
   SABTU: 6,
-};
+}
 
 const gradeColors: Record<StudentGrade, string> = {
-  SD: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-  SMP: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
-  SMK: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200",
-};
+  SD: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+  SMP: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+  SMK: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
+}
 
 export function TeacherSchedules() {
-  const [selectedGrade, setSelectedGrade] = useState<StudentGrade | "all">(
-    "all",
-  );
-  const [selectedDay, setSelectedDay] = useState<Hari | "all">(
-    getTodayHariEnum() ?? "all",
-  );
-  const trpc = useTRPC();
-  const { data: schedules } = useSuspenseQuery(
-    trpc.subject.getTeacherSchedules.queryOptions(),
-  );
+  const [selectedGrade, setSelectedGrade] = useState<StudentGrade | 'all'>('all')
+  const [selectedDay, setSelectedDay] = useState<Hari | 'all'>(getTodayHariEnum() ?? 'all')
+  const trpc = useTRPC()
+  const { data: schedules } = useSuspenseQuery(trpc.subject.getTeacherSchedules.queryOptions())
 
-  const filteredData = schedules.filter((item) => {
-    const gradeMatch =
-      selectedGrade === "all" || item.kelas.tingkat === selectedGrade;
-    const dayMatch = selectedDay === "all" || item.hari === selectedDay;
-    return gradeMatch && dayMatch;
-  });
+  const filteredData = schedules.filter(item => {
+    const gradeMatch = selectedGrade === 'all' || item.kelas.tingkat === selectedGrade
+    const dayMatch = selectedDay === 'all' || item.hari === selectedDay
+    return gradeMatch && dayMatch
+  })
 
   const sortedData = [...filteredData].sort((a, b) => {
-    const dayDiff = hariOrder[a.hari] - hariOrder[b.hari];
-    if (dayDiff !== 0) return dayDiff;
-    return a.jamMulai.localeCompare(b.jamMulai);
-  });
+    const dayDiff = hariOrder[a.hari] - hariOrder[b.hari]
+    if (dayDiff !== 0) return dayDiff
+    return a.jamMulai.localeCompare(b.jamMulai)
+  })
 
   return (
     <div>
@@ -67,16 +60,16 @@ export function TeacherSchedules() {
               </label>
               <div className="flex flex-wrap gap-2">
                 <Button
-                  variant={selectedGrade === "all" ? "default" : "outline"}
-                  onClick={() => setSelectedGrade("all")}
+                  variant={selectedGrade === 'all' ? 'default' : 'outline'}
+                  onClick={() => setSelectedGrade('all')}
                   className="text-sm"
                 >
                   Semua
                 </Button>
-                {Object.values(StudentGrade).map((grade) => (
+                {Object.values(StudentGrade).map(grade => (
                   <Button
                     key={grade}
-                    variant={selectedGrade === grade ? "default" : "outline"}
+                    variant={selectedGrade === grade ? 'default' : 'outline'}
                     onClick={() => setSelectedGrade(grade)}
                     className="text-sm"
                   >
@@ -88,26 +81,24 @@ export function TeacherSchedules() {
 
             {/* Day Filter */}
             <div>
-              <label className="text-sm font-medium text-foreground mb-2 block">
-                Hari
-              </label>
+              <label className="text-sm font-medium text-foreground mb-2 block">Hari</label>
               <div className="flex flex-wrap gap-2">
                 <Button
-                  variant={selectedDay === "all" ? "default" : "outline"}
-                  onClick={() => setSelectedDay("all")}
+                  variant={selectedDay === 'all' ? 'default' : 'outline'}
+                  onClick={() => setSelectedDay('all')}
                   className="text-sm"
                 >
                   Semua
                 </Button>
-                {Object.values(Hari).map((day) => (
+                {Object.values(Hari).map(day => (
                   <Button
                     key={day}
-                    variant={selectedDay === day ? "default" : "outline"}
+                    variant={selectedDay === day ? 'default' : 'outline'}
                     onClick={() => setSelectedDay(day)}
                     className="text-sm"
                   >
                     {enumToReadable(day)}
-                    {getTodayHariEnum() === day ? " (Hari ini)" : ""}
+                    {getTodayHariEnum() === day ? ' (Hari ini)' : ''}
                   </Button>
                 ))}
               </div>
@@ -120,32 +111,23 @@ export function TeacherSchedules() {
       <div className="space-y-3">
         {sortedData.length > 0 ? (
           sortedData.map((item, index) => (
-            <Card
-              key={index}
-              className="border-border hover:shadow-md transition-shadow"
-            >
+            <Card key={index} className="border-border hover:shadow-md transition-shadow">
               <CardContent className="p-4">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
                   {/* Subject Info */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <BookOpen className="w-4 h-4 text-primary" />
-                      <h3 className="font-semibold text-foreground">
-                        {item.subject.nama}
-                      </h3>
+                      <h3 className="font-semibold text-foreground">{item.subject.nama}</h3>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {item.subject.kode}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{item.subject.kode}</p>
                   </div>
 
                   {/* Class Info */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <Users className="w-4 h-4 text-primary" />
-                      <span className="font-medium text-foreground">
-                        {item.kelas.namaKelas}
-                      </span>
+                      <span className="font-medium text-foreground">{item.kelas.namaKelas}</span>
                     </div>
                     <Badge className={gradeColors[item.kelas.tingkat]}>
                       Kelas {item.kelas.tingkat}
@@ -168,7 +150,7 @@ export function TeacherSchedules() {
                     <div className="flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-primary" />
                       <span className="font-medium text-foreground">
-                        {item.kelas.ruang ? `Ruang ${item.kelas.ruang}` : "TBD"}
+                        {item.kelas.ruang ? `Ruang ${item.kelas.ruang}` : 'TBD'}
                       </span>
                     </div>
                     {!item.kelas.ruang && (
@@ -184,9 +166,7 @@ export function TeacherSchedules() {
         ) : (
           <Card className="border-border">
             <CardContent className="p-8 text-center">
-              <p className="text-muted-foreground">
-                Tidak ada jadwal yang sesuai dengan filter
-              </p>
+              <p className="text-muted-foreground">Tidak ada jadwal yang sesuai dengan filter</p>
             </CardContent>
           </Card>
         )}
@@ -196,13 +176,10 @@ export function TeacherSchedules() {
       <Card className="mt-6 border-border bg-muted/50">
         <CardContent className="p-4">
           <p className="text-sm text-muted-foreground">
-            Total jadwal:{" "}
-            <span className="font-semibold text-foreground">
-              {sortedData.length}
-            </span>
+            Total jadwal: <span className="font-semibold text-foreground">{sortedData.length}</span>
           </p>
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

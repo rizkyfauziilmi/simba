@@ -1,4 +1,4 @@
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from '../ui/skeleton'
 
 export function FormInputSkeleton() {
   return (
@@ -6,5 +6,5 @@ export function FormInputSkeleton() {
       <Skeleton className="h-3 w-12" />
       <Skeleton className="h-10 w-full rounded-md" />
     </div>
-  );
+  )
 }

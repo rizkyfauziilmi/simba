@@ -362,11 +362,11 @@ async function createClassSchedules(
 
   // We'll compute total by summing planned inserts
   let plannedTotal = 0;
-  for (const _ of classes) {
-    for (const hari of hariList) {
-      // Saturday 3 periods, others 4
-      plannedTotal += hari === "SABTU" ? 3 : 4;
-    }
+  // Just count once per class, all classes have same schedule pattern
+  const classCount = classes.length;
+  for (const hari of hariList) {
+    // Saturday 3 periods, others 4
+    plannedTotal += classCount * (hari === "SABTU" ? 3 : 4);
   }
 
   bar.start(plannedTotal, 0);

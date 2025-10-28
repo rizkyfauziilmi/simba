@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { EmptyError } from "@/components/empty-error";
-import { Badge } from "@/components/ui/badge";
+import { EmptyError } from '@/components/empty-error'
+import { Badge } from '@/components/ui/badge'
 import {
   Card,
   CardAction,
@@ -10,34 +10,32 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Item, ItemMedia, ItemTitle, ItemContent } from "@/components/ui/item";
-import { formatDateToNow, formattedDate } from "@/lib/date";
-import { ClassStatus, StudentStatus } from "@/lib/generated/prisma";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { Calendar, Check } from "lucide-react";
+} from '@/components/ui/card'
+import { Item, ItemMedia, ItemTitle, ItemContent } from '@/components/ui/item'
+import { formatDateToNow, formattedDate } from '@/lib/date'
+import { ClassStatus, StudentStatus } from '@/lib/generated/prisma'
+import { useTRPC } from '@/trpc/client'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { Calendar, Check } from 'lucide-react'
 
 // Status badge colors
 const getStatusColor = (status: StudentStatus | ClassStatus) => {
   switch (status) {
-    case "AKTIF":
-      return "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200";
-    case "NON_AKTIF":
-      return "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200";
-    case "ALUMNI":
-      return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
-    case "KELUAR":
-      return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+    case 'AKTIF':
+      return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200'
+    case 'NON_AKTIF':
+      return 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200'
+    case 'ALUMNI':
+      return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+    case 'KELUAR':
+      return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
   }
-};
+}
 
 export function StudentHistoryTable() {
-  const trpc = useTRPC();
+  const trpc = useTRPC()
 
-  const { data, refetch } = useSuspenseQuery(
-    trpc.class.getMyClassHistories.queryOptions(),
-  );
+  const { data, refetch } = useSuspenseQuery(trpc.class.getMyClassHistories.queryOptions())
 
   if (data.length === 0) {
     return (
@@ -46,12 +44,12 @@ export function StudentHistoryTable() {
         description="Tidak ada riwayat kelas siswa untuk ditampilkan."
         onAction={() => refetch()}
       />
-    );
+    )
   }
 
   return (
     <div className="space-y-4">
-      {data.map((record) => (
+      {data.map(record => (
         <Card key={record.id}>
           <CardHeader>
             <CardTitle>{record.class.namaKelas}</CardTitle>
@@ -73,9 +71,7 @@ export function StudentHistoryTable() {
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground">
-                    Tanggal Masuk
-                  </p>
+                  <p className="text-xs font-medium text-muted-foreground">Tanggal Masuk</p>
                   <p className="text-sm font-semibold text-foreground">
                     {formattedDate(record.createdAt)}
                   </p>
@@ -86,21 +82,13 @@ export function StudentHistoryTable() {
               </div>
 
               <div>
-                <p className="text-xs font-medium text-muted-foreground">
-                  ID Kelas
-                </p>
-                <p className="text-sm font-mono text-foreground">
-                  {record.classId}
-                </p>
+                <p className="text-xs font-medium text-muted-foreground">ID Kelas</p>
+                <p className="text-sm font-mono text-foreground">{record.classId}</p>
               </div>
 
               <div>
-                <p className="text-xs font-medium text-muted-foreground">
-                  ID Siswa
-                </p>
-                <p className="text-sm font-mono text-foreground">
-                  {record.studentId}
-                </p>
+                <p className="text-xs font-medium text-muted-foreground">ID Siswa</p>
+                <p className="text-sm font-mono text-foreground">{record.studentId}</p>
               </div>
             </div>
           </CardContent>
@@ -120,5 +108,5 @@ export function StudentHistoryTable() {
         </Card>
       ))}
     </div>
-  );
+  )
 }

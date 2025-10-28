@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   AlertDialog,
@@ -9,18 +9,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import { useState } from "react";
-import { toast } from "sonner";
-import { authClient } from "@/lib/auth-client";
-import { Spinner } from "@/components/ui/spinner";
+} from '@/components/ui/alert-dialog'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { authClient } from '@/lib/auth-client'
+import { Spinner } from '@/components/ui/spinner'
 
 interface RevokeAllUserSessionAlertDialogProps {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-  onStart?: () => void;
-  onComplete?: () => void;
-  userId: string;
+  isOpen: boolean
+  setIsOpen: (open: boolean) => void
+  onStart?: () => void
+  onComplete?: () => void
+  userId: string
 }
 
 export function RevokeAllUserSessionAlertDialog({
@@ -30,24 +30,24 @@ export function RevokeAllUserSessionAlertDialog({
   onStart,
   onComplete,
 }: RevokeAllUserSessionAlertDialogProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const revokeAllSession = async () => {
     const { error } = await authClient.admin.revokeUserSessions({
       userId,
-    });
+    })
 
     if (error) {
-      toast.error("Gagal mencabut sesi pengguna", {
+      toast.error('Gagal mencabut sesi pengguna', {
         description: error.message,
-      });
+      })
 
-      return;
+      return
     }
 
-    setIsOpen(false);
-    toast.success("Semua sesi pengguna berhasil dicabut");
-  };
+    setIsOpen(false)
+    toast.success('Semua sesi pengguna berhasil dicabut')
+  }
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -57,28 +57,28 @@ export function RevokeAllUserSessionAlertDialog({
             Apakah Anda yakin ingin mencabut semua sesi untuk pengguna ini?
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Tindakan ini akan mengeluarkan pengguna dari semua perangkat dan
-            membatalkan semua sesi aktif.
+            Tindakan ini akan mengeluarkan pengguna dari semua perangkat dan membatalkan semua sesi
+            aktif.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isSubmitting}>Batal</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
-              onStart?.();
-              setIsSubmitting(true);
+              onStart?.()
+              setIsSubmitting(true)
               revokeAllSession().finally(() => {
-                setIsSubmitting(false);
-                onComplete?.();
-              });
+                setIsSubmitting(false)
+                onComplete?.()
+              })
             }}
             disabled={isSubmitting}
           >
             {isSubmitting && <Spinner />}
-            {isSubmitting ? "Memproses..." : "Cabut Semua Sesi"}
+            {isSubmitting ? 'Memproses...' : 'Cabut Semua Sesi'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  );
+  )
 }

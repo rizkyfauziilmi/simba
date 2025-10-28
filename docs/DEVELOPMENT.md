@@ -3,6 +3,7 @@
 Panduan ini akan menjelaskan langkah-langkah untuk melakukan setup development environment dan menjalankan aplikasi SIMBA di mesin lokal Anda.
 
 ## Daftar Isi
+
 1. [Prasyarat](#1-prasyarat)
 2. [Instalasi Dependencies](#2-instalasi-dependencies)
 3. [Konfigurasi Environment](#3-konfigurasi-environment)
@@ -13,6 +14,7 @@ Panduan ini akan menjelaskan langkah-langkah untuk melakukan setup development e
 ## 1. Prasyarat
 
 Sebelum memulai, pastikan Anda telah menginstal:
+
 - [Node.js](https://nodejs.org/) (versi 20 atau yang lebih baru)
 - [npm](https://www.npmjs.com/) atau [yarn](https://yarnpkg.com/)
 - [Docker](https://www.docker.com/get-started) dan [Docker Compose](https://docs.docker.com/compose/install/)
@@ -63,6 +65,7 @@ npm run dev:db
 Perintah ini akan menjalankan PostgreSQL dalam container Docker menggunakan konfigurasi di `docker-compose.dev.yml`.
 
 Detail konfigurasi database:
+
 - **User**: user
 - **Password**: password
 - **Database**: mydb
@@ -93,11 +96,13 @@ Mode development mendukung hot-reload, yang berarti perubahan pada kode akan lan
 Jika mengalami masalah koneksi database:
 
 1. Pastikan container PostgreSQL berjalan:
+
    ```bash
    docker ps | grep postgres
    ```
 
 2. Periksa log container PostgreSQL:
+
    ```bash
    docker logs $(docker ps -q --filter "name=simba-postgres")
    ```
@@ -109,9 +114,10 @@ Jika mengalami masalah koneksi database:
 Jika port 3000 atau 5432 sudah digunakan oleh aplikasi lain:
 
 1. Ubah port di file `docker-compose.dev.yml` untuk database:
+
    ```yaml
    ports:
-     - "5433:5432"  # Mengubah port host dari 5432 menjadi 5433
+     - '5433:5432' # Mengubah port host dari 5432 menjadi 5433
    ```
 
 2. Ubah juga `DATABASE_URL` di `.env.local` untuk menyesuaikan dengan port baru.

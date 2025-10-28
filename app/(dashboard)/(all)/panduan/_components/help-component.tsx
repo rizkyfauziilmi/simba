@@ -1,72 +1,66 @@
-"use client";
+'use client'
 
-import { cn } from "@/lib/utils";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { cn } from '@/lib/utils'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { AlertCircle, BookOpen, Lightbulb, HelpCircle } from "lucide-react";
-import Link from "next/link";
+} from '@/components/ui/accordion'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { AlertCircle, BookOpen, Lightbulb, HelpCircle } from 'lucide-react'
+import Link from 'next/link'
 
 // Define types for the help data structure
 export interface HelpData {
-  title: string;
-  description: string;
+  title: string
+  description: string
   quickStart: {
-    title: string;
-    content: string;
-  }[];
+    title: string
+    content: string
+  }[]
   faqs: {
-    question: string;
-    answer: string;
-    category: string;
-  }[];
+    question: string
+    answer: string
+    category: string
+  }[]
   features: {
-    name: string;
-    description: string;
-    tips: string[];
-  }[];
+    name: string
+    description: string
+    tips: string[]
+  }[]
   tips: {
-    icon: string;
-    title: string;
-    description: string;
-  }[];
+    icon: string
+    title: string
+    description: string
+  }[]
 }
 
 // Reusable Help Component that accepts helpData as props
 export function HelpComponent({ helpData }: { helpData: HelpData }) {
   const faqsByCategory = helpData.faqs.reduce(
     (acc, faq) => {
-      if (!acc[faq.category]) acc[faq.category] = [];
-      acc[faq.category].push(faq);
-      return acc;
+      if (!acc[faq.category]) acc[faq.category] = []
+      acc[faq.category].push(faq)
+      return acc
     },
-    {} as Record<string, typeof helpData.faqs>,
-  );
+    {} as Record<string, typeof helpData.faqs>
+  )
 
   // Get number of categories for dynamic grid columns
-  const categoryCount = Object.keys(faqsByCategory).length;
+  const categoryCount = Object.keys(faqsByCategory).length
   // Determine grid column class based on category count
   const gridColClass = cn({
-    "grid-cols-1": categoryCount === 1,
-    "grid-cols-2": categoryCount === 2,
-    "grid-cols-3": categoryCount === 3,
-    "grid-cols-4": categoryCount === 4,
-    "grid-cols-5": categoryCount === 5,
-    "grid-cols-6": categoryCount >= 6, // Maximum of 6 columns
-  });
+    'grid-cols-1': categoryCount === 1,
+    'grid-cols-2': categoryCount === 2,
+    'grid-cols-3': categoryCount === 3,
+    'grid-cols-4': categoryCount === 4,
+    'grid-cols-5': categoryCount === 5,
+    'grid-cols-6': categoryCount >= 6, // Maximum of 6 columns
+  })
 
   return (
     <div className="space-y-8">
@@ -80,8 +74,8 @@ export function HelpComponent({ helpData }: { helpData: HelpData }) {
       <Alert>
         <Lightbulb className="h-4 w-4" />
         <AlertDescription>
-          Baru menggunakan dashboard? Mulai dengan bagian Panduan Cepat di bawah
-          untuk memahami dasar-dasar dalam hitungan menit.
+          Baru menggunakan dashboard? Mulai dengan bagian Panduan Cepat di bawah untuk memahami
+          dasar-dasar dalam hitungan menit.
         </AlertDescription>
       </Alert>
 
@@ -141,28 +135,17 @@ export function HelpComponent({ helpData }: { helpData: HelpData }) {
 
         {/* FAQ Tab */}
         <TabsContent value="faq" className="space-y-4">
-          <Tabs
-            defaultValue={Object.keys(faqsByCategory)[0]}
-            className="w-full"
-          >
+          <Tabs defaultValue={Object.keys(faqsByCategory)[0]} className="w-full">
             <TabsList className={`grid w-full ${gridColClass}`}>
-              {Object.keys(faqsByCategory).map((category) => (
-                <TabsTrigger
-                  key={category}
-                  value={category}
-                  className="text-xs"
-                >
+              {Object.keys(faqsByCategory).map(category => (
+                <TabsTrigger key={category} value={category} className="text-xs">
                   {category}
                 </TabsTrigger>
               ))}
             </TabsList>
 
             {Object.entries(faqsByCategory).map(([category, faqs]) => (
-              <TabsContent
-                key={category}
-                value={category}
-                className="space-y-4"
-              >
+              <TabsContent key={category} value={category} className="space-y-4">
                 <Accordion type="single" collapsible className="w-full">
                   {faqs.map((faq, index) => (
                     <AccordionItem key={index} value={`${category}-${index}`}>
@@ -197,9 +180,7 @@ export function HelpComponent({ helpData }: { helpData: HelpData }) {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  {tip.description}
-                </p>
+                <p className="text-sm text-muted-foreground">{tip.description}</p>
               </CardContent>
             </Card>
           ))}
@@ -210,19 +191,19 @@ export function HelpComponent({ helpData }: { helpData: HelpData }) {
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
-          Tidak menemukan informasi yang Anda cari?{" "}
+          Tidak menemukan informasi yang Anda cari?{' '}
           <span className="font-medium">
-            Hubungi tim dukungan kami di{" "}
+            Hubungi tim dukungan kami di{' '}
             <Link
               href="mailto:rizkyfauziilmi@gmail.com"
               className="hover:underline hover:text-blue-500"
             >
               rizkyfauziilmi@gmail.com
-            </Link>{" "}
+            </Link>{' '}
             untuk mendapatkan bantuan lebih lanjut.
           </span>
         </AlertDescription>
       </Alert>
     </div>
-  );
+  )
 }

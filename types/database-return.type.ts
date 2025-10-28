@@ -1,73 +1,73 @@
-import { Prisma } from "@/lib/generated/prisma";
+import { Prisma } from '@/lib/generated/prisma'
 
 export type StudentWithImage = Prisma.StudentGetPayload<{
   include: {
     user: {
       select: {
-        image: true;
-      };
-    };
-  };
-}>;
+        image: true
+      }
+    }
+  }
+}>
 
 export type TeacherWithImage = Prisma.TeacherGetPayload<{
   include: {
     user: {
       select: {
-        image: true;
-      };
-    };
-  };
-}>;
+        image: true
+      }
+    }
+  }
+}>
 
 export type ClassWithWaliAndCount = Prisma.ClassGetPayload<{
   include: {
     waliKelas: {
       select: {
-        nama: true;
-      };
-    };
+        nama: true
+      }
+    }
     _count: {
       select: {
-        students: true;
-      };
-    };
-  };
-}>;
+        students: true
+      }
+    }
+  }
+}>
 
 export type TransactionFinanceRecord = Prisma.SchoolFinanceGetPayload<{
   select: {
-    id: true;
-    type: true;
-    amount: true;
-    date: true;
-    category: true;
-    description: true;
+    id: true
+    type: true
+    amount: true
+    date: true
+    category: true
+    description: true
     user: {
       select: {
-        name: true;
-        image: true;
-      };
-    };
-  };
-}>;
+        name: true
+        image: true
+      }
+    }
+  }
+}>
 
 export type SubjectWithScheduleCount = Prisma.SubjectGetPayload<{
   include: {
     _count: {
       select: {
-        schedules: true;
-      };
-    };
-  };
-}>;
+        schedules: true
+      }
+    }
+  }
+}>
 
 export type SchoolSchedule = Prisma.ClassScheduleGetPayload<{
   select: {
-    hari: true;
-    jamMulai: true;
-    jamSelesai: true;
-    subject: { select: { nama: true } };
-    guruPengampu: { select: { nama: true } };
-  };
-}>;
+    hari: true
+    jamMulai: true
+    jamSelesai: true
+    subject: { select: { nama: true } }
+    guruPengampu: { select: { nama: true } }
+  }
+}>

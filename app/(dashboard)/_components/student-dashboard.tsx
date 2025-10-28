@@ -1,13 +1,7 @@
-"use client";
+'use client'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import {
   Table,
   TableBody,
@@ -15,41 +9,30 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  Calendar,
-  Clock,
-  GraduationCap,
-  User,
-  Users,
-  History,
-  Settings,
-} from "lucide-react";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { EmptyError } from "@/components/empty-error";
-import { getAvatarFallback } from "@/lib/string";
-import { calculateAge, formattedDate } from "@/lib/date";
-import Link from "next/link";
+} from '@/components/ui/table'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Calendar, Clock, GraduationCap, User, Users, History, Settings } from 'lucide-react'
+import { useTRPC } from '@/trpc/client'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { EmptyError } from '@/components/empty-error'
+import { getAvatarFallback } from '@/lib/string'
+import { calculateAge, formattedDate } from '@/lib/date'
+import Link from 'next/link'
 
 export function StudentDashboard() {
-  const trpc = useTRPC();
+  const trpc = useTRPC()
   const { data: studentDashboardData, refetch } = useSuspenseQuery(
-    trpc.roleData.getStudentDashboardData.queryOptions(),
-  );
+    trpc.roleData.getStudentDashboardData.queryOptions()
+  )
 
-  const { studentInfo, jadwalPelajaran, kelasInfo, temanSekelas } =
-    studentDashboardData;
+  const { studentInfo, jadwalPelajaran, kelasInfo, temanSekelas } = studentDashboardData
 
   return (
     <div className="space-y-8">
       <div className="mb-8 space-y-2">
         <h1 className="text-4xl font-bold">Dashboard Siswa</h1>
-        <p className="text-muted-foreground">
-          Selamat datang, {studentInfo?.nama}!
-        </p>
+        <p className="text-muted-foreground">Selamat datang, {studentInfo?.nama}!</p>
       </div>
 
       <Card>
@@ -59,41 +42,25 @@ export function StudentDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-3 md:grid-cols-4">
-            <Button
-              variant="outline"
-              className="h-auto flex-col gap-2 p-4"
-              asChild
-            >
+            <Button variant="outline" className="h-auto flex-col gap-2 p-4" asChild>
               <Link href="/riwayat-kelas">
                 <History className="h-6 w-6" />
                 <span>Riwayat Kelas</span>
               </Link>
             </Button>
-            <Button
-              variant="outline"
-              className="h-auto flex-col gap-2 p-4"
-              asChild
-            >
+            <Button variant="outline" className="h-auto flex-col gap-2 p-4" asChild>
               <Link href="/jadwal-pelajaran">
                 <Calendar className="h-6 w-6" />
                 <span>Jadwal Pelajaran</span>
               </Link>
             </Button>
-            <Button
-              variant="outline"
-              className="h-auto flex-col gap-2 p-4"
-              asChild
-            >
+            <Button variant="outline" className="h-auto flex-col gap-2 p-4" asChild>
               <Link href="/pengaturan">
                 <Settings className="h-6 w-6" />
                 <span>Pengaturan</span>
               </Link>
             </Button>
-            <Button
-              variant="outline"
-              className="h-auto flex-col gap-2 p-4"
-              asChild
-            >
+            <Button variant="outline" className="h-auto flex-col gap-2 p-4" asChild>
               <Link href="/profil">
                 <User className="h-6 w-6" />
                 <span>Profil</span>
@@ -114,15 +81,11 @@ export function StudentDashboard() {
               <div className="flex items-center space-x-4">
                 <Avatar className="size-16">
                   <AvatarImage src={studentInfo.user.image ?? undefined} />
-                  <AvatarFallback>
-                    {getAvatarFallback(studentInfo.nama)}
-                  </AvatarFallback>
+                  <AvatarFallback>{getAvatarFallback(studentInfo.nama)}</AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="text-lg font-semibold">{studentInfo.nama}</p>
-                  <p className="text-sm text-muted-foreground">
-                    NISN: {studentInfo.nisn}
-                  </p>
+                  <p className="text-sm text-muted-foreground">NISN: {studentInfo.nisn}</p>
                 </div>
               </div>
               <div className="space-y-2">
@@ -136,9 +99,7 @@ export function StudentDashboard() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Jenis Kelamin</span>
                   <span className="font-medium">
-                    {studentInfo.jenisKelamin === "LAKI_LAKI"
-                      ? "Laki-laki"
-                      : "Perempuan"}
+                    {studentInfo.jenisKelamin === 'LAKI_LAKI' ? 'Laki-laki' : 'Perempuan'}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -177,9 +138,7 @@ export function StudentDashboard() {
                     <GraduationCap className="h-5 w-5 text-muted-foreground" />
                     <p className="text-2xl font-bold">{kelasInfo.namaKelas}</p>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    {kelasInfo.tingkat}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{kelasInfo.tingkat}</p>
                 </div>
                 <Badge variant="outline">{kelasInfo.ruang}</Badge>
               </div>
@@ -189,9 +148,7 @@ export function StudentDashboard() {
                     <User className="h-4 w-4 text-muted-foreground" />
                     <p className="text-sm font-medium">Wali Kelas</p>
                   </div>
-                  <p className="text-lg font-semibold">
-                    {kelasInfo.waliKelas.nama}
-                  </p>
+                  <p className="text-lg font-semibold">{kelasInfo.waliKelas.nama}</p>
                   <p className="text-sm text-muted-foreground">
                     No. Telepon: {kelasInfo.waliKelas.noTelepon}
                   </p>
@@ -247,7 +204,7 @@ export function StudentDashboard() {
                     <Badge variant="outline">{jadwal.mataPelajaran}</Badge>
                   </TableCell>
                   <TableCell className="text-sm">
-                    {jadwal.guruPengampu ? jadwal.guruPengampu.nama : "-"}
+                    {jadwal.guruPengampu ? jadwal.guruPengampu.nama : '-'}
                   </TableCell>
                 </TableRow>
               ))}
@@ -263,9 +220,7 @@ export function StudentDashboard() {
               <Users className="h-5 w-5" />
               Teman Sekelas
             </CardTitle>
-            <CardDescription>
-              Daftar teman sekelas di {kelasInfo.namaKelas}
-            </CardDescription>
+            <CardDescription>Daftar teman sekelas di {kelasInfo.namaKelas}</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
@@ -277,24 +232,20 @@ export function StudentDashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {temanSekelas.map((teman) => (
+                {temanSekelas.map(teman => (
                   <TableRow key={teman.nisn}>
                     <TableCell className="font-medium">{teman.nisn}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Avatar className="size-8">
                           <AvatarImage src={teman.user.image ?? undefined} />
-                          <AvatarFallback>
-                            {getAvatarFallback(teman.nama)}
-                          </AvatarFallback>
+                          <AvatarFallback>{getAvatarFallback(teman.nama)}</AvatarFallback>
                         </Avatar>
                         {teman.nama}
                       </div>
                     </TableCell>
                     <TableCell>
-                      {teman.jenisKelamin === "LAKI_LAKI"
-                        ? "Laki-laki"
-                        : "Perempuan"}
+                      {teman.jenisKelamin === 'LAKI_LAKI' ? 'Laki-laki' : 'Perempuan'}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -310,5 +261,5 @@ export function StudentDashboard() {
         />
       )}
     </div>
-  );
+  )
 }

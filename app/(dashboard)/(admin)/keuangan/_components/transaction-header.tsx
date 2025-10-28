@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import { Coins, DownloadIcon } from "lucide-react";
+import { Coins, DownloadIcon } from 'lucide-react'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +10,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu'
 
 import {
   Dialog,
@@ -21,13 +21,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { useForm } from "react-hook-form";
-import {
-  createTransactionSchema,
-  CreateTransactionSchema,
-} from "@/trpc/schemas/finance.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
+} from '@/components/ui/dialog'
+import { useForm } from 'react-hook-form'
+import { createTransactionSchema, CreateTransactionSchema } from '@/trpc/schemas/finance.schema'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Form,
   FormControl,
@@ -35,9 +32,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form'
+import { toast } from 'sonner'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
@@ -46,85 +43,70 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { FinanceType } from "@/lib/generated/prisma";
-import { enumToReadable } from "@/lib/string";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
-import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
-import { expenseCategories, incomeCategories } from "@/constants/categories";
-import CurrencyInputIDR from "@/components/currency-input-idr";
-import { useTRPC } from "@/trpc/client";
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import { useState } from "react";
-import { Spinner } from "@/components/ui/spinner";
-import { useQueryState } from "nuqs";
-import { filterSearchParams } from "@/lib/searchParams";
-import { downloadCSV, downloadExcel, downloadPDF } from "@/lib/download";
-import { formattedDate } from "@/lib/date";
+} from '@/components/ui/select'
+import { FinanceType } from '@/lib/generated/prisma'
+import { enumToReadable } from '@/lib/string'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { format } from 'date-fns'
+import { id } from 'date-fns/locale'
+import { cn } from '@/lib/utils'
+import { CalendarIcon } from 'lucide-react'
+import { expenseCategories, incomeCategories } from '@/constants/categories'
+import CurrencyInputIDR from '@/components/currency-input-idr'
+import { useTRPC } from '@/trpc/client'
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import { Spinner } from '@/components/ui/spinner'
+import { useQueryState } from 'nuqs'
+import { filterSearchParams } from '@/lib/searchParams'
+import { downloadCSV, downloadExcel, downloadPDF } from '@/lib/download'
+import { formattedDate } from '@/lib/date'
 
 export function TransactionHeader() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   const form = useForm<CreateTransactionSchema>({
     resolver: zodResolver(createTransactionSchema),
     defaultValues: {
       amount: 0,
-      description: "",
+      description: '',
     },
-  });
+  })
 
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
-  const [categories] = useQueryState(
-    "categories",
-    filterSearchParams.categories,
-  );
-  const [fromDate] = useQueryState("from", filterSearchParams.from);
-  const [toDate] = useQueryState("to", filterSearchParams.to);
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
+  const [categories] = useQueryState('categories', filterSearchParams.categories)
+  const [fromDate] = useQueryState('from', filterSearchParams.from)
+  const [toDate] = useQueryState('to', filterSearchParams.to)
   const { data } = useSuspenseQuery(
     trpc.finance.getFinanceSummary.queryOptions({
       categories: categories ?? undefined,
       startDate: fromDate,
       endDate: toDate,
-    }),
-  );
+    })
+  )
 
-  const createTransactionMutationOptions =
-    trpc.finance.createTransaction.mutationOptions({
-      onSuccess: (data) => {
-        queryClient.invalidateQueries({
-          queryKey: trpc.finance.pathKey(),
-        });
-        form.reset();
-        setOpen(false);
-        toast.success(data.message);
-      },
-      onError: (error) => {
-        toast.error(error.message);
-      },
-    });
-  const createTransactionMutation = useMutation(
-    createTransactionMutationOptions,
-  );
+  const createTransactionMutationOptions = trpc.finance.createTransaction.mutationOptions({
+    onSuccess: data => {
+      queryClient.invalidateQueries({
+        queryKey: trpc.finance.pathKey(),
+      })
+      form.reset()
+      setOpen(false)
+      toast.success(data.message)
+    },
+    onError: error => {
+      toast.error(error.message)
+    },
+  })
+  const createTransactionMutation = useMutation(createTransactionMutationOptions)
 
   function onSubmit(data: CreateTransactionSchema) {
-    createTransactionMutation.mutate(data);
+    createTransactionMutation.mutate(data)
   }
 
-  const isLoading =
-    createTransactionMutation.isPending || form.formState.isSubmitting;
+  const isLoading = createTransactionMutation.isPending || form.formState.isSubmitting
 
   return (
     <header className="mb-6 flex gap-4 md:items-center md:justify-between md:gap-14 flex-col md:flex-row">
@@ -152,10 +134,7 @@ export function TransactionHeader() {
               </DialogDescription>
             </DialogHeader>
             <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
                   control={form.control}
                   name="amount"
@@ -181,9 +160,9 @@ export function TransactionHeader() {
                     <FormItem>
                       <FormLabel>Tipe</FormLabel>
                       <Select
-                        onValueChange={(value) => {
-                          form.resetField("category");
-                          field.onChange(value);
+                        onValueChange={value => {
+                          form.resetField('category')
+                          field.onChange(value)
                         }}
                         defaultValue={field.value}
                         key={field.value}
@@ -194,7 +173,7 @@ export function TransactionHeader() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {Object.keys(FinanceType).map((type) => (
+                          {Object.keys(FinanceType).map(type => (
                             <SelectItem key={type} value={type}>
                               {enumToReadable(type)}
                             </SelectItem>
@@ -204,7 +183,7 @@ export function TransactionHeader() {
                               type="button"
                               className="w-full"
                               onClick={() => {
-                                field.onChange("");
+                                field.onChange('')
                               }}
                             >
                               Hapus Pilihan
@@ -226,7 +205,7 @@ export function TransactionHeader() {
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                         key={field.value}
-                        disabled={!form.watch("type")}
+                        disabled={!form.watch('type')}
                       >
                         <FormControl className="w-full">
                           <SelectTrigger>
@@ -234,19 +213,19 @@ export function TransactionHeader() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {form.watch("type") === "PENGELUARAN" ? (
+                          {form.watch('type') === 'PENGELUARAN' ? (
                             <SelectGroup>
                               <SelectLabel>Pengeluaran</SelectLabel>
-                              {expenseCategories.map((category) => (
+                              {expenseCategories.map(category => (
                                 <SelectItem value={category} key={category}>
                                   {category}
                                 </SelectItem>
                               ))}
                             </SelectGroup>
-                          ) : form.watch("type") === "PEMASUKAN" ? (
+                          ) : form.watch('type') === 'PEMASUKAN' ? (
                             <SelectGroup>
                               <SelectLabel>Pemasukan</SelectLabel>
-                              {incomeCategories.map((category) => (
+                              {incomeCategories.map(category => (
                                 <SelectItem value={category} key={category}>
                                   {category}
                                 </SelectItem>
@@ -258,7 +237,7 @@ export function TransactionHeader() {
                               type="button"
                               className="w-full"
                               onClick={() => {
-                                field.onChange("");
+                                field.onChange('')
                               }}
                             >
                               Hapus Pilihan
@@ -280,14 +259,14 @@ export function TransactionHeader() {
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
-                              variant={"outline"}
+                              variant={'outline'}
                               className={cn(
-                                "pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground",
+                                'pl-3 text-left font-normal',
+                                !field.value && 'text-muted-foreground'
                               )}
                             >
                               {field.value ? (
-                                format(field.value, "PPP", {
+                                format(field.value, 'PPP', {
                                   locale: id,
                                 })
                               ) : (
@@ -303,7 +282,7 @@ export function TransactionHeader() {
                             selected={field.value}
                             onSelect={field.onChange}
                             disabled={
-                              (date) => date > new Date() // Disable future dates
+                              date => date > new Date() // Disable future dates
                             }
                             locale={id}
                             captionLayout="dropdown"
@@ -339,7 +318,7 @@ export function TransactionHeader() {
                   </DialogClose>
                   <Button type="submit" disabled={isLoading}>
                     {isLoading && <Spinner />}
-                    {isLoading ? "Menyimpan..." : "Simpan Transaksi"}
+                    {isLoading ? 'Menyimpan...' : 'Simpan Transaksi'}
                   </Button>
                 </DialogFooter>
               </form>
@@ -348,10 +327,7 @@ export function TransactionHeader() {
         </Dialog>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="secondary"
-              disabled={data.transactions.length === 0}
-            >
+            <Button variant="secondary" disabled={data.transactions.length === 0}>
               <DownloadIcon />
               Unduh Data
             </Button>
@@ -363,7 +339,7 @@ export function TransactionHeader() {
               onSelect={() =>
                 downloadCSV(
                   data.transactions,
-                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
+                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`
                 )
               }
             >
@@ -373,7 +349,7 @@ export function TransactionHeader() {
               onSelect={() =>
                 downloadExcel(
                   data.transactions,
-                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
+                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`
                 )
               }
             >
@@ -383,7 +359,7 @@ export function TransactionHeader() {
               onSelect={() =>
                 downloadPDF(
                   data.transactions,
-                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`,
+                  `${formattedDate(fromDate)}-${formattedDate(toDate)}_data-transaksi`
                 )
               }
             >
@@ -393,5 +369,5 @@ export function TransactionHeader() {
         </DropdownMenu>
       </div>
     </header>
-  );
+  )
 }

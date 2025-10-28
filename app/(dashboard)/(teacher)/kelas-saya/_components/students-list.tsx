@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import {
   Table,
   TableBody,
@@ -9,31 +9,29 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { StudentStatus } from "@/lib/generated/prisma";
-import { EmptyError } from "@/components/empty-error";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getAvatarFallback } from "@/lib/string";
+} from '@/components/ui/table'
+import { useTRPC } from '@/trpc/client'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { StudentStatus } from '@/lib/generated/prisma'
+import { EmptyError } from '@/components/empty-error'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { getAvatarFallback } from '@/lib/string'
 
 export function StudentsList() {
-  const trpc = useTRPC();
+  const trpc = useTRPC()
 
-  const { data: kelas, refetch } = useSuspenseQuery(
-    trpc.class.getMyHomeroomClass.queryOptions(),
-  );
+  const { data: kelas, refetch } = useSuspenseQuery(trpc.class.getMyHomeroomClass.queryOptions())
 
   const getStatusColor = (status: StudentStatus) => {
     switch (status) {
-      case "AKTIF":
-        return "bg-green-100 text-green-800";
-      case "ALUMNI":
-        return "bg-yellow-100 text-yellow-800";
+      case 'AKTIF':
+        return 'bg-green-100 text-green-800'
+      case 'ALUMNI':
+        return 'bg-yellow-100 text-yellow-800'
       default:
-        return "bg-red-100 text-red-800";
+        return 'bg-red-100 text-red-800'
     }
-  };
+  }
 
   if (!kelas || kelas.students.length === 0) {
     return (
@@ -42,10 +40,10 @@ export function StudentsList() {
         description="Hubungi administrator untuk menambahkan siswa ke dalam kelas Anda."
         onAction={() => refetch()}
       />
-    );
+    )
   }
 
-  const students = kelas.students;
+  const students = kelas.students
 
   return (
     <Card className="border-border">
@@ -65,15 +63,13 @@ export function StudentsList() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {students.map((student) => (
+              {students.map(student => (
                 <TableRow key={student.id}>
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-2">
                       <Avatar className="size-8">
                         <AvatarImage src={student.user.image ?? undefined} />
-                        <AvatarFallback>
-                          {getAvatarFallback(student.nama)}
-                        </AvatarFallback>
+                        <AvatarFallback>{getAvatarFallback(student.nama)}</AvatarFallback>
                       </Avatar>
                       {student.nama}
                     </div>
@@ -81,22 +77,18 @@ export function StudentsList() {
                   <TableCell>{student.nisn}</TableCell>
                   <TableCell>{student.jenisKelamin}</TableCell>
                   <TableCell>
-                    {new Date(student.tanggalLahir).toLocaleDateString("id-ID")}
+                    {new Date(student.tanggalLahir).toLocaleDateString('id-ID')}
                   </TableCell>
                   <TableCell>
-                    <Badge className={getStatusColor(student.status)}>
-                      {student.status}
-                    </Badge>
+                    <Badge className={getStatusColor(student.status)}>{student.status}</Badge>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
-        <p className="text-sm text-muted-foreground mt-4">
-          Total: {students.length} siswa
-        </p>
+        <p className="text-sm text-muted-foreground mt-4">Total: {students.length} siswa</p>
       </CardContent>
     </Card>
-  );
+  )
 }

@@ -1,11 +1,11 @@
-import { PrismaClient } from "./generated/prisma";
+import { PrismaClient } from './generated/prisma'
 
 const globalForPrisma = global as unknown as {
-  prisma: PrismaClient;
-};
+  prisma: PrismaClient
+}
 
-const db = globalForPrisma.prisma || new PrismaClient();
+const db = globalForPrisma.prisma || new PrismaClient()
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = db;
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
 
-export default db;
+export default db

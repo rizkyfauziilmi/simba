@@ -1,5 +1,5 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import { ChevronRight } from "lucide-react";
+import { Skeleton } from '@/components/ui/skeleton'
+import { ChevronRight } from 'lucide-react'
 
 export const NavMainSkeleton = () => {
   return (
@@ -38,5 +38,5 @@ export const NavMainSkeleton = () => {
         <ChevronRight className="size-4 text-muted-foreground" />
       </div>
     </div>
-  );
-};
+  )
+}

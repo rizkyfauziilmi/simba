@@ -1,26 +1,22 @@
-import { APIError, betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
-import db from "./db";
-import {
-  username,
-  admin as adminPlugin,
-  createAuthMiddleware,
-} from "better-auth/plugins";
-import { ac, admin, student, teacher } from "@/lib/permissions";
+import { APIError, betterAuth } from 'better-auth'
+import { prismaAdapter } from 'better-auth/adapters/prisma'
+import db from './db'
+import { username, admin as adminPlugin, createAuthMiddleware } from 'better-auth/plugins'
+import { ac, admin, student, teacher } from '@/lib/permissions'
 
 export const auth = betterAuth({
   database: prismaAdapter(db, {
-    provider: "postgresql",
+    provider: 'postgresql',
   }),
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
   },
-  trustedOrigins: ["http://*"],
+  trustedOrigins: ['http://*'],
   hooks: {
-    after: createAuthMiddleware(async (ctx) => {
-      const path = ctx.path;
-      const response = ctx.context.returned as APIError;
+    after: createAuthMiddleware(async ctx => {
+      const path = ctx.path
+      const response = ctx.context.returned as APIError
 
       // * use for debugging custom message when error occurs
       // console.log({
@@ -29,50 +25,41 @@ export const auth = betterAuth({
       // });
 
       if (
-        path.startsWith("/admin") &&
-        response.body?.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL"
+        path.startsWith('/admin') &&
+        response.body?.code === 'USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL'
       ) {
-        throw new APIError("BAD_REQUEST", {
+        throw new APIError('BAD_REQUEST', {
           ...response.body,
-          message: "Email sudah digunakan, silakan gunakan email lain",
-        });
+          message: 'Email sudah digunakan, silakan gunakan email lain',
+        })
       }
-      if (
-        path.startsWith("/sign-in") &&
-        response.body?.code === "INVALID_EMAIL_OR_PASSWORD"
-      ) {
-        throw new APIError("UNAUTHORIZED", {
+      if (path.startsWith('/sign-in') && response.body?.code === 'INVALID_EMAIL_OR_PASSWORD') {
+        throw new APIError('UNAUTHORIZED', {
           ...response.body,
-          message: "Email atau kata sandi tidak valid",
-        });
+          message: 'Email atau kata sandi tidak valid',
+        })
       }
-      if (
-        path.startsWith("/sign-in") &&
-        response.body?.code === "INVALID_USERNAME_OR_PASSWORD"
-      ) {
-        throw new APIError("UNAUTHORIZED", {
+      if (path.startsWith('/sign-in') && response.body?.code === 'INVALID_USERNAME_OR_PASSWORD') {
+        throw new APIError('UNAUTHORIZED', {
           ...response.body,
-          message: "Nama Pengguna atau kata sandi tidak valid",
-        });
+          message: 'Nama Pengguna atau kata sandi tidak valid',
+        })
       }
-      if (
-        path.startsWith("/change-password") &&
-        response.body?.code === "INVALID_PASSWORD"
-      ) {
-        throw new APIError("BAD_REQUEST", {
+      if (path.startsWith('/change-password') && response.body?.code === 'INVALID_PASSWORD') {
+        throw new APIError('BAD_REQUEST', {
           ...response.body,
-          message: "Kata sandi saat ini tidak valid",
-        });
+          message: 'Kata sandi saat ini tidak valid',
+        })
       }
     }),
   },
   plugins: [
     username(),
     adminPlugin({
-      defaultBanReason: "Tanpa alasan diberikan",
+      defaultBanReason: 'Tanpa alasan diberikan',
       bannedUserMessage:
-        "Akun Anda telah dibanned. Silakan hubungi administrator untuk informasi lebih lanjut.",
-      defaultRole: "student",
+        'Akun Anda telah dibanned. Silakan hubungi administrator untuk informasi lebih lanjut.',
+      defaultRole: 'student',
       ac,
       roles: {
         admin,
@@ -81,6 +68,6 @@ export const auth = betterAuth({
       },
     }),
   ],
-});
+})
 
-export type Session = typeof auth.$Infer.Session;
+export type Session = typeof auth.$Infer.Session

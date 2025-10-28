@@ -1,19 +1,13 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Eye, EyeOff, X, Check } from "lucide-react";
-import z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Eye, EyeOff, X, Check } from 'lucide-react'
+import z from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Form,
   FormField,
@@ -22,102 +16,93 @@ import {
   FormControl,
   FormMessage,
   FormDescription,
-} from "@/components/ui/form";
-import { toast } from "sonner";
-import { authClient } from "@/lib/auth-client";
-import { Spinner } from "@/components/ui/spinner";
+} from '@/components/ui/form'
+import { toast } from 'sonner'
+import { authClient } from '@/lib/auth-client'
+import { Spinner } from '@/components/ui/spinner'
 
 const changePasswordSchema = z
   .object({
-    currentPassword: z.string().min(1, "Kata sandi saat ini diperlukan"),
+    currentPassword: z.string().min(1, 'Kata sandi saat ini diperlukan'),
     newPassword: z
       .string()
-      .min(8, "Kata sandi baru harus minimal 8 karakter")
+      .min(8, 'Kata sandi baru harus minimal 8 karakter')
       .refine(
-        (val) => /[a-z]/.test(val) && /[A-Z]/.test(val),
-        "Kata sandi baru harus mengandung kombinasi huruf besar dan kecil",
+        val => /[a-z]/.test(val) && /[A-Z]/.test(val),
+        'Kata sandi baru harus mengandung kombinasi huruf besar dan kecil'
       )
+      .refine(val => /\d/.test(val), 'Kata sandi baru harus mengandung minimal satu angka')
       .refine(
-        (val) => /\d/.test(val),
-        "Kata sandi baru harus mengandung minimal satu angka",
-      )
-      .refine(
-        (val) => /[^a-zA-Z\d]/.test(val),
-        "Kata sandi baru harus mengandung minimal satu karakter khusus",
+        val => /[^a-zA-Z\d]/.test(val),
+        'Kata sandi baru harus mengandung minimal satu karakter khusus'
       ),
-    confirmPassword: z.string().min(1, "Konfirmasi kata sandi diperlukan"),
+    confirmPassword: z.string().min(1, 'Konfirmasi kata sandi diperlukan'),
   })
-  .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Kata sandi baru tidak cocok",
-    path: ["confirmPassword"],
-  });
+  .refine(data => data.newPassword === data.confirmPassword, {
+    message: 'Kata sandi baru tidak cocok',
+    path: ['confirmPassword'],
+  })
 
 export default function PasswordChangeForm() {
   const [showPasswords, setShowPasswords] = useState({
     current: false,
     new: false,
     confirm: false,
-  });
+  })
 
   const form = useForm<z.infer<typeof changePasswordSchema>>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmPassword: "",
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
     },
-  });
+  })
 
-  const newPassword = form.watch("newPassword");
+  const newPassword = form.watch('newPassword')
 
   function calculatePasswordStrength(password: string) {
-    let strength = 0;
-    if (password.length >= 8) strength++;
-    if (password.length >= 12) strength++;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-    if (/\d/.test(password)) strength++;
-    if (/[^a-zA-Z\d]/.test(password)) strength++;
-    return strength;
+    let strength = 0
+    if (password.length >= 8) strength++
+    if (password.length >= 12) strength++
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++
+    if (/\d/.test(password)) strength++
+    if (/[^a-zA-Z\d]/.test(password)) strength++
+    return strength
   }
 
-  const passwordStrength = calculatePasswordStrength(newPassword || "");
+  const passwordStrength = calculatePasswordStrength(newPassword || '')
   const getPasswordStrengthLabel = () => {
-    const labels = ["Sangat Lemah", "Lemah", "Sedang", "Kuat", "Sangat Kuat"];
+    const labels = ['Sangat Lemah', 'Lemah', 'Sedang', 'Kuat', 'Sangat Kuat']
     return newPassword
-      ? labels[passwordStrength - 1] || "Masukkan kata sandi"
-      : "Masukkan kata sandi";
-  };
+      ? labels[passwordStrength - 1] || 'Masukkan kata sandi'
+      : 'Masukkan kata sandi'
+  }
   const getPasswordStrengthColor = () => {
-    const colors = [
-      "bg-red-500",
-      "bg-orange-500",
-      "bg-yellow-500",
-      "bg-lime-500",
-      "bg-green-500",
-    ];
-    return colors[passwordStrength - 1] || "bg-slate-300";
-  };
+    const colors = ['bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-lime-500', 'bg-green-500']
+    return colors[passwordStrength - 1] || 'bg-slate-300'
+  }
 
   async function onSubmit(data: z.infer<typeof changePasswordSchema>) {
     const { error } = await authClient.changePassword({
       newPassword: data.newPassword,
       currentPassword: data.currentPassword,
       revokeOtherSessions: true,
-    });
+    })
 
     if (error) {
-      toast.error("Gagal mengubah kata sandi", {
+      toast.error('Gagal mengubah kata sandi', {
         description: error.message,
-      });
+      })
 
-      return;
+      return
     }
 
-    toast.success("Kata sandi berhasil diubah");
-    form.reset();
+    toast.success('Kata sandi berhasil diubah')
+    form.reset()
   }
 
-  const isLoading = form.formState.isSubmitting;
+  const isLoading = form.formState.isSubmitting
 
   return (
     <Card>
@@ -141,7 +126,7 @@ export default function PasswordChangeForm() {
                     <div className="relative">
                       <Input
                         {...field}
-                        type={showPasswords.current ? "text" : "password"}
+                        type={showPasswords.current ? 'text' : 'password'}
                         placeholder="Masukkan kata sandi saat ini"
                         className="pr-10"
                       />
@@ -150,7 +135,7 @@ export default function PasswordChangeForm() {
                         variant="ghost"
                         tabIndex={-1}
                         onClick={() =>
-                          setShowPasswords((prev) => ({
+                          setShowPasswords(prev => ({
                             ...prev,
                             current: !prev.current,
                           }))
@@ -166,8 +151,8 @@ export default function PasswordChangeForm() {
                     </div>
                   </FormControl>
                   <FormDescription>
-                    CATATAN: Jika lupa kata sandi, silakan hubungi dukungan
-                    admin untuk mengatur ulang kata sandi Anda.
+                    CATATAN: Jika lupa kata sandi, silakan hubungi dukungan admin untuk mengatur
+                    ulang kata sandi Anda.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -185,7 +170,7 @@ export default function PasswordChangeForm() {
                     <div className="relative">
                       <Input
                         {...field}
-                        type={showPasswords.new ? "text" : "password"}
+                        type={showPasswords.new ? 'text' : 'password'}
                         placeholder="Masukkan kata sandi baru"
                         className="pr-10"
                       />
@@ -194,7 +179,7 @@ export default function PasswordChangeForm() {
                         variant="ghost"
                         tabIndex={-1}
                         onClick={() =>
-                          setShowPasswords((prev) => ({
+                          setShowPasswords(prev => ({
                             ...prev,
                             new: !prev.new,
                           }))
@@ -220,16 +205,13 @@ export default function PasswordChangeForm() {
                             className={`h-1 flex-1 rounded-full ${
                               i < passwordStrength
                                 ? getPasswordStrengthColor()
-                                : "bg-slate-300 dark:bg-slate-700"
+                                : 'bg-slate-300 dark:bg-slate-700'
                             }`}
                           />
                         ))}
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Kekuatan:{" "}
-                        <span className="font-medium">
-                          {getPasswordStrengthLabel()}
-                        </span>
+                        Kekuatan: <span className="font-medium">{getPasswordStrengthLabel()}</span>
                       </p>
                     </div>
                   )}
@@ -248,7 +230,7 @@ export default function PasswordChangeForm() {
                     <div className="relative">
                       <Input
                         {...field}
-                        type={showPasswords.confirm ? "text" : "password"}
+                        type={showPasswords.confirm ? 'text' : 'password'}
                         placeholder="Konfirmasi kata sandi baru"
                         className="pr-10"
                       />
@@ -257,7 +239,7 @@ export default function PasswordChangeForm() {
                         variant="ghost"
                         tabIndex={-1}
                         onClick={() =>
-                          setShowPasswords((prev) => ({
+                          setShowPasswords(prev => ({
                             ...prev,
                             confirm: !prev.confirm,
                           }))
@@ -286,24 +268,23 @@ export default function PasswordChangeForm() {
                 <ul className="text-sm space-y-1">
                   {[
                     {
-                      label: "Minimal 8 karakter",
+                      label: 'Minimal 8 karakter',
                       test: (pw: string) => pw.length >= 8,
                     },
                     {
-                      label: "Kombinasi huruf besar dan kecil",
-                      test: (pw: string) =>
-                        /[a-z]/.test(pw) && /[A-Z]/.test(pw),
+                      label: 'Kombinasi huruf besar dan kecil',
+                      test: (pw: string) => /[a-z]/.test(pw) && /[A-Z]/.test(pw),
                     },
                     {
-                      label: "Minimal satu angka",
+                      label: 'Minimal satu angka',
                       test: (pw: string) => /\d/.test(pw),
                     },
                     {
-                      label: "Minimal satu karakter khusus (!@#$%^&*)",
+                      label: 'Minimal satu karakter khusus (!@#$%^&*)',
                       test: (pw: string) => /[^a-zA-Z\d]/.test(pw),
                     },
                   ].map((req, idx) => {
-                    const passed = req.test(newPassword || "");
+                    const passed = req.test(newPassword || '')
                     return (
                       <li key={idx} className="flex items-center gap-2">
                         {passed ? (
@@ -311,15 +292,11 @@ export default function PasswordChangeForm() {
                         ) : (
                           <X className="text-red-600 h-4 w-4" />
                         )}
-                        <span
-                          className={
-                            passed ? "text-green-700" : "text-muted-foreground"
-                          }
-                        >
+                        <span className={passed ? 'text-green-700' : 'text-muted-foreground'}>
                           {req.label}
                         </span>
                       </li>
-                    );
+                    )
                   })}
                 </ul>
               </CardContent>
@@ -332,12 +309,12 @@ export default function PasswordChangeForm() {
               </Button>
               <Button type="submit" disabled={isLoading}>
                 {isLoading && <Spinner />}
-                {isLoading ? "Memproses..." : "Ubah Kata Sandi"}
+                {isLoading ? 'Memproses...' : 'Ubah Kata Sandi'}
               </Button>
             </div>
           </form>
         </Form>
       </CardContent>
     </Card>
-  );
+  )
 }

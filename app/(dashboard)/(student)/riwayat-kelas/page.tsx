@@ -1,30 +1,22 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { StudentHistoryTable } from "./_components/student-history-table";
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { ErrorBoundary } from "react-error-boundary";
-import { Suspense } from "react";
-import { EmptyLoading } from "@/components/empty-loading";
-import { EmptyError } from "@/components/empty-error";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { StudentHistoryTable } from './_components/student-history-table'
+import { HydrateClient, prefetch, trpc } from '@/trpc/server'
+import { ErrorBoundary } from 'react-error-boundary'
+import { Suspense } from 'react'
+import { EmptyLoading } from '@/components/empty-loading'
+import { EmptyError } from '@/components/empty-error'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 export default function HistoryKelasPage() {
-  prefetch(trpc.class.getMyClassHistories.queryOptions());
+  prefetch(trpc.class.getMyClassHistories.queryOptions())
 
   return (
     <HydrateClient>
       <Card className="border-border">
         <CardHeader>
           <CardTitle>Riwayat Kelas Siswa</CardTitle>
-          <CardDescription>
-            Lihat riwayat kelas yang telah diikuti oleh siswa.
-          </CardDescription>
+          <CardDescription>Lihat riwayat kelas yang telah diikuti oleh siswa.</CardDescription>
         </CardHeader>
         <CardContent>
           <ErrorBoundary
@@ -49,5 +41,5 @@ export default function HistoryKelasPage() {
         </CardContent>
       </Card>
     </HydrateClient>
-  );
+  )
 }

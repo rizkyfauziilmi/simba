@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export function FinanceCardSkeleton() {
   return (
@@ -12,7 +12,7 @@ export function FinanceCardSkeleton() {
         <Skeleton className="h-4 w-3/4" />
       </CardContent>
     </Card>
-  );
+  )
 }
 
 export function FinanceCardSkeletonList({ count = 4 }: { count?: number }) {
@@ -22,5 +22,5 @@ export function FinanceCardSkeletonList({ count = 4 }: { count?: number }) {
         <FinanceCardSkeleton key={index} />
       ))}
     </div>
-  );
+  )
 }

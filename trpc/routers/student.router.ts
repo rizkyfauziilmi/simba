@@ -1,14 +1,14 @@
-import { auth } from "@/lib/auth";
-import { adminProcedure, createTRPCRouter } from "../init";
+import { auth } from '@/lib/auth'
+import { adminProcedure, createTRPCRouter } from '../init'
 import {
   createStudentSchema,
   deleteStudentSchema,
   getAllStudentsWithNoClassSchema,
   getStudentSchema,
   updateStudentSchema,
-} from "../schemas/student.schema";
-import { TRPCError } from "@trpc/server";
-import { headers } from "next/headers";
+} from '../schemas/student.schema'
+import { TRPCError } from '@trpc/server'
+import { headers } from 'next/headers'
 
 export const studentRouter = createTRPCRouter({
   getAllStudents: adminProcedure.query(async ({ ctx }) => {
@@ -20,8 +20,8 @@ export const studentRouter = createTRPCRouter({
           },
         },
       },
-    });
-    return students;
+    })
+    return students
   }),
   getAllStudentsWithNoClass: adminProcedure
     .input(getAllStudentsWithNoClassSchema)
@@ -42,169 +42,161 @@ export const studentRouter = createTRPCRouter({
                   kelasId: null,
                 },
               ],
-          status: "AKTIF",
+          status: 'AKTIF',
         },
         select: {
           nama: true,
           nisn: true,
           id: true,
         },
-      });
-      return students;
+      })
+      return students
     }),
-  getStudentById: adminProcedure
-    .input(getStudentSchema)
-    .query(async ({ ctx, input }) => {
-      const { studentId } = input;
+  getStudentById: adminProcedure.input(getStudentSchema).query(async ({ ctx, input }) => {
+    const { studentId } = input
 
-      const student = await ctx.db.student.findUnique({
-        where: {
-          id: studentId,
-        },
-        include: {
-          kelas: {
-            select: {
-              namaKelas: true,
-              tingkat: true,
-              ruang: true,
-              waliKelas: {
-                select: {
-                  nama: true,
-                },
+    const student = await ctx.db.student.findUnique({
+      where: {
+        id: studentId,
+      },
+      include: {
+        kelas: {
+          select: {
+            namaKelas: true,
+            tingkat: true,
+            ruang: true,
+            waliKelas: {
+              select: {
+                nama: true,
               },
             },
           },
         },
-      });
+      },
+    })
 
-      return student;
-    }),
-  createStudent: adminProcedure
-    .input(createStudentSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { nama, nisn } = input;
+    return student
+  }),
+  createStudent: adminProcedure.input(createStudentSchema).mutation(async ({ ctx, input }) => {
+    const { nama, nisn } = input
 
-      const isNisnExists = await ctx.db.student.findFirst({
-        where: {
-          nisn,
-        },
-        select: {
-          id: true,
-        },
-      });
+    const isNisnExists = await ctx.db.student.findFirst({
+      where: {
+        nisn,
+      },
+      select: {
+        id: true,
+      },
+    })
 
-      if (isNisnExists) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "NISN sudah digunakan",
-        });
-      }
+    if (isNisnExists) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'NISN sudah digunakan',
+      })
+    }
 
-      const namaFormatted = nama.toLowerCase().replace(/\s/g, "");
+    const namaFormatted = nama.toLowerCase().replace(/\s/g, '')
 
-      const newUserStudent = await auth.api.createUser({
-        body: {
-          email: `${namaFormatted}@example.com`,
-          password: `${namaFormatted}@1234`,
-          name: nama,
-          role: "student",
-          data: {
-            username: namaFormatted,
-            displayUsername: nama,
-          },
-        },
-      });
-
-      await ctx.db.student.create({
+    const newUserStudent = await auth.api.createUser({
+      body: {
+        email: `${namaFormatted}@example.com`,
+        password: `${namaFormatted}@1234`,
+        name: nama,
+        role: 'student',
         data: {
-          nama: input.nama,
-          nisn: input.nisn,
-          tanggalLahir: input.tanggalLahir,
-          jenisKelamin: input.jenisKelamin,
-          alamat: input.alamat,
-          noTelepon: input.noTelepon,
-          status: input.status,
-          kelasId: input.kelasId || null,
-          userId: newUserStudent.user.id,
+          username: namaFormatted,
+          displayUsername: nama,
         },
-      });
+      },
+    })
 
-      return {
-        message: "Siswa berhasil ditambahkan",
-      };
-    }),
-  deleteStudent: adminProcedure
-    .input(deleteStudentSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { studentId } = input;
+    await ctx.db.student.create({
+      data: {
+        nama: input.nama,
+        nisn: input.nisn,
+        tanggalLahir: input.tanggalLahir,
+        jenisKelamin: input.jenisKelamin,
+        alamat: input.alamat,
+        noTelepon: input.noTelepon,
+        status: input.status,
+        kelasId: input.kelasId || null,
+        userId: newUserStudent.user.id,
+      },
+    })
 
-      const student = await ctx.db.student.findUnique({
-        where: {
-          id: studentId,
-        },
-        select: {
-          id: true,
-          userId: true,
-        },
-      });
+    return {
+      message: 'Siswa berhasil ditambahkan',
+    }
+  }),
+  deleteStudent: adminProcedure.input(deleteStudentSchema).mutation(async ({ ctx, input }) => {
+    const { studentId } = input
 
-      if (!student) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Siswa tidak ditemukan",
-        });
-      }
+    const student = await ctx.db.student.findUnique({
+      where: {
+        id: studentId,
+      },
+      select: {
+        id: true,
+        userId: true,
+      },
+    })
 
-      await ctx.db.student.delete({
-        where: {
-          id: student.id,
-        },
-      });
+    if (!student) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Siswa tidak ditemukan',
+      })
+    }
 
-      await auth.api.removeUser({
-        body: {
-          userId: student.userId,
-        },
-        headers: await headers(),
-      });
+    await ctx.db.student.delete({
+      where: {
+        id: student.id,
+      },
+    })
 
-      return {
-        message: "Siswa berhasil dihapus",
-      };
-    }),
-  updateStudent: adminProcedure
-    .input(updateStudentSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { studentId, kelasId, ...data } = input;
+    await auth.api.removeUser({
+      body: {
+        userId: student.userId,
+      },
+      headers: await headers(),
+    })
 
-      const student = await ctx.db.student.findUnique({
-        where: {
-          id: studentId,
-        },
-        select: {
-          id: true,
-        },
-      });
+    return {
+      message: 'Siswa berhasil dihapus',
+    }
+  }),
+  updateStudent: adminProcedure.input(updateStudentSchema).mutation(async ({ ctx, input }) => {
+    const { studentId, kelasId, ...data } = input
 
-      if (!student) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Siswa tidak ditemukan",
-        });
-      }
+    const student = await ctx.db.student.findUnique({
+      where: {
+        id: studentId,
+      },
+      select: {
+        id: true,
+      },
+    })
 
-      await ctx.db.student.update({
-        where: {
-          id: studentId,
-        },
-        data: {
-          ...data,
-          kelasId: kelasId || null,
-        },
-      });
+    if (!student) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Siswa tidak ditemukan',
+      })
+    }
 
-      return {
-        message: "Data siswa berhasil diperbarui",
-      };
-    }),
-});
+    await ctx.db.student.update({
+      where: {
+        id: studentId,
+      },
+      data: {
+        ...data,
+        kelasId: kelasId || null,
+      },
+    })
+
+    return {
+      message: 'Data siswa berhasil diperbarui',
+    }
+  }),
+})

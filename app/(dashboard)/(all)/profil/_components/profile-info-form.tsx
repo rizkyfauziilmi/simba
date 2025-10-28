@@ -1,21 +1,15 @@
-"use client";
+'use client'
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { RefreshCw } from "lucide-react";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { authClient, Session } from "@/lib/auth-client";
-import { toast } from "sonner";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { RefreshCw } from 'lucide-react'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { authClient, Session } from '@/lib/auth-client'
+import { toast } from 'sonner'
 import {
   Form,
   FormField,
@@ -23,78 +17,70 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { Spinner } from "@/components/ui/spinner";
-import { zStringEmptyOptional } from "@/lib/zod-utils";
+} from '@/components/ui/form'
+import { Spinner } from '@/components/ui/spinner'
+import { zStringEmptyOptional } from '@/lib/zod-utils'
 
 interface ProfileInfoFormProps {
-  user: Pick<Session, "user">["user"];
-  onUpdate: () => void;
+  user: Pick<Session, 'user'>['user']
+  onUpdate: () => void
 }
 
 const updateProfileInfoSchema = z.object({
   image: zStringEmptyOptional(
     z.string().refine(
-      async (url) => {
-        if (!url) return true; // Allow empty/undefined
+      async url => {
+        if (!url) return true // Allow empty/undefined
 
         // Check if it's a valid URL
         try {
-          new URL(url);
+          new URL(url)
         } catch {
-          return false;
+          return false
         }
 
         // Check if it points to an image
         try {
-          const res = await fetch(url, { method: "HEAD" });
-          const contentType = res.headers.get("content-type");
-          return contentType?.startsWith("image/") ?? false;
+          const res = await fetch(url, { method: 'HEAD' })
+          const contentType = res.headers.get('content-type')
+          return contentType?.startsWith('image/') ?? false
         } catch {
-          return false;
+          return false
         }
       },
-      { message: "URL harus mengarah ke sumber gambar yang valid" },
-    ),
+      { message: 'URL harus mengarah ke sumber gambar yang valid' }
+    )
   ),
-  name: z.string().min(2, "Nama harus terdiri dari minimal 2 karakter"),
-  displayUsername: z
-    .string()
-    .min(3, "Nama tampilan harus terdiri dari minimal 3 karakter"),
+  name: z.string().min(2, 'Nama harus terdiri dari minimal 2 karakter'),
+  displayUsername: z.string().min(3, 'Nama tampilan harus terdiri dari minimal 3 karakter'),
   username: z
     .string()
-    .min(3, "Username harus terdiri dari minimal 3 karakter")
-    .regex(
-      /^[a-zA-Z0-9_]+$/,
-      "Username hanya boleh mengandung huruf, angka, dan garis bawah",
-    ),
-});
+    .min(3, 'Username harus terdiri dari minimal 3 karakter')
+    .regex(/^[a-zA-Z0-9_]+$/, 'Username hanya boleh mengandung huruf, angka, dan garis bawah'),
+})
 
-type UpdateProfileInfoSchema = z.infer<typeof updateProfileInfoSchema>;
+type UpdateProfileInfoSchema = z.infer<typeof updateProfileInfoSchema>
 
-export default function ProfileInfoForm({
-  user,
-  onUpdate,
-}: ProfileInfoFormProps) {
+export default function ProfileInfoForm({ user, onUpdate }: ProfileInfoFormProps) {
   const form = useForm<UpdateProfileInfoSchema>({
     resolver: zodResolver(updateProfileInfoSchema),
     defaultValues: {
-      image: user.image ?? "",
+      image: user.image ?? '',
       name: user.name,
-      displayUsername: user.displayUsername ?? "",
-      username: user.username ?? "",
+      displayUsername: user.displayUsername ?? '',
+      username: user.username ?? '',
     },
-  });
+  })
 
   const refreshInfo = () => {
-    onUpdate();
+    onUpdate()
     form.reset({
-      image: user.image ?? "",
+      image: user.image ?? '',
       name: user.name,
-      displayUsername: user.displayUsername ?? "",
-      username: user.username ?? "",
-    });
-  };
+      displayUsername: user.displayUsername ?? '',
+      username: user.username ?? '',
+    })
+  }
 
   async function onSubmit(dataForm: UpdateProfileInfoSchema) {
     const { error } = await authClient.updateUser({
@@ -102,26 +88,26 @@ export default function ProfileInfoForm({
       name: dataForm.name,
       displayUsername: dataForm.displayUsername,
       username: dataForm.username,
-    });
+    })
 
     if (error) {
-      toast.error("Gagal memperbarui profil", {
+      toast.error('Gagal memperbarui profil', {
         description: error.message,
-      });
-      return;
+      })
+      return
     }
 
-    toast.success("Profil berhasil diperbarui");
-    onUpdate();
+    toast.success('Profil berhasil diperbarui')
+    onUpdate()
     form.reset({
-      image: dataForm.image ?? "",
+      image: dataForm.image ?? '',
       name: dataForm.name,
       displayUsername: dataForm.displayUsername,
       username: dataForm.username,
-    });
+    })
   }
 
-  const isLoading = form.formState.isSubmitting;
+  const isLoading = form.formState.isSubmitting
   return (
     <Card className="border-slate-200 dark:border-slate-800">
       <CardHeader>
@@ -142,17 +128,12 @@ export default function ProfileInfoForm({
                     <div className="flex items-center gap-4">
                       <Avatar className="h-20 w-20">
                         <AvatarImage
-                          src={field.value === "" ? undefined : field.value}
+                          src={field.value === '' ? undefined : field.value}
                           alt={user.name}
                         />
                         <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      <Input
-                        type="url"
-                        placeholder="URL gambar"
-                        disabled={isLoading}
-                        {...field}
-                      />
+                      <Input type="url" placeholder="URL gambar" disabled={isLoading} {...field} />
                     </div>
                   </FormControl>
                   <FormMessage />
@@ -184,13 +165,7 @@ export default function ProfileInfoForm({
             <div className="space-y-2">
               <FormLabel htmlFor="email">Email</FormLabel>
               <div className="flex gap-2">
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={user.email}
-                  disabled
-                />
+                <Input id="email" name="email" type="email" value={user.email} disabled />
               </div>
             </div>
 
@@ -241,8 +216,8 @@ export default function ProfileInfoForm({
                 variant="outline"
                 disabled={isLoading}
                 onClick={() => {
-                  refreshInfo();
-                  toast.success("Profile disinkronisasi ulang");
+                  refreshInfo()
+                  toast.success('Profile disinkronisasi ulang')
                 }}
               >
                 <RefreshCw />
@@ -250,12 +225,12 @@ export default function ProfileInfoForm({
               </Button>
               <Button type="submit" disabled={isLoading}>
                 {isLoading && <Spinner />}
-                {isLoading ? "Menyimpan..." : "Simpan Perubahan"}
+                {isLoading ? 'Menyimpan...' : 'Simpan Perubahan'}
               </Button>
             </div>
           </form>
         </Form>
       </CardContent>
     </Card>
-  );
+  )
 }

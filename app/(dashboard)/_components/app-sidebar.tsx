@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import * as React from "react";
+import * as React from 'react'
 
 import {
   Sidebar,
@@ -10,23 +10,23 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { NavSecondary } from "./nav-secondary";
-import { NavMain } from "./nav-main";
-import { NavUser } from "./nav-user";
-import { authClient } from "@/lib/auth-client";
-import { UserDropdownSkeleton } from "./user-dropdown-skeleton";
-import { NavMainSkeleton } from "./nav-main-skeleton";
-import { routeData } from "@/constants/sidebar-item-data";
-import Link from "next/link";
-import { NavSecondarySkeleton } from "./nav-secondary-skeleton";
-import Image from "next/image";
-import logo from "@/public/logo.png";
+} from '@/components/ui/sidebar'
+import { NavSecondary } from './nav-secondary'
+import { NavMain } from './nav-main'
+import { NavUser } from './nav-user'
+import { authClient } from '@/lib/auth-client'
+import { UserDropdownSkeleton } from './user-dropdown-skeleton'
+import { NavMainSkeleton } from './nav-main-skeleton'
+import { routeData } from '@/constants/sidebar-item-data'
+import Link from 'next/link'
+import { NavSecondarySkeleton } from './nav-secondary-skeleton'
+import Image from 'next/image'
+import logo from '@/public/logo.png'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession()
 
-  const isSessionLoading = isPending || !session;
+  const isSessionLoading = isPending || !session
 
   return (
     <Sidebar variant="inset" collapsible="icon" {...props}>
@@ -52,17 +52,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {isSessionLoading ? (
           <NavMainSkeleton />
         ) : (
-          <NavMain
-            items={routeData.navMain}
-            currentRole={session.user.role ?? "student"}
-          />
+          <NavMain items={routeData.navMain} currentRole={session.user.role ?? 'student'} />
         )}
         {isSessionLoading ? (
           <NavSecondarySkeleton />
         ) : (
           <NavSecondary
             items={routeData.navSecondary}
-            currentRole={session.user.role ?? "student"}
+            currentRole={session.user.role ?? 'student'}
             className="mt-auto"
           />
         )}
@@ -71,13 +68,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         {isSessionLoading ? (
           <UserDropdownSkeleton />
         ) : (
-          <NavUser
-            name={session.user.name}
-            email={session.user.email}
-            image={session.user.image}
-          />
+          <NavUser name={session.user.name} email={session.user.email} image={session.user.image} />
         )}
       </SidebarFooter>
     </Sidebar>
-  );
+  )
 }

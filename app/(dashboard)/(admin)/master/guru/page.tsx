@@ -1,15 +1,15 @@
-import { MasterTeacherHeader } from "./_components/master-teacher-header";
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { ErrorBoundary } from "react-error-boundary";
-import { Suspense } from "react";
-import { MasterTeacherTable } from "./_components/master-teacher-table";
-import { TableSkeleton } from "@/components/skeleton/table-skeleton";
-import { EmptyError } from "@/components/empty-error";
+import { MasterTeacherHeader } from './_components/master-teacher-header'
+import { HydrateClient, prefetch, trpc } from '@/trpc/server'
+import { ErrorBoundary } from 'react-error-boundary'
+import { Suspense } from 'react'
+import { MasterTeacherTable } from './_components/master-teacher-table'
+import { TableSkeleton } from '@/components/skeleton/table-skeleton'
+import { EmptyError } from '@/components/empty-error'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 export default function MasterGuruPage() {
-  prefetch(trpc.teacher.getAllTeachers.queryOptions());
+  prefetch(trpc.teacher.getAllTeachers.queryOptions())
 
   return (
     <HydrateClient>
@@ -29,5 +29,5 @@ export default function MasterGuruPage() {
         </ErrorBoundary>
       </div>
     </HydrateClient>
-  );
+  )
 }

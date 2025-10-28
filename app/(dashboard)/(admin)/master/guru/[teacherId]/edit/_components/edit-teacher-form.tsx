@@ -1,16 +1,12 @@
-"use client";
+'use client'
 
-import { useTRPC } from "@/trpc/client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import z from "zod";
+import { useTRPC } from '@/trpc/client'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
+import { useParams, useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import z from 'zod'
 import {
   Form,
   FormControl,
@@ -18,48 +14,44 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { enumToReadable } from "@/lib/string";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
-import { Gender, TeacherStatus } from "@/lib/generated/prisma";
-import { cn } from "@/lib/utils";
-import { PhoneInput } from "@/components/phone-input";
-import { updateTeacherSchema } from "@/trpc/schemas/teacher.schema";
-import { Spinner } from "@/components/ui/spinner";
+} from '@/components/ui/select'
+import { enumToReadable } from '@/lib/string'
+import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
+import { id } from 'date-fns/locale'
+import { Gender, TeacherStatus } from '@/lib/generated/prisma'
+import { cn } from '@/lib/utils'
+import { PhoneInput } from '@/components/phone-input'
+import { updateTeacherSchema } from '@/trpc/schemas/teacher.schema'
+import { Spinner } from '@/components/ui/spinner'
 
 export function EditTeacherForm() {
-  const params = useParams<{ teacherId: string }>();
-  const router = useRouter();
+  const params = useParams<{ teacherId: string }>()
+  const router = useRouter()
 
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
   const { data: teacher } = useSuspenseQuery(
-    trpc.teacher.getTeacherById.queryOptions({ teacherId: params.teacherId }),
-  );
+    trpc.teacher.getTeacherById.queryOptions({ teacherId: params.teacherId })
+  )
 
   const form = useForm<z.infer<typeof updateTeacherSchema>>({
     resolver: zodResolver(updateTeacherSchema),
     defaultValues: {
       nip: teacher?.nip,
-      alamat: teacher?.alamat || "",
-      noTelepon: teacher?.noTelepon || "",
+      alamat: teacher?.alamat || '',
+      noTelepon: teacher?.noTelepon || '',
       tanggalMasuk: teacher?.tanggalMasuk,
       status: teacher?.status,
       tanggalLahir: teacher?.tanggalLahir,
@@ -67,39 +59,37 @@ export function EditTeacherForm() {
       nama: teacher?.nama,
       teacherId: teacher?.id,
     },
-  });
+  })
 
-  const updateTeacherMutationOptions =
-    trpc.teacher.updateTeacher.mutationOptions({
-      onError: (error) => {
-        toast.error(error.message);
-      },
-      onSuccess: (data) => {
-        form.reset();
-        queryClient.invalidateQueries({
-          queryKey: trpc.student.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.teacher.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.class.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.subject.pathKey(),
-        });
-        toast.success(data.message);
-        router.push("/master/guru");
-      },
-    });
-  const updateTeacherMutation = useMutation(updateTeacherMutationOptions);
+  const updateTeacherMutationOptions = trpc.teacher.updateTeacher.mutationOptions({
+    onError: error => {
+      toast.error(error.message)
+    },
+    onSuccess: data => {
+      form.reset()
+      queryClient.invalidateQueries({
+        queryKey: trpc.student.pathKey(),
+      })
+      queryClient.invalidateQueries({
+        queryKey: trpc.teacher.pathKey(),
+      })
+      queryClient.invalidateQueries({
+        queryKey: trpc.class.pathKey(),
+      })
+      queryClient.invalidateQueries({
+        queryKey: trpc.subject.pathKey(),
+      })
+      toast.success(data.message)
+      router.push('/master/guru')
+    },
+  })
+  const updateTeacherMutation = useMutation(updateTeacherMutationOptions)
 
   function onSubmit(data: z.infer<typeof updateTeacherSchema>) {
-    updateTeacherMutation.mutate(data);
+    updateTeacherMutation.mutate(data)
   }
 
-  const isLoading =
-    updateTeacherMutation.isPending || form.formState.isSubmitting;
+  const isLoading = updateTeacherMutation.isPending || form.formState.isSubmitting
 
   return (
     <div>
@@ -113,11 +103,7 @@ export function EditTeacherForm() {
                 <FormItem>
                   <FormLabel>NIP</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      placeholder="Masukkan NISN"
-                    />
+                    <Input type="number" {...field} placeholder="Masukkan NISN" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -153,7 +139,7 @@ export function EditTeacherForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.keys(Gender).map((gender) => (
+                      {Object.keys(Gender).map(gender => (
                         <SelectItem key={gender} value={gender}>
                           {enumToReadable(gender)}
                         </SelectItem>
@@ -163,7 +149,7 @@ export function EditTeacherForm() {
                           type="button"
                           className="w-full"
                           onClick={() => {
-                            field.onChange("");
+                            field.onChange('')
                           }}
                         >
                           Hapus Pilihan
@@ -199,7 +185,7 @@ export function EditTeacherForm() {
                       placeholder="Masukkan Nomor Handphone"
                       international={false}
                       defaultCountry="ID"
-                      allowedCountries={["ID"]}
+                      allowedCountries={['ID']}
                       {...field}
                     />
                   </FormControl>
@@ -217,14 +203,14 @@ export function EditTeacherForm() {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          variant={"outline"}
+                          variant={'outline'}
                           className={cn(
-                            "pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground",
+                            'pl-3 text-left font-normal',
+                            !field.value && 'text-muted-foreground'
                           )}
                         >
                           {field.value ? (
-                            format(field.value, "PPP", {
+                            format(field.value, 'PPP', {
                               locale: id,
                             })
                           ) : (
@@ -239,9 +225,7 @@ export function EditTeacherForm() {
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
+                        disabled={date => date > new Date() || date < new Date('1900-01-01')}
                         locale={id}
                         captionLayout="dropdown"
                       />
@@ -261,14 +245,14 @@ export function EditTeacherForm() {
                     <PopoverTrigger asChild>
                       <FormControl>
                         <Button
-                          variant={"outline"}
+                          variant={'outline'}
                           className={cn(
-                            "pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground",
+                            'pl-3 text-left font-normal',
+                            !field.value && 'text-muted-foreground'
                           )}
                         >
                           {field.value ? (
-                            format(field.value, "PPP", {
+                            format(field.value, 'PPP', {
                               locale: id,
                             })
                           ) : (
@@ -283,9 +267,7 @@ export function EditTeacherForm() {
                         mode="single"
                         selected={field.value}
                         onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
+                        disabled={date => date > new Date() || date < new Date('1900-01-01')}
                         locale={id}
                         captionLayout="dropdown"
                       />
@@ -312,7 +294,7 @@ export function EditTeacherForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.keys(TeacherStatus).map((status) => (
+                      {Object.keys(TeacherStatus).map(status => (
                         <SelectItem key={status} value={status}>
                           {enumToReadable(status)}
                         </SelectItem>
@@ -322,7 +304,7 @@ export function EditTeacherForm() {
                           type="button"
                           className="w-full"
                           onClick={() => {
-                            field.onChange("");
+                            field.onChange('')
                           }}
                         >
                           Hapus Pilihan
@@ -346,11 +328,11 @@ export function EditTeacherForm() {
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading && <Spinner />}
-              {isLoading ? "Memperbarui..." : "Perbarui"}
+              {isLoading ? 'Memperbarui...' : 'Perbarui'}
             </Button>
           </div>
         </form>
       </Form>
     </div>
-  );
+  )
 }

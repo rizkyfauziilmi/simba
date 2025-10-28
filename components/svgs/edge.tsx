@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from 'react'
 
 const Edge = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} viewBox="0 0 256 256">
@@ -11,7 +11,7 @@ const Edge = (props: SVGProps<SVGSVGElement>) => (
       fill="url(#edge__b)"
       d="M235.7 195.5a93.7 93.7 0 0 1-10.6 4.7 101.9 101.9 0 0 1-35.9 6.4c-47.3 0-88.5-32.5-88.5-74.3a31.5 31.5 0 0 1 16.4-27.3c-42.8 1.8-53.8 46.4-53.8 72.5 0 74 68.1 81.4 82.8 81.4 7.9 0 19.8-2.3 27-4.6l1.3-.4a128.3 128.3 0 0 0 66.6-52.8 4 4 0 0 0-5.3-5.6Z"
       opacity=".35"
-      style={{ isolation: "isolate" }}
+      style={{ isolation: 'isolate' }}
       transform="translate(-4.6 -5)"
     />
     <path
@@ -23,7 +23,7 @@ const Edge = (props: SVGProps<SVGSVGElement>) => (
       fill="url(#edge__d)"
       d="M110.3 246.3A79.2 79.2 0 0 1 87.6 225a80.7 80.7 0 0 1 29.5-120c3.2-1.5 8.5-4.1 15.6-4a32.4 32.4 0 0 1 25.7 13 31.9 31.9 0 0 1 6.3 18.7c0-.2 24.5-79.6-80-79.6-43.9 0-80 41.6-80 78.2a130.2 130.2 0 0 0 12.1 56 128 128 0 0 0 156.4 67 75.5 75.5 0 0 1-62.8-8Z"
       opacity=".41"
-      style={{ isolation: "isolate" }}
+      style={{ isolation: 'isolate' }}
       transform="translate(-4.6 -5)"
     />
     <path
@@ -37,6 +37,6 @@ const Edge = (props: SVGProps<SVGSVGElement>) => (
       transform="translate(-4.6 -5)"
     />
   </svg>
-);
+)
 
-export { Edge };
+export { Edge }

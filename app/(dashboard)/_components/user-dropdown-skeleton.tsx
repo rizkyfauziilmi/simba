@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from '@/components/ui/skeleton'
 
 export const UserDropdownSkeleton = () => {
   return (
@@ -9,5 +9,5 @@ export const UserDropdownSkeleton = () => {
         <Skeleton className="h-2 w-3/5" />
       </div>
     </Skeleton>
-  );
-};
+  )
+}

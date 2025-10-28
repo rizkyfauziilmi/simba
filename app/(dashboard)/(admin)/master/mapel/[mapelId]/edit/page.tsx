@@ -1,24 +1,24 @@
-import { getQueryClient, HydrateClient, trpc } from "@/trpc/server";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import { EditSubjectForm } from "./_components/edit-subject-form";
-import { EmptyError } from "@/components/empty-error";
-import { EmptyLoading } from "@/components/empty-loading";
+import { getQueryClient, HydrateClient, trpc } from '@/trpc/server'
+import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
+import { EditSubjectForm } from './_components/edit-subject-form'
+import { EmptyError } from '@/components/empty-error'
+import { EmptyLoading } from '@/components/empty-loading'
 
 export default async function MasterUpdateSubjectPage({
   params,
 }: {
-  params: Promise<{ mapelId: string }>;
+  params: Promise<{ mapelId: string }>
 }) {
-  const { mapelId } = await params;
-  const queryClient = getQueryClient();
+  const { mapelId } = await params
+  const queryClient = getQueryClient()
   const subject = await queryClient.fetchQuery(
-    trpc.subject.getSubjectById.queryOptions({ subjectId: mapelId }),
-  );
+    trpc.subject.getSubjectById.queryOptions({ subjectId: mapelId })
+  )
 
   if (!subject) {
-    redirect("/master/mapel");
+    redirect('/master/mapel')
   }
 
   return (
@@ -43,5 +43,5 @@ export default async function MasterUpdateSubjectPage({
         </Suspense>
       </ErrorBoundary>
     </HydrateClient>
-  );
+  )
 }

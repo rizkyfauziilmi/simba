@@ -1,24 +1,24 @@
-import { getQueryClient, HydrateClient, trpc } from "@/trpc/server";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import { TeacherDetail } from "./_components/teacher-detail";
-import { EmptyError } from "@/components/empty-error";
-import { EmptyLoading } from "@/components/empty-loading";
+import { getQueryClient, HydrateClient, trpc } from '@/trpc/server'
+import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
+import { TeacherDetail } from './_components/teacher-detail'
+import { EmptyError } from '@/components/empty-error'
+import { EmptyLoading } from '@/components/empty-loading'
 
 export default async function SiswaDetailPage({
   params,
 }: {
-  params: Promise<{ teacherId: string }>;
+  params: Promise<{ teacherId: string }>
 }) {
-  const { teacherId } = await params;
-  const queryClient = getQueryClient();
+  const { teacherId } = await params
+  const queryClient = getQueryClient()
   const teacher = await queryClient.fetchQuery(
-    trpc.teacher.getTeacherById.queryOptions({ teacherId }),
-  );
+    trpc.teacher.getTeacherById.queryOptions({ teacherId })
+  )
 
   if (!teacher) {
-    redirect("/master/siswa");
+    redirect('/master/siswa')
   }
 
   return (
@@ -43,5 +43,5 @@ export default async function SiswaDetailPage({
         </Suspense>
       </ErrorBoundary>
     </HydrateClient>
-  );
+  )
 }

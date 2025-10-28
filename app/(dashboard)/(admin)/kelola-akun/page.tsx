@@ -1,14 +1,8 @@
-"use client";
+'use client'
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardDescription,
-} from "@/components/ui/card";
-import { CreateAdminDialog } from "./_components/create-admin-dialog";
-import { UserTable } from "./_components/user-table";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
+import { CreateAdminDialog } from './_components/create-admin-dialog'
+import { UserTable } from './_components/user-table'
 
 export default function KelolaAkunPage() {
   return (
@@ -17,8 +11,8 @@ export default function KelolaAkunPage() {
         <CardHeader className="flex-1 p-0">
           <CardTitle>Kelola Semua Akun</CardTitle>
           <CardDescription>
-            Kelola semua akun pengguna dengan mudah: ubah kata sandi, aktifkan
-            penyamaran, dan lakukan pengaturan lainnya.
+            Kelola semua akun pengguna dengan mudah: ubah kata sandi, aktifkan penyamaran, dan
+            lakukan pengaturan lainnya.
           </CardDescription>
         </CardHeader>
         <CreateAdminDialog />
@@ -27,5 +21,5 @@ export default function KelolaAkunPage() {
         <UserTable />
       </CardContent>
     </Card>
-  );
+  )
 }
