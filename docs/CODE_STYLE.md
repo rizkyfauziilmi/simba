@@ -9,9 +9,10 @@ This document outlines the code style guidelines for the SIMBA project to ensure
 3. [Prettier Configuration](#prettier-configuration)
 4. [ESLint Configuration](#eslint-configuration)
 5. [Git Pre-commit Hooks](#git-pre-commit-hooks)
-6. [Formatting Commands](#formatting-commands)
-7. [Editor Integration](#editor-integration)
-8. [Best Practices](#best-practices)
+6. [Commit Message Guidelines](#commit-message-guidelines)
+7. [Formatting Commands](#formatting-commands)
+8. [Editor Integration](#editor-integration)
+9. [Best Practices](#best-practices)
 
 ## Introduction
 
@@ -23,6 +24,8 @@ SIMBA uses a combination of Prettier and ESLint to enforce consistent code forma
 - **ESLint**: Handles code quality rules and patterns
 - **lint-staged**: Runs linters on pre-committed files
 - **Husky**: Manages Git hooks to run lint-staged before commits
+- **Commitizen**: Creates standardized commit messages via interactive prompts
+- **Commitlint**: Validates commit messages against a conventional format
 
 ## Prettier Configuration
 
@@ -74,6 +77,52 @@ SIMBA uses Husky to run lint-staged before each commit. This ensures that all co
 
 The pre-commit hook automatically formats staged files using Prettier, preventing unformatted code from being committed.
 
+## Commit Message Guidelines
+
+SIMBA follows the Conventional Commits specification for commit messages. This provides a structured format that makes the commit history more readable and enables automatic generation of changelogs.
+
+### Commit Format
+
+```
+<type>(<optional scope>): <description>
+
+<optional body>
+
+<optional footer>
+```
+
+### Types
+
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation changes only
+- `style`: Changes that don't affect code meaning (formatting, etc.)
+- `refactor`: Code changes that neither fix bugs nor add features
+- `perf`: Performance improvements
+- `test`: Adding or fixing tests
+- `chore`: Changes to build process or auxiliary tools
+- `ci`: Changes to CI configuration
+- `revert`: Reverting a previous commit
+
+### Examples
+
+```
+feat(auth): add login with Google
+fix(dashboard): resolve data loading issue in chart component
+docs: update installation instructions
+style: format code according to new prettier rules
+```
+
+### Using Commitizen
+
+To create properly formatted commits easily, use the Commitizen CLI with:
+
+```bash
+npm run commit
+```
+
+This will launch an interactive prompt that guides you through creating a conventional commit.
+
 ## Formatting Commands
 
 Several npm scripts are available for formatting and linting:
@@ -82,6 +131,7 @@ Several npm scripts are available for formatting and linting:
 - `npm run format:check` - Check if files are correctly formatted without changing them
 - `npm run lint` - Run ESLint to check for code quality issues
 - `npm run lint-format` - Run both ESLint and Prettier in sequence
+- `npm run commit` - Create a properly formatted commit message using Commitizen
 
 ## Editor Integration
 
@@ -115,8 +165,10 @@ Configure VS Code to format on save:
 1. **Don't Bypass the Hook**: Avoid using `--no-verify` with Git commits unless absolutely necessary
 2. **Fix Linting Errors**: Don't ignore ESLint errors; they often highlight potential bugs
 3. **Format Before PR**: Always ensure your code is formatted before creating a pull request
-4. **Editor Integration**: Configure your editor for the best experience with real-time feedback
-5. **Keep Configuration Updated**: If you change Prettier or ESLint rules, communicate with the team
+4. **Use Conventional Commits**: Follow the commit message guidelines to maintain a clean history
+5. **Use Commitizen**: Run `npm run commit` instead of `git commit` to ensure proper commit format
+6. **Editor Integration**: Configure your editor for the best experience with real-time feedback
+7. **Keep Configuration Updated**: If you change Prettier or ESLint rules, communicate with the team
 
 ---
 

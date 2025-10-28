@@ -10,7 +10,8 @@ Panduan ini akan menjelaskan langkah-langkah untuk melakukan setup development e
 4. [Menjalankan Database PostgreSQL](#4-menjalankan-database-postgresql)
 5. [Menjalankan Aplikasi](#5-menjalankan-aplikasi)
 6. [Kode Formatting dan Linting](#6-kode-formatting-dan-linting)
-7. [Troubleshooting](#7-troubleshooting)
+7. [Git Workflow dan Commit](#7-git-workflow-dan-commit)
+8. [Troubleshooting](#8-troubleshooting)
 
 ## 1. Prasyarat
 
@@ -130,7 +131,86 @@ Proyek ini menggunakan Husky untuk menjalankan lint-staged, yang akan otomatis m
 
 Pre-commit hook dijalankan otomatis saat Anda melakukan commit, dan akan memformat kode yang telah di-stage.
 
-## 7. Troubleshooting
+## 7. Git Workflow dan Commit
+
+Proyek SIMBA menggunakan format commit konvensional untuk menjaga konsistensi dan keterbacaan history perubahan kode.
+
+### Cara Melakukan Commit
+
+Untuk membuat commit yang mengikuti format standar, gunakan perintah berikut:
+
+```bash
+npm run commit
+```
+
+Perintah ini akan menjalankan Commitizen yang akan memberikan panduan interaktif untuk membuat commit message dengan format yang benar.
+
+### Format Commit Message
+
+Format commit message mengikuti standar Conventional Commits:
+
+```
+<type>(<scope>): <description>
+
+<body>
+
+<footer>
+```
+
+Beberapa type commit yang tersedia:
+
+- `feat`: Fitur baru
+- `fix`: Perbaikan bug
+- `docs`: Perubahan dokumentasi
+- `style`: Perubahan format kode (tidak mengubah fungsionalitas)
+- `refactor`: Perubahan kode yang tidak menambah fitur atau memperbaiki bug
+- `perf`: Peningkatan performa
+- `test`: Menambah atau memperbaiki test
+- `chore`: Perubahan pada build process atau tooling
+
+### Validasi Commit Message
+
+Commit message akan divalidasi secara otomatis menggunakan commitlint. Jika message tidak sesuai dengan format yang ditentukan, commit akan ditolak.
+
+### Workflow Git yang Disarankan
+
+1. Update kode lokal dengan perubahan terbaru:
+
+   ```bash
+   git pull
+   ```
+
+2. Buat branch baru untuk fitur yang dikerjakan:
+
+   ```bash
+   git checkout -b nama-fitur
+   ```
+
+3. Lakukan perubahan kode
+
+4. Stage perubahan:
+
+   ```bash
+   git add .
+   ```
+
+5. Commit perubahan menggunakan Commitizen:
+
+   ```bash
+   npm run commit
+   ```
+
+6. Push ke remote repository:
+
+   ```bash
+   git push origin nama-fitur
+   ```
+
+7. Buat Pull Request
+
+Untuk informasi lebih lanjut tentang format commit, lihat file `docs/CODE_STYLE.md`.
+
+## 8. Troubleshooting
 
 ### Masalah Koneksi Database
 

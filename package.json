@@ -13,6 +13,7 @@
     "format:check": "prettier --check .",
     "lint-format": "npm run lint && npm run format",
     "prepare": "husky",
+    "commit": "cz",
     "// Development DB": "--------- Development Database ---------",
     "dev:db": "docker compose -f docker-compose.dev.yml up -d",
     "dev:db:stop": "docker compose -f docker-compose.dev.yml down",
@@ -53,6 +54,11 @@
     "*.{js,jsx,ts,tsx,json,css,md}": [
       "prettier --write"
     ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -107,6 +113,8 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "@eslint/eslintrc": "^3",
     "@faker-js/faker": "^10.0.0",
     "@tailwindcss/postcss": "^4",
@@ -115,6 +123,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "cli-progress": "^3.12.0",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
     "dotenv-cli": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
