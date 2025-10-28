@@ -1,35 +1,35 @@
-# Code Style Guide for SIMBA
+# Panduan Gaya Kode untuk SIMBA
 
-This document outlines the code style guidelines for the SIMBA project to ensure consistency and maintainability across the codebase.
+Dokumen ini menguraikan pedoman gaya kode untuk proyek SIMBA untuk memastikan konsistensi dan kemudahan pemeliharaan di seluruh basis kode.
 
-## Table of Contents
+## Daftar Isi
 
-1. [Introduction](#introduction)
-2. [Formatting Tools](#formatting-tools)
-3. [Prettier Configuration](#prettier-configuration)
-4. [ESLint Configuration](#eslint-configuration)
+1. [Pendahuluan](#pendahuluan)
+2. [Alat Pemformatan](#alat-pemformatan)
+3. [Konfigurasi Prettier](#konfigurasi-prettier)
+4. [Konfigurasi ESLint](#konfigurasi-eslint)
 5. [Git Pre-commit Hooks](#git-pre-commit-hooks)
-6. [Commit Message Guidelines](#commit-message-guidelines)
-7. [Formatting Commands](#formatting-commands)
-8. [Editor Integration](#editor-integration)
-9. [Best Practices](#best-practices)
+6. [Pedoman Pesan Commit](#pedoman-pesan-commit)
+7. [Perintah Pemformatan](#perintah-pemformatan)
+8. [Integrasi Editor](#integrasi-editor)
+9. [Praktik Terbaik](#praktik-terbaik)
 
-## Introduction
+## Pendahuluan
 
-SIMBA uses a combination of Prettier and ESLint to enforce consistent code formatting and best practices. These tools are configured to work together to provide a seamless development experience.
+SIMBA menggunakan kombinasi Prettier dan ESLint untuk menerapkan pemformatan kode yang konsisten dan praktik terbaik. Alat-alat ini dikonfigurasi untuk bekerja bersama memberikan pengalaman pengembangan yang lancar.
 
-## Formatting Tools
+## Alat Pemformatan
 
-- **Prettier**: Handles code formatting (spacing, line length, quotes, etc.)
-- **ESLint**: Handles code quality rules and patterns
-- **lint-staged**: Runs linters on pre-committed files
-- **Husky**: Manages Git hooks to run lint-staged before commits (v9+)
-- **Commitizen**: Creates standardized commit messages via interactive prompts
-- **Commitlint**: Validates commit messages against a conventional format
+- **Prettier**: Menangani pemformatan kode (spasi, panjang baris, tanda kutip, dll.)
+- **ESLint**: Menangani aturan kualitas kode dan pola
+- **lint-staged**: Menjalankan linter pada file yang di-stage sebelum commit dan mencegah commit jika ada error
+- **Husky**: Mengelola Git hooks untuk menjalankan lint-staged sebelum commit (v9+)
+- **Commitizen**: Membuat pesan commit terstandarisasi melalui prompt interaktif
+- **Commitlint**: Memvalidasi pesan commit berdasarkan format konvensional
 
-## Prettier Configuration
+## Konfigurasi Prettier
 
-The Prettier configuration is defined in `.prettierrc.json` with the following settings:
+Konfigurasi Prettier didefinisikan dalam `.prettierrc.json` dengan pengaturan berikut:
 
 ```json
 {
@@ -45,43 +45,43 @@ The Prettier configuration is defined in `.prettierrc.json` with the following s
 }
 ```
 
-- `semi: false` - No semicolons
-- `singleQuote: true` - Use single quotes instead of double quotes
-- `tabWidth: 2` - Use 2 spaces for indentation
-- `trailingComma: "es5"` - Add trailing commas where valid in ES5
-- `printWidth: 100` - Wrap code at 100 characters
-- `arrowParens: "avoid"` - Omit parentheses around a sole arrow function parameter when possible
-- `bracketSpacing: true` - Print spaces between brackets in object literals
-- `endOfLine: "lf"` - Line endings use LF (Unix-style)
+- `semi: false` - Tanpa titik koma
+- `singleQuote: true` - Menggunakan tanda kutip tunggal alih-alih tanda kutip ganda
+- `tabWidth: 2` - Menggunakan 2 spasi untuk indentasi
+- `trailingComma: "es5"` - Menambahkan koma di akhir jika valid di ES5
+- `printWidth: 100` - Membungkus kode pada 100 karakter
+- `arrowParens: "avoid"` - Menghilangkan tanda kurung di sekitar parameter fungsi panah tunggal jika memungkinkan
+- `bracketSpacing: true` - Mencetak spasi di antara kurung dalam literal objek
+- `endOfLine: "lf"` - Akhir baris menggunakan LF (gaya Unix)
 
-### Ignored Files
+### File yang Diabaikan
 
-The `.prettierignore` file specifies which files should be excluded from formatting:
+File `.prettierignore` menentukan file mana yang harus dikecualikan dari pemformatan:
 
 - `node_modules/`
 - `.next/`
 - `prisma/`
-- Build outputs, cache files, and more
+- Output build, file cache, dan lainnya
 
-## ESLint Configuration
+## Konfigurasi ESLint
 
-ESLint is configured to work with Prettier and Next.js rules. The configuration is in `eslint.config.mjs` and includes:
+ESLint dikonfigurasi untuk bekerja dengan Prettier dan aturan Next.js. Konfigurasi ada di `eslint.config.mjs` dan mencakup:
 
-- Next.js recommended rules
-- TypeScript support
-- Integration with Prettier to avoid conflicts
+- Aturan yang direkomendasikan Next.js
+- Dukungan TypeScript
+- Integrasi dengan Prettier untuk menghindari konflik
 
 ## Git Pre-commit Hooks
 
-SIMBA uses Husky to run lint-staged before each commit. This ensures that all committed code follows our style guidelines.
+SIMBA menggunakan Husky untuk menjalankan lint-staged sebelum setiap commit. Hal ini memastikan bahwa semua kode yang di-commit mengikuti pedoman gaya kode kita.
 
-The pre-commit hook automatically formats staged files using Prettier, preventing unformatted code from being committed. SIMBA uses the modern Husky v9+ configuration which is more lightweight and faster than previous versions.
+Hook pre-commit secara otomatis memformat file yang di-stage menggunakan Prettier dan memeriksa kode dengan ESLint. Jika ditemukan error linting, commit akan dibatalkan sampai error tersebut diperbaiki. SIMBA menggunakan konfigurasi Husky v9+ modern yang lebih ringan dan lebih cepat dari versi sebelumnya.
 
-## Commit Message Guidelines
+## Pedoman Pesan Commit
 
-SIMBA follows the Conventional Commits specification for commit messages. This provides a structured format that makes the commit history more readable and enables automatic generation of changelogs.
+SIMBA mengikuti spesifikasi Conventional Commits untuk pesan commit. Ini memberikan format terstruktur yang membuat riwayat commit lebih mudah dibaca dan memungkinkan pembuatan changelog secara otomatis.
 
-### Commit Format
+### Format Commit
 
 ```
 <type>(<optional scope>): <description>
@@ -91,58 +91,58 @@ SIMBA follows the Conventional Commits specification for commit messages. This p
 <optional footer>
 ```
 
-### Types
+### Jenis-jenis
 
-- `feat`: A new feature
-- `fix`: A bug fix
-- `docs`: Documentation changes only
-- `style`: Changes that don't affect code meaning (formatting, etc.)
-- `refactor`: Code changes that neither fix bugs nor add features
-- `perf`: Performance improvements
-- `test`: Adding or fixing tests
-- `chore`: Changes to build process or auxiliary tools
-- `ci`: Changes to CI configuration
-- `revert`: Reverting a previous commit
+- `feat`: Fitur baru
+- `fix`: Perbaikan bug
+- `docs`: Perubahan dokumentasi saja
+- `style`: Perubahan yang tidak mempengaruhi arti kode (pemformatan, dll.)
+- `refactor`: Perubahan kode yang tidak memperbaiki bug atau menambahkan fitur
+- `perf`: Peningkatan kinerja
+- `test`: Menambahkan atau memperbaiki pengujian
+- `chore`: Perubahan pada proses build atau alat bantu
+- `ci`: Perubahan pada konfigurasi CI
+- `revert`: Membatalkan commit sebelumnya
 
-### Examples
+### Contoh
 
 ```
-feat(auth): add login with Google
-fix(dashboard): resolve data loading issue in chart component
-docs: update installation instructions
-style: format code according to new prettier rules
+feat(auth): menambahkan login dengan Google
+fix(dashboard): menyelesaikan masalah pemuatan data di komponen grafik
+docs: memperbarui instruksi instalasi
+style: memformat kode sesuai aturan prettier baru
 ```
 
-### Using Commitizen
+### Menggunakan Commitizen
 
-To create properly formatted commits easily, use the Commitizen CLI with:
+Untuk membuat commit yang diformat dengan benar dengan mudah, gunakan Commitizen CLI dengan:
 
 ```bash
 npm run commit
 ```
 
-This will launch an interactive prompt that guides you through creating a conventional commit.
+Ini akan meluncurkan prompt interaktif yang memandu Anda dalam membuat commit konvensional.
 
-## Formatting Commands
+## Perintah Pemformatan
 
-Several npm scripts are available for formatting and linting:
+Beberapa skrip npm tersedia untuk pemformatan dan linting:
 
-- `npm run format` - Format all files with Prettier
-- `npm run format:check` - Check if files are correctly formatted without changing them
-- `npm run lint` - Run ESLint to check for code quality issues
-- `npm run lint-format` - Run both ESLint and Prettier in sequence
-- `npm run commit` - Create a properly formatted commit message using Commitizen
+- `npm run format` - Memformat semua file dengan Prettier
+- `npm run format:check` - Memeriksa apakah file sudah diformat dengan benar tanpa mengubahnya
+- `npm run lint` - Menjalankan ESLint untuk memeriksa masalah kualitas kode
+- `npm run lint-format` - Menjalankan ESLint dan Prettier secara berurutan
+- `npm run commit` - Membuat pesan commit yang diformat dengan benar menggunakan Commitizen
 
-## Editor Integration
+## Integrasi Editor
 
 ### VS Code
 
-For VS Code users, we recommend installing the following extensions:
+Untuk pengguna VS Code, kami merekomendasikan menginstal ekstensi berikut:
 
 1. **Prettier - Code formatter**
 2. **ESLint**
 
-Configure VS Code to format on save:
+Konfigurasikan VS Code untuk memformat saat menyimpan:
 
 ```json
 {
@@ -154,22 +154,22 @@ Configure VS Code to format on save:
 }
 ```
 
-### JetBrains IDEs (WebStorm, IntelliJ IDEA)
+### JetBrains IDE (WebStorm, IntelliJ IDEA)
 
-1. Install the Prettier plugin
-2. Configure Prettier as the default formatter
-3. Enable "Run on save" in the Prettier configuration
+1. Instal plugin Prettier
+2. Konfigurasikan Prettier sebagai formatter default
+3. Aktifkan "Run on save" dalam konfigurasi Prettier
 
-## Best Practices
+## Praktik Terbaik
 
-1. **Don't Bypass the Hook**: Avoid using `--no-verify` with Git commits unless absolutely necessary, or alternatively set `HUSKY=0` temporarily
-2. **Fix Linting Errors**: Don't ignore ESLint errors; they often highlight potential bugs
-3. **Format Before PR**: Always ensure your code is formatted before creating a pull request
-4. **Use Conventional Commits**: Follow the commit message guidelines to maintain a clean history
-5. **Use Commitizen**: Run `npm run commit` instead of `git commit` to ensure proper commit format
-6. **Editor Integration**: Configure your editor for the best experience with real-time feedback
-7. **Keep Configuration Updated**: If you change Prettier or ESLint rules, communicate with the team
+1. **Jangan Lewati Hook**: Hindari menggunakan `--no-verify` dengan Git commit kecuali benar-benar diperlukan, atau alternatifnya set `HUSKY=0` sementara
+2. **Perbaiki Error Linting**: Pastikan untuk memperbaiki semua error ESLint karena sistem tidak akan mengizinkan commit jika terdapat error linting; error ini sering menunjukkan bug potensial
+3. **Format Sebelum PR**: Selalu pastikan kode Anda diformat sebelum membuat pull request
+4. **Gunakan Conventional Commits**: Ikuti pedoman pesan commit untuk menjaga riwayat yang bersih
+5. **Gunakan Commitizen**: Jalankan `npm run commit` alih-alih `git commit` untuk memastikan format pesan commit yang tepat
+6. **Integrasi Editor**: Konfigurasikan editor Anda untuk pengalaman terbaik dengan umpan balik real-time
+7. **Perbarui Konfigurasi**: Jika Anda mengubah aturan Prettier atau ESLint, komunikasikan dengan tim
 
 ---
 
-For questions or suggestions about this code style guide, please contact the project maintainers.
+Untuk pertanyaan atau saran tentang panduan gaya kode ini, silakan hubungi pengelola proyek.

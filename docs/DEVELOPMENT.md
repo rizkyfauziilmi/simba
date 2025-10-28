@@ -127,7 +127,7 @@ npm run lint-format
 
 ### Pre-commit Hook
 
-Proyek ini menggunakan Husky untuk menjalankan lint-staged, yang akan otomatis memformat file yang diubah sebelum commit. Ini memastikan bahwa semua kode yang di-commit telah diformat dengan benar.
+Proyek ini menggunakan Husky untuk menjalankan lint-staged, yang akan otomatis memformat file yang diubah sebelum commit dan memeriksa error linting. Ini memastikan bahwa semua kode yang di-commit telah diformat dengan benar dan bebas dari error linting. Jika ditemukan error linting, commit akan dibatalkan sampai error tersebut diperbaiki.
 
 Pre-commit hook dijalankan otomatis saat Anda melakukan commit, dan akan memformat kode yang telah di-stage.
 
@@ -201,6 +201,7 @@ Commit message akan divalidasi secara otomatis menggunakan commitlint. Jika mess
    ```
 
    6. Push ke remote repository:
+
       ```bash
       git push origin nama-fitur
       ```
@@ -212,13 +213,13 @@ Commit message akan divalidasi secara otomatis menggunakan commitlint. Jika mess
    ### Troubleshooting Git Hooks
 
    Jika mengalami masalah dengan Git hooks:
-
    1. **Hooks Tidak Berjalan**:
       - Pastikan Husky sudah diinstall dengan benar: `npm install`
       - Periksa bahwa script `prepare` ada di `package.json`
       - Periksa apakah hooks terdaftar: `ls -la .husky/`
 
    2. **Melewati Hooks Sementara**:
+
       ```bash
       HUSKY=0 git commit -m "melewati hooks"
       ```
@@ -227,8 +228,10 @@ Commit message akan divalidasi secara otomatis menggunakan commitlint. Jika mess
       - Tambahkan izin eksekusi: `chmod +x .husky/pre-commit .husky/commit-msg`
 
    4. **Tidak Bisa Commit karena Error Linting/Formatting**:
+      - Sistem akan mencegah commit jika terdapat error linting
       - Perbaiki error dengan menjalankan: `npm run lint-format`
-      - Atau stage perubahan tersebut: `git add .`
+      - Setelah itu stage perubahan tersebut: `git add .`
+      - Jika terdesak dan perlu melakukan commit tanpa memperbaiki error: `HUSKY=0 git commit -m "pesan commit"`
 
    5. **Husky Versi 9+**:
       - Proyek ini menggunakan Husky versi modern (v9+)
