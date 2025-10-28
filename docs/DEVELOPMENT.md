@@ -200,19 +200,43 @@ Commit message akan divalidasi secara otomatis menggunakan commitlint. Jika mess
    npm run commit
    ```
 
-6. Push ke remote repository:
+   6. Push ke remote repository:
+      ```bash
+      git push origin nama-fitur
+      ```
 
-   ```bash
-   git push origin nama-fitur
-   ```
+   7. Buat Pull Request
 
-7. Buat Pull Request
+   Untuk informasi lebih lanjut tentang format commit, lihat file `docs/CODE_STYLE.md`.
 
-Untuk informasi lebih lanjut tentang format commit, lihat file `docs/CODE_STYLE.md`.
+   ### Troubleshooting Git Hooks
 
-## 8. Troubleshooting
+   Jika mengalami masalah dengan Git hooks:
 
-### Masalah Koneksi Database
+   1. **Hooks Tidak Berjalan**:
+      - Pastikan Husky sudah diinstall dengan benar: `npm install`
+      - Periksa bahwa script `prepare` ada di `package.json`
+      - Periksa apakah hooks terdaftar: `ls -la .husky/`
+
+   2. **Melewati Hooks Sementara**:
+      ```bash
+      HUSKY=0 git commit -m "melewati hooks"
+      ```
+
+   3. **Error Permission Denied**:
+      - Tambahkan izin eksekusi: `chmod +x .husky/pre-commit .husky/commit-msg`
+
+   4. **Tidak Bisa Commit karena Error Linting/Formatting**:
+      - Perbaiki error dengan menjalankan: `npm run lint-format`
+      - Atau stage perubahan tersebut: `git add .`
+
+   5. **Husky Versi 9+**:
+      - Proyek ini menggunakan Husky versi modern (v9+)
+      - Tidak memerlukan script header shellscript di file hook
+
+   ## 8. Troubleshooting
+
+   ### Masalah Koneksi Database
 
 Jika mengalami masalah koneksi database:
 

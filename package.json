@@ -12,7 +12,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint-format": "npm run lint && npm run format",
-    "prepare": "husky",
+    "prepare": "husky install .husky",
     "commit": "cz",
     "// Development DB": "--------- Development Database ---------",
     "dev:db": "docker compose -f docker-compose.dev.yml up -d",

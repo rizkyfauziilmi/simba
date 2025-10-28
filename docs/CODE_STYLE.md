@@ -23,7 +23,7 @@ SIMBA uses a combination of Prettier and ESLint to enforce consistent code forma
 - **Prettier**: Handles code formatting (spacing, line length, quotes, etc.)
 - **ESLint**: Handles code quality rules and patterns
 - **lint-staged**: Runs linters on pre-committed files
-- **Husky**: Manages Git hooks to run lint-staged before commits
+- **Husky**: Manages Git hooks to run lint-staged before commits (v9+)
 - **Commitizen**: Creates standardized commit messages via interactive prompts
 - **Commitlint**: Validates commit messages against a conventional format
 
@@ -75,7 +75,7 @@ ESLint is configured to work with Prettier and Next.js rules. The configuration 
 
 SIMBA uses Husky to run lint-staged before each commit. This ensures that all committed code follows our style guidelines.
 
-The pre-commit hook automatically formats staged files using Prettier, preventing unformatted code from being committed.
+The pre-commit hook automatically formats staged files using Prettier, preventing unformatted code from being committed. SIMBA uses the modern Husky v9+ configuration which is more lightweight and faster than previous versions.
 
 ## Commit Message Guidelines
 
@@ -162,7 +162,7 @@ Configure VS Code to format on save:
 
 ## Best Practices
 
-1. **Don't Bypass the Hook**: Avoid using `--no-verify` with Git commits unless absolutely necessary
+1. **Don't Bypass the Hook**: Avoid using `--no-verify` with Git commits unless absolutely necessary, or alternatively set `HUSKY=0` temporarily
 2. **Fix Linting Errors**: Don't ignore ESLint errors; they often highlight potential bugs
 3. **Format Before PR**: Always ensure your code is formatted before creating a pull request
 4. **Use Conventional Commits**: Follow the commit message guidelines to maintain a clean history
