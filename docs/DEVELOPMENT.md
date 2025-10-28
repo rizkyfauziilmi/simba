@@ -9,7 +9,8 @@ Panduan ini akan menjelaskan langkah-langkah untuk melakukan setup development e
 3. [Konfigurasi Environment](#3-konfigurasi-environment)
 4. [Menjalankan Database PostgreSQL](#4-menjalankan-database-postgresql)
 5. [Menjalankan Aplikasi](#5-menjalankan-aplikasi)
-6. [Troubleshooting](#6-troubleshooting)
+6. [Kode Formatting dan Linting](#6-kode-formatting-dan-linting)
+7. [Troubleshooting](#7-troubleshooting)
 
 ## 1. Prasyarat
 
@@ -89,7 +90,47 @@ Aplikasi akan berjalan pada `http://localhost:3000`. Buka alamat tersebut di bro
 
 Mode development mendukung hot-reload, yang berarti perubahan pada kode akan langsung terlihat tanpa perlu restart aplikasi.
 
-## 6. Troubleshooting
+## 6. Kode Formatting dan Linting
+
+Aplikasi SIMBA menggunakan Prettier untuk formatting kode dan ESLint untuk linting. Ini memastikan konsistensi kode di seluruh proyek.
+
+### Menjalankan Prettier
+
+Untuk memformat kode dengan Prettier:
+
+```bash
+npm run format
+```
+
+Untuk memeriksa apakah file sudah diformat dengan benar (tanpa mengubah):
+
+```bash
+npm run format:check
+```
+
+### Menjalankan ESLint
+
+Untuk menjalankan ESLint:
+
+```bash
+npm run lint
+```
+
+### Formatting dan Linting Sekaligus
+
+Untuk menjalankan ESLint dan Prettier sekaligus:
+
+```bash
+npm run lint-format
+```
+
+### Pre-commit Hook
+
+Proyek ini menggunakan Husky untuk menjalankan lint-staged, yang akan otomatis memformat file yang diubah sebelum commit. Ini memastikan bahwa semua kode yang di-commit telah diformat dengan benar.
+
+Pre-commit hook dijalankan otomatis saat Anda melakukan commit, dan akan memformat kode yang telah di-stage.
+
+## 7. Troubleshooting
 
 ### Masalah Koneksi Database
 

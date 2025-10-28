@@ -11,6 +11,8 @@
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "lint-format": "npm run lint && npm run format",
+    "prepare": "husky",
     "// Development DB": "--------- Development Database ---------",
     "dev:db": "docker compose -f docker-compose.dev.yml up -d",
     "dev:db:stop": "docker compose -f docker-compose.dev.yml down",
@@ -46,6 +48,11 @@
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -114,6 +121,8 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "faker": "^6.6.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
     "prettier": "^3.6.2",
     "prisma": "^6.16.2",
     "tailwindcss": "^4",
