@@ -1,27 +1,22 @@
-"use client";
+'use client'
 
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import ProfileInfoForm from "./profile-info-form";
-import PasswordChangeForm from "./password-change-form";
-import SessionManagment from "./session-managment";
-import { authClient } from "@/lib/auth-client";
-import { formattedDate } from "@/lib/date";
-import { EmptyLoading } from "@/components/empty-loading";
-import { EmptyError } from "@/components/empty-error";
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import ProfileInfoForm from './profile-info-form'
+import PasswordChangeForm from './password-change-form'
+import SessionManagment from './session-managment'
+import { authClient } from '@/lib/auth-client'
+import { formattedDate } from '@/lib/date'
+import { EmptyLoading } from '@/components/empty-loading'
+import { EmptyError } from '@/components/empty-error'
 
 export default function ProfileSettings() {
-  const { data: session, isPending, error, refetch } = authClient.useSession();
+  const { data: session, isPending, error, refetch } = authClient.useSession()
 
   const handleProfileUpdate = () => {
-    refetch();
-  };
+    refetch()
+  }
 
   if (isPending) {
     return (
@@ -29,7 +24,7 @@ export default function ProfileSettings() {
         title="Memuat data profil"
         description="Mohon tunggu sementara kami memuat data profil Anda."
       />
-    );
+    )
   }
 
   if (error || !session) {
@@ -39,21 +34,17 @@ export default function ProfileSettings() {
         description="Terjadi kesalahan saat memuat data profil Anda. Silakan coba lagi."
         onAction={() => refetch()}
       />
-    );
+    )
   }
 
-  const user = session.user;
+  const user = session.user
 
   return (
     <div>
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">
-          Pengaturan Profil
-        </h1>
-        <p className="text-muted-foreground">
-          Kelola informasi akun dan preferensi keamanan Anda
-        </p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">Pengaturan Profil</h1>
+        <p className="text-muted-foreground">Kelola informasi akun dan preferensi keamanan Anda</p>
       </div>
 
       {/* User Profile Card */}
@@ -99,5 +90,5 @@ export default function ProfileSettings() {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

@@ -1,31 +1,24 @@
-import { Table } from "@tanstack/react-table";
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from "lucide-react";
+import { Table } from '@tanstack/react-table'
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select'
 
 interface DataTablePaginationProps<TData> {
-  table: Table<TData>;
+  table: Table<TData>
 }
 
-export function DataTablePagination<TData>({
-  table,
-}: DataTablePaginationProps<TData>) {
+export function DataTablePagination<TData>({ table }: DataTablePaginationProps<TData>) {
   return (
     <div className="flex flex-col gap-4 py-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="text-muted-foreground text-xs sm:flex-1 sm:text-sm">
-        {table.getFilteredSelectedRowModel().rows.length} dari{" "}
+        {table.getFilteredSelectedRowModel().rows.length} dari{' '}
         {table.getFilteredRowModel().rows.length} baris dipilih.
       </div>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:space-x-6 lg:space-x-8">
@@ -33,15 +26,15 @@ export function DataTablePagination<TData>({
           <p className="text-xs font-medium sm:text-sm">Baris per halaman</p>
           <Select
             value={`${table.getState().pagination.pageSize}`}
-            onValueChange={(value) => {
-              table.setPageSize(Number(value));
+            onValueChange={value => {
+              table.setPageSize(Number(value))
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
-              {[10, 20, 25, 30, 40, 50].map((pageSize) => (
+              {[10, 20, 25, 30, 40, 50].map(pageSize => (
                 <SelectItem key={pageSize} value={`${pageSize}`}>
                   {pageSize}
                 </SelectItem>
@@ -51,8 +44,7 @@ export function DataTablePagination<TData>({
         </div>
         <div className="flex items-center justify-between sm:justify-center sm:space-x-6 lg:space-x-8">
           <div className="flex items-center justify-center text-xs font-medium sm:text-sm">
-            Halaman {table.getState().pagination.pageIndex + 1} dari{" "}
-            {table.getPageCount()}
+            Halaman {table.getState().pagination.pageIndex + 1} dari {table.getPageCount()}
           </div>
           <div className="flex items-center justify-between gap-2">
             <Button
@@ -99,5 +91,5 @@ export function DataTablePagination<TData>({
         </div>
       </div>
     </div>
-  );
+  )
 }

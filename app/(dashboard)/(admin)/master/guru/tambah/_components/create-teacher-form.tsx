@@ -1,11 +1,11 @@
-"use client";
+'use client'
 
-import { useTRPC } from "@/trpc/client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import z from "zod";
+import { useTRPC } from '@/trpc/client'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import z from 'zod'
 import {
   Form,
   FormControl,
@@ -13,80 +13,74 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
-import { Gender, TeacherStatus } from "@/lib/generated/prisma";
-import { enumToReadable } from "@/lib/string";
-import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { PhoneInput } from "@/components/phone-input";
-import { createTeacherSchema } from "@/trpc/schemas/teacher.schema";
-import { Spinner } from "@/components/ui/spinner";
+} from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
+import { id } from 'date-fns/locale'
+import { Gender, TeacherStatus } from '@/lib/generated/prisma'
+import { enumToReadable } from '@/lib/string'
+import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
+import { PhoneInput } from '@/components/phone-input'
+import { createTeacherSchema } from '@/trpc/schemas/teacher.schema'
+import { Spinner } from '@/components/ui/spinner'
 
 export function CreateTeacherForm() {
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
-  const router = useRouter();
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof createTeacherSchema>>({
     resolver: zodResolver(createTeacherSchema),
     defaultValues: {
-      nip: "",
-      nama: "",
-      alamat: "",
-      noTelepon: "",
-      status: "AKTIF",
+      nip: '',
+      nama: '',
+      alamat: '',
+      noTelepon: '',
+      status: 'AKTIF',
     },
-  });
+  })
 
-  const createTeacherMutationOptions =
-    trpc.teacher.createTeacher.mutationOptions({
-      onError: (error) => {
-        toast.error(error.message);
-      },
-      onSuccess: (data) => {
-        form.reset();
-        queryClient.invalidateQueries({
-          queryKey: trpc.student.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.teacher.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.class.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.subject.pathKey(),
-        });
-        toast.success(data.message);
-        router.push("/master/guru");
-      },
-    });
-  const createTeacherMutation = useMutation(createTeacherMutationOptions);
+  const createTeacherMutationOptions = trpc.teacher.createTeacher.mutationOptions({
+    onError: error => {
+      toast.error(error.message)
+    },
+    onSuccess: data => {
+      form.reset()
+      queryClient.invalidateQueries({
+        queryKey: trpc.student.pathKey(),
+      })
+      queryClient.invalidateQueries({
+        queryKey: trpc.teacher.pathKey(),
+      })
+      queryClient.invalidateQueries({
+        queryKey: trpc.class.pathKey(),
+      })
+      queryClient.invalidateQueries({
+        queryKey: trpc.subject.pathKey(),
+      })
+      toast.success(data.message)
+      router.push('/master/guru')
+    },
+  })
+  const createTeacherMutation = useMutation(createTeacherMutationOptions)
 
   function onSubmit(data: z.infer<typeof createTeacherSchema>) {
-    createTeacherMutation.mutate(data);
+    createTeacherMutation.mutate(data)
   }
 
-  const isLoading =
-    createTeacherMutation.isPending || form.formState.isSubmitting;
+  const isLoading = createTeacherMutation.isPending || form.formState.isSubmitting
 
   return (
     <Form {...form}>
@@ -124,18 +118,14 @@ export function CreateTeacherForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Jenis Kelamin</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  key={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value} key={field.value}>
                   <FormControl className="w-full">
                     <SelectTrigger>
                       <SelectValue placeholder="Pilih jenis kelamin" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.keys(Gender).map((gender) => (
+                    {Object.keys(Gender).map(gender => (
                       <SelectItem key={gender} value={gender}>
                         {enumToReadable(gender)}
                       </SelectItem>
@@ -145,7 +135,7 @@ export function CreateTeacherForm() {
                         type="button"
                         className="w-full"
                         onClick={() => {
-                          field.onChange("");
+                          field.onChange('')
                         }}
                       >
                         Hapus Pilihan
@@ -181,7 +171,7 @@ export function CreateTeacherForm() {
                     placeholder="Masukkan Nomor Handphone"
                     international={false}
                     defaultCountry="ID"
-                    allowedCountries={["ID"]}
+                    allowedCountries={['ID']}
                     {...field}
                   />
                 </FormControl>
@@ -199,14 +189,14 @@ export function CreateTeacherForm() {
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
-                        variant={"outline"}
+                        variant={'outline'}
                         className={cn(
-                          "pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground",
+                          'pl-3 text-left font-normal',
+                          !field.value && 'text-muted-foreground'
                         )}
                       >
                         {field.value ? (
-                          format(field.value, "PPP", {
+                          format(field.value, 'PPP', {
                             locale: id,
                           })
                         ) : (
@@ -221,9 +211,7 @@ export function CreateTeacherForm() {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
+                      disabled={date => date > new Date() || date < new Date('1900-01-01')}
                       locale={id}
                       captionLayout="dropdown"
                     />
@@ -243,14 +231,14 @@ export function CreateTeacherForm() {
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
-                        variant={"outline"}
+                        variant={'outline'}
                         className={cn(
-                          "pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground",
+                          'pl-3 text-left font-normal',
+                          !field.value && 'text-muted-foreground'
                         )}
                       >
                         {field.value ? (
-                          format(field.value, "PPP", {
+                          format(field.value, 'PPP', {
                             locale: id,
                           })
                         ) : (
@@ -265,9 +253,7 @@ export function CreateTeacherForm() {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
+                      disabled={date => date > new Date() || date < new Date('1900-01-01')}
                       locale={id}
                       captionLayout="dropdown"
                     />
@@ -283,18 +269,14 @@ export function CreateTeacherForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Status</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  key={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value} key={field.value}>
                   <FormControl className="w-full">
                     <SelectTrigger>
                       <SelectValue placeholder="Pilih status" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.keys(TeacherStatus).map((status) => (
+                    {Object.keys(TeacherStatus).map(status => (
                       <SelectItem key={status} value={status}>
                         {enumToReadable(status)}
                       </SelectItem>
@@ -304,7 +286,7 @@ export function CreateTeacherForm() {
                         type="button"
                         className="w-full"
                         onClick={() => {
-                          field.onChange("");
+                          field.onChange('')
                         }}
                       >
                         Hapus Pilihan
@@ -328,10 +310,10 @@ export function CreateTeacherForm() {
           </Button>
           <Button type="submit" disabled={isLoading}>
             {isLoading && <Spinner />}
-            {isLoading ? "Menyimpan..." : "Simpan"}
+            {isLoading ? 'Menyimpan...' : 'Simpan'}
           </Button>
         </div>
       </form>
     </Form>
-  );
+  )
 }

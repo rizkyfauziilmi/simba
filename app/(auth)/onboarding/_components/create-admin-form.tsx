@@ -1,19 +1,13 @@
-"use client";
+'use client'
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Eye, EyeOff, UserPen } from "lucide-react";
-import z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Eye, EyeOff, UserPen } from 'lucide-react'
+import z from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Form,
   FormControl,
@@ -21,93 +15,88 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { createAdmin } from "../_actions/actions";
-import { useState } from "react";
-import { Spinner } from "@/components/ui/spinner";
+} from '@/components/ui/form'
+import { authClient } from '@/lib/auth-client'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
+import { createAdmin } from '../_actions/actions'
+import { useState } from 'react'
+import { Spinner } from '@/components/ui/spinner'
 
 const createAdminSchema = z
   .object({
     username: z
       .string()
-      .min(3, "Nama pengguna minimal 3 karakter")
-      .max(30, "Nama pengguna maksimal 30 karakter"),
-    email: z.email("Email tidak valid"),
+      .min(3, 'Nama pengguna minimal 3 karakter')
+      .max(30, 'Nama pengguna maksimal 30 karakter'),
+    email: z.email('Email tidak valid'),
     password: z
       .string()
-      .min(8, "Kata sandi minimal 8 karakter")
-      .max(128, "Kata sandi maksimal 128 karakter"),
+      .min(8, 'Kata sandi minimal 8 karakter')
+      .max(128, 'Kata sandi maksimal 128 karakter'),
     confirmPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Kata sandi dan konfirmasi kata sandi tidak sesuai",
-    path: ["confirmPassword"],
-  });
+  .refine(data => data.password === data.confirmPassword, {
+    message: 'Kata sandi dan konfirmasi kata sandi tidak sesuai',
+    path: ['confirmPassword'],
+  })
 
-export function CreateAdminForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const router = useRouter();
+export function CreateAdminForm({ className, ...props }: React.ComponentProps<'div'>) {
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof createAdminSchema>>({
     resolver: zodResolver(createAdminSchema),
     defaultValues: {
-      username: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
-  });
+  })
 
   async function onSubmit(values: z.infer<typeof createAdminSchema>) {
     const result = await createAdmin({
       username: values.username,
       email: values.email,
       password: values.password,
-    });
+    })
 
     if (!result.success) {
-      toast.error("Gagal membuat akun admin", {
+      toast.error('Gagal membuat akun admin', {
         description: result.message,
-      });
-      return;
+      })
+      return
     }
 
     const { data, error } = await authClient.signIn.email({
       email: values.email,
       password: values.password,
-    });
+    })
 
     if (error) {
-      toast.error("Gagal masuk setelah membuat akun admin", {
-        description: "coba masuk secara manual",
-      });
-      router.push("/login");
-      return;
+      toast.error('Gagal masuk setelah membuat akun admin', {
+        description: 'coba masuk secara manual',
+      })
+      router.push('/login')
+      return
     }
 
-    toast.success(`Selamat datang, ${data.user?.name || "Admin"}!`);
+    toast.success(`Selamat datang, ${data.user?.name || 'Admin'}!`)
 
-    form.reset();
-    router.push("/");
+    form.reset()
+    router.push('/')
   }
 
-  const isLoading = form.formState.isSubmitting;
+  const isLoading = form.formState.isSubmitting
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card className="w-[400px]">
         <CardHeader>
           <CardTitle>Buat Akun Admin Pertama Anda</CardTitle>
-          <CardDescription>
-            Silakan masukkan detail Anda untuk membuat akun admin.
-          </CardDescription>
+          <CardDescription>Silakan masukkan detail Anda untuk membuat akun admin.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -147,7 +136,7 @@ export function CreateAdminForm({
                     <FormControl>
                       <div className="relative">
                         <Input
-                          type={showPassword ? "text" : "password"}
+                          type={showPassword ? 'text' : 'password'}
                           placeholder="******"
                           {...field}
                         />
@@ -175,7 +164,7 @@ export function CreateAdminForm({
                     <FormControl>
                       <div className="relative">
                         <Input
-                          type={showConfirmPassword ? "text" : "password"}
+                          type={showConfirmPassword ? 'text' : 'password'}
                           placeholder="******"
                           {...field}
                         />
@@ -183,9 +172,7 @@ export function CreateAdminForm({
                           type="button"
                           size="icon"
                           variant="ghost"
-                          onClick={() =>
-                            setShowConfirmPassword(!showConfirmPassword)
-                          }
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           className="absolute right-1 top-1/2 -translate-y-1/2"
                         >
                           {showConfirmPassword ? <EyeOff /> : <Eye />}
@@ -198,12 +185,12 @@ export function CreateAdminForm({
               />
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? <Spinner /> : <UserPen />}
-                {isLoading ? "Membuat Akun..." : "Buat Akun Admin"}
+                {isLoading ? 'Membuat Akun...' : 'Buat Akun Admin'}
               </Button>
             </form>
           </Form>
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

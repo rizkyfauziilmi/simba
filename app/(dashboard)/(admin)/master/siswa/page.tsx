@@ -1,15 +1,15 @@
-import { MasterStudentHeader } from "./_components/master-student-header";
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
-import { MasterStudentTable } from "./_components/master-student-table";
-import { TableSkeleton } from "@/components/skeleton/table-skeleton";
-import { EmptyError } from "@/components/empty-error";
+import { MasterStudentHeader } from './_components/master-student-header'
+import { HydrateClient, prefetch, trpc } from '@/trpc/server'
+import { Suspense } from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
+import { MasterStudentTable } from './_components/master-student-table'
+import { TableSkeleton } from '@/components/skeleton/table-skeleton'
+import { EmptyError } from '@/components/empty-error'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 export default function MasterSiswaPage() {
-  prefetch(trpc.student.getAllStudents.queryOptions());
+  prefetch(trpc.student.getAllStudents.queryOptions())
 
   return (
     <HydrateClient>
@@ -29,5 +29,5 @@ export default function MasterSiswaPage() {
         </ErrorBoundary>
       </div>
     </HydrateClient>
-  );
+  )
 }

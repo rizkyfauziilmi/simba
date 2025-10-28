@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from 'react'
 
 const Linux = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} viewBox="0 0 256 295">
@@ -147,6 +147,6 @@ const Linux = (props: SVGProps<SVGSVGElement>) => (
       />
     </g>
   </svg>
-);
+)
 
-export { Linux };
+export { Linux }

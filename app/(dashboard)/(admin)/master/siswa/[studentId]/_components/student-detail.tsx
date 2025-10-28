@@ -1,30 +1,24 @@
-"use client";
+'use client'
 
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { GetStudentStatusBadge } from "../../_components/get-student-status-badge";
-import { EmptyError } from "@/components/empty-error";
-import { Separator } from "@/components/ui/separator";
-import { formattedDate } from "@/lib/date";
+import { useTRPC } from '@/trpc/client'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { useParams, useRouter } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { GetStudentStatusBadge } from '../../_components/get-student-status-badge'
+import { EmptyError } from '@/components/empty-error'
+import { Separator } from '@/components/ui/separator'
+import { formattedDate } from '@/lib/date'
 
 export function StudentDetail() {
-  const params = useParams<{ studentId: string }>();
-  const router = useRouter();
+  const params = useParams<{ studentId: string }>()
+  const router = useRouter()
 
-  const trpc = useTRPC();
+  const trpc = useTRPC()
   const { data: student, refetch } = useSuspenseQuery(
-    trpc.student.getStudentById.queryOptions({ studentId: params.studentId }),
-  );
+    trpc.student.getStudentById.queryOptions({ studentId: params.studentId })
+  )
 
   if (!student)
     return (
@@ -33,7 +27,7 @@ export function StudentDetail() {
         description="Siswa yang Anda cari tidak ada atau telah dihapus."
         onAction={() => refetch()}
       />
-    );
+    )
 
   return (
     <div>
@@ -61,21 +55,13 @@ export function StudentDetail() {
                 <h3 className="font-semibold mb-2">Informasi Pribadi</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">
-                      Tanggal Lahir
-                    </p>
-                    <p className="text-sm font-medium">
-                      {formattedDate(student.tanggalLahir)}
-                    </p>
+                    <p className="text-sm text-muted-foreground">Tanggal Lahir</p>
+                    <p className="text-sm font-medium">{formattedDate(student.tanggalLahir)}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">
-                      Jenis Kelamin
-                    </p>
+                    <p className="text-sm text-muted-foreground">Jenis Kelamin</p>
                     <p className="text-sm font-medium">
-                      {student.jenisKelamin === "LAKI_LAKI"
-                        ? "Laki-laki"
-                        : "Perempuan"}
+                      {student.jenisKelamin === 'LAKI_LAKI' ? 'Laki-laki' : 'Perempuan'}
                     </p>
                   </div>
                   <div>
@@ -97,30 +83,20 @@ export function StudentDetail() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-muted-foreground">Kelas</p>
-                      <p className="text-sm font-medium">
-                        {student.kelas.namaKelas}
-                      </p>
+                      <p className="text-sm font-medium">{student.kelas.namaKelas}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Tingkat</p>
-                      <p className="text-sm font-medium">
-                        {student.kelas.tingkat}
-                      </p>
+                      <p className="text-sm font-medium">{student.kelas.tingkat}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">Ruangan</p>
-                      <p className="text-sm font-medium">
-                        {student.kelas.ruang}
-                      </p>
+                      <p className="text-sm font-medium">{student.kelas.ruang}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">
-                        Wali Kelas
-                      </p>
+                      <p className="text-sm text-muted-foreground">Wali Kelas</p>
                       <p className="text-sm font-medium">
-                        {student.kelas.waliKelas
-                          ? student.kelas.waliKelas.nama
-                          : "-"}
+                        {student.kelas.waliKelas ? student.kelas.waliKelas.nama : '-'}
                       </p>
                     </div>
                   </div>
@@ -139,20 +115,12 @@ export function StudentDetail() {
                 <h3 className="font-semibold mb-2">Informasi Sistem</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">
-                      Terdaftar Sejak
-                    </p>
-                    <p className="text-sm font-medium">
-                      {formattedDate(student.createdAt)}
-                    </p>
+                    <p className="text-sm text-muted-foreground">Terdaftar Sejak</p>
+                    <p className="text-sm font-medium">{formattedDate(student.createdAt)}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">
-                      Terakhir Diperbarui
-                    </p>
-                    <p className="text-sm font-medium">
-                      {formattedDate(student.updatedAt)}
-                    </p>
+                    <p className="text-sm text-muted-foreground">Terakhir Diperbarui</p>
+                    <p className="text-sm font-medium">{formattedDate(student.updatedAt)}</p>
                   </div>
                 </div>
               </div>
@@ -161,5 +129,5 @@ export function StudentDetail() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

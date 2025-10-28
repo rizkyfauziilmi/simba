@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import { useTRPC } from "@/trpc/client";
-import { createStudentSchema } from "@/trpc/schemas/student.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import z from "zod";
+import { useTRPC } from '@/trpc/client'
+import { createStudentSchema } from '@/trpc/schemas/student.schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import z from 'zod'
 import {
   Form,
   FormControl,
@@ -14,9 +14,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
@@ -25,76 +25,70 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
-import { Gender, StudentGrade, StudentStatus } from "@/lib/generated/prisma";
-import { enumToReadable } from "@/lib/string";
-import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { PhoneInput } from "@/components/phone-input";
-import { FormInputSkeleton } from "@/components/skeleton/form-input-skeleton";
-import { NoUserError } from "@/components/no-user-error";
-import { Spinner } from "@/components/ui/spinner";
+} from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { CalendarIcon } from 'lucide-react'
+import { format } from 'date-fns'
+import { id } from 'date-fns/locale'
+import { Gender, StudentGrade, StudentStatus } from '@/lib/generated/prisma'
+import { enumToReadable } from '@/lib/string'
+import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
+import { PhoneInput } from '@/components/phone-input'
+import { FormInputSkeleton } from '@/components/skeleton/form-input-skeleton'
+import { NoUserError } from '@/components/no-user-error'
+import { Spinner } from '@/components/ui/spinner'
 
 export function CreateStudentForm() {
-  const trpc = useTRPC();
-  const queryClient = useQueryClient();
-  const router = useRouter();
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
+  const router = useRouter()
 
   const { data: availableClasses, isPending } = useQuery(
-    trpc.class.getAvailableClasses.queryOptions(),
-  );
+    trpc.class.getAvailableClasses.queryOptions()
+  )
 
   const form = useForm<z.infer<typeof createStudentSchema>>({
     resolver: zodResolver(createStudentSchema),
     defaultValues: {
-      alamat: "",
-      nama: "",
-      nisn: "",
-      noTelepon: "",
-      status: "AKTIF",
+      alamat: '',
+      nama: '',
+      nisn: '',
+      noTelepon: '',
+      status: 'AKTIF',
     },
-  });
+  })
 
-  const createStudentMutationOptions =
-    trpc.student.createStudent.mutationOptions({
-      onError: (error) => {
-        toast.error(error.message);
-      },
-      onSuccess: (data) => {
-        form.reset();
-        queryClient.invalidateQueries({
-          queryKey: trpc.student.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.teacher.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.class.pathKey(),
-        });
-        queryClient.invalidateQueries({
-          queryKey: trpc.subject.pathKey(),
-        });
-        toast.success(data.message);
-        router.push("/master/siswa");
-      },
-    });
-  const createStudentMutation = useMutation(createStudentMutationOptions);
+  const createStudentMutationOptions = trpc.student.createStudent.mutationOptions({
+    onError: error => {
+      toast.error(error.message)
+    },
+    onSuccess: data => {
+      form.reset()
+      queryClient.invalidateQueries({
+        queryKey: trpc.student.pathKey(),
+      })
+      queryClient.invalidateQueries({
+        queryKey: trpc.teacher.pathKey(),
+      })
+      queryClient.invalidateQueries({
+        queryKey: trpc.class.pathKey(),
+      })
+      queryClient.invalidateQueries({
+        queryKey: trpc.subject.pathKey(),
+      })
+      toast.success(data.message)
+      router.push('/master/siswa')
+    },
+  })
+  const createStudentMutation = useMutation(createStudentMutationOptions)
 
   function onSubmit(data: z.infer<typeof createStudentSchema>) {
-    createStudentMutation.mutate(data);
+    createStudentMutation.mutate(data)
   }
 
-  const isLoading =
-    createStudentMutation.isPending || form.formState.isSubmitting;
+  const isLoading = createStudentMutation.isPending || form.formState.isSubmitting
 
   return (
     <Form {...form}>
@@ -132,18 +126,14 @@ export function CreateStudentForm() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Jenis Kelamin</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  key={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value} key={field.value}>
                   <FormControl className="w-full">
                     <SelectTrigger>
                       <SelectValue placeholder="Pilih jenis kelamin" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {Object.keys(Gender).map((gender) => (
+                    {Object.keys(Gender).map(gender => (
                       <SelectItem key={gender} value={gender}>
                         {enumToReadable(gender)}
                       </SelectItem>
@@ -153,7 +143,7 @@ export function CreateStudentForm() {
                         type="button"
                         className="w-full"
                         onClick={() => {
-                          field.onChange("");
+                          field.onChange('')
                         }}
                       >
                         Hapus Pilihan
@@ -175,14 +165,14 @@ export function CreateStudentForm() {
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
-                        variant={"outline"}
+                        variant={'outline'}
                         className={cn(
-                          "pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground",
+                          'pl-3 text-left font-normal',
+                          !field.value && 'text-muted-foreground'
                         )}
                       >
                         {field.value ? (
-                          format(field.value, "PPP", {
+                          format(field.value, 'PPP', {
                             locale: id,
                           })
                         ) : (
@@ -197,9 +187,7 @@ export function CreateStudentForm() {
                       mode="single"
                       selected={field.value}
                       onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
+                      disabled={date => date > new Date() || date < new Date('1900-01-01')}
                       locale={id}
                       captionLayout="dropdown"
                     />
@@ -233,7 +221,7 @@ export function CreateStudentForm() {
                     placeholder="Masukkan Nomor Handphone"
                     international={false}
                     defaultCountry="ID"
-                    allowedCountries={["ID"]}
+                    allowedCountries={['ID']}
                     {...field}
                   />
                 </FormControl>
@@ -248,18 +236,14 @@ export function CreateStudentForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Status</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                defaultValue={field.value}
-                key={field.value}
-              >
+              <Select onValueChange={field.onChange} defaultValue={field.value} key={field.value}>
                 <FormControl className="w-full">
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih status" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {Object.keys(StudentStatus).map((status) => (
+                  {Object.keys(StudentStatus).map(status => (
                     <SelectItem key={status} value={status}>
                       {enumToReadable(status)}
                     </SelectItem>
@@ -269,7 +253,7 @@ export function CreateStudentForm() {
                       type="button"
                       className="w-full"
                       onClick={() => {
-                        field.onChange("");
+                        field.onChange('')
                       }}
                     >
                       Hapus Pilihan
@@ -304,9 +288,7 @@ export function CreateStudentForm() {
                     ) : (
                       <>
                         <FormControl className="w-full">
-                          <SelectTrigger
-                            disabled={availableClasses.length === 0}
-                          >
+                          <SelectTrigger disabled={availableClasses.length === 0}>
                             <SelectValue placeholder="Pilih kelas siswa" />
                           </SelectTrigger>
                         </FormControl>
@@ -315,8 +297,8 @@ export function CreateStudentForm() {
                             <SelectGroup key={`${grade}-${index}`}>
                               <SelectLabel>{grade}</SelectLabel>
                               {availableClasses
-                                .filter((aclass) => aclass.tingkat === grade)
-                                .map((aclass) => (
+                                .filter(aclass => aclass.tingkat === grade)
+                                .map(aclass => (
                                   <SelectItem value={aclass.id} key={aclass.id}>
                                     {aclass.namaKelas}
                                   </SelectItem>
@@ -328,7 +310,7 @@ export function CreateStudentForm() {
                               type="button"
                               className="w-full"
                               onClick={() => {
-                                field.onChange("");
+                                field.onChange('')
                               }}
                             >
                               Hapus Pilihan
@@ -355,10 +337,10 @@ export function CreateStudentForm() {
           </Button>
           <Button type="submit" disabled={isLoading || isPending}>
             {isLoading && <Spinner />}
-            {isLoading ? "Menyimpan..." : "Simpan"}
+            {isLoading ? 'Menyimpan...' : 'Simpan'}
           </Button>
         </div>
       </form>
     </Form>
-  );
+  )
 }

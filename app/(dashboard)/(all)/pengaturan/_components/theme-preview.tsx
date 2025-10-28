@@ -1,15 +1,9 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import {
   Play,
   Pause,
@@ -25,12 +19,12 @@ import {
   User,
   CreditCard,
   Check,
-} from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+} from 'lucide-react'
+import { Switch } from '@/components/ui/switch'
 
 export function ThemePreview() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [isFavorite, setIsFavorite] = useState(false)
 
   return (
     <div className="">
@@ -60,10 +54,7 @@ export function ThemePreview() {
               {/* Progress Bar */}
               <div className="space-y-2">
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div
-                    className="bg-primary h-2 rounded-full"
-                    style={{ width: "45%" }}
-                  />
+                  <div className="bg-primary h-2 rounded-full" style={{ width: '45%' }} />
                 </div>
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>2:15</span>
@@ -81,11 +72,7 @@ export function ThemePreview() {
                   onClick={() => setIsPlaying(!isPlaying)}
                   className="rounded-full w-10 h-10"
                 >
-                  {isPlaying ? (
-                    <Pause className="w-4 h-4" />
-                  ) : (
-                    <Play className="w-4 h-4 ml-0.5" />
-                  )}
+                  {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
                 </Button>
                 <Button variant="ghost" size="icon" className="h-8 w-8">
                   <SkipForward className="w-4 h-4" />
@@ -96,10 +83,7 @@ export function ThemePreview() {
               <div className="flex items-center gap-2">
                 <Volume2 className="w-3 h-3 text-muted-foreground flex-shrink-0" />
                 <div className="flex-1 bg-muted rounded-full h-1">
-                  <div
-                    className="bg-primary h-1 rounded-full"
-                    style={{ width: "70%" }}
-                  />
+                  <div className="bg-primary h-1 rounded-full" style={{ width: '70%' }} />
                 </div>
               </div>
             </CardContent>
@@ -112,16 +96,11 @@ export function ThemePreview() {
             </div>
             <CardContent className="p-6 space-y-4">
               <div>
-                <h3 className="font-bold text-foreground">
-                  Premium Headphones
-                </h3>
+                <h3 className="font-bold text-foreground">Premium Headphones</h3>
                 <div className="flex items-center gap-2 mt-2">
                   <div className="flex gap-0.5">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Star
-                        key={i}
-                        className="w-3 h-3 fill-primary text-primary"
-                      />
+                    {[1, 2, 3, 4, 5].map(i => (
+                      <Star key={i} className="w-3 h-3 fill-primary text-primary" />
                     ))}
                   </div>
                   <span className="text-xs text-muted-foreground">(128)</span>
@@ -134,7 +113,7 @@ export function ThemePreview() {
                 <span className="text-xl font-bold text-foreground">$299</span>
                 <Button
                   size="sm"
-                  variant={isFavorite ? "default" : "outline"}
+                  variant={isFavorite ? 'default' : 'outline'}
                   onClick={() => setIsFavorite(!isFavorite)}
                   className="h-8 w-8 p-0"
                 >
@@ -152,9 +131,9 @@ export function ThemePreview() {
             </CardHeader>
             <CardContent className="space-y-3">
               {[
-                { icon: Bell, label: "Notifications", enabled: true },
-                { icon: Lock, label: "Privacy", enabled: false },
-                { icon: Settings, label: "Preferences", enabled: true },
+                { icon: Bell, label: 'Notifications', enabled: true },
+                { icon: Lock, label: 'Privacy', enabled: false },
+                { icon: Settings, label: 'Preferences', enabled: true },
               ].map((item, i) => (
                 <div
                   key={i}
@@ -162,14 +141,9 @@ export function ThemePreview() {
                 >
                   <div className="flex items-center gap-2">
                     <item.icon className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-foreground">
-                      {item.label}
-                    </span>
+                    <span className="text-sm text-foreground">{item.label}</span>
                   </div>
-                  <Switch
-                    disabled={!item.enabled}
-                    defaultChecked={item.enabled}
-                  />
+                  <Switch disabled={!item.enabled} defaultChecked={item.enabled} />
                 </div>
               ))}
             </CardContent>
@@ -189,14 +163,10 @@ export function ThemePreview() {
               <div className="space-y-2 pb-3 border-b border-border">
                 <div className="flex justify-between items-center">
                   <div>
-                    <p className="text-sm font-medium text-foreground">
-                      Premium Headphones
-                    </p>
+                    <p className="text-sm font-medium text-foreground">Premium Headphones</p>
                     <p className="text-xs text-muted-foreground">Qty: 1</p>
                   </div>
-                  <span className="text-sm font-semibold text-foreground">
-                    $299.00
-                  </span>
+                  <span className="text-sm font-semibold text-foreground">$299.00</span>
                 </div>
               </div>
 
@@ -222,15 +192,9 @@ export function ThemePreview() {
 
               {/* Payment Method */}
               <div className="space-y-2 pt-2">
-                <label className="text-xs font-medium text-foreground">
-                  Payment
-                </label>
+                <label className="text-xs font-medium text-foreground">Payment</label>
                 <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-primary/50 bg-primary/5"
-                  >
+                  <Button variant="outline" size="sm" className="border-primary/50 bg-primary/5">
                     <CreditCard className="w-3 h-3 mr-1" />
                     Card
                   </Button>
@@ -260,15 +224,9 @@ export function ThemePreview() {
                     <User className="w-8 h-8 text-primary" />
                   </div>
                   <h3 className="font-semibold text-foreground">John Doe</h3>
-                  <p className="text-xs text-muted-foreground">
-                    john@example.com
-                  </p>
+                  <p className="text-xs text-muted-foreground">john@example.com</p>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full bg-transparent"
-                >
+                <Button variant="outline" size="sm" className="w-full bg-transparent">
                   Edit Profile
                 </Button>
               </CardContent>
@@ -281,20 +239,13 @@ export function ThemePreview() {
               </CardHeader>
               <CardContent className="grid grid-cols-3 gap-3">
                 {[
-                  { label: "Orders", value: "24", color: "bg-primary/20" },
-                  { label: "Wishlist", value: "12", color: "bg-accent/20" },
-                  { label: "Reviews", value: "8", color: "bg-secondary/20" },
+                  { label: 'Orders', value: '24', color: 'bg-primary/20' },
+                  { label: 'Wishlist', value: '12', color: 'bg-accent/20' },
+                  { label: 'Reviews', value: '8', color: 'bg-secondary/20' },
                 ].map((stat, i) => (
-                  <div
-                    key={i}
-                    className={`p-3 rounded-lg ${stat.color} text-center`}
-                  >
-                    <p className="text-xs text-muted-foreground">
-                      {stat.label}
-                    </p>
-                    <p className="text-lg font-bold text-foreground">
-                      {stat.value}
-                    </p>
+                  <div key={i} className={`p-3 rounded-lg ${stat.color} text-center`}>
+                    <p className="text-xs text-muted-foreground">{stat.label}</p>
+                    <p className="text-lg font-bold text-foreground">{stat.value}</p>
                   </div>
                 ))}
               </CardContent>
@@ -314,9 +265,7 @@ export function ThemePreview() {
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0" />
                 <div className="bg-muted p-3 rounded-lg max-w-xs">
-                  <p className="text-sm text-foreground">
-                    Hello! How can we help you today?
-                  </p>
+                  <p className="text-sm text-foreground">Hello! How can we help you today?</p>
                   <p className="text-xs text-muted-foreground mt-1">2:30 PM</p>
                 </div>
               </div>
@@ -333,9 +282,7 @@ export function ThemePreview() {
               <div className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex-shrink-0" />
                 <div className="bg-muted p-3 rounded-lg max-w-xs">
-                  <p className="text-sm text-foreground">
-                    What&apos;s your order number?
-                  </p>
+                  <p className="text-sm text-foreground">What&apos;s your order number?</p>
                   <p className="text-xs text-muted-foreground mt-1">2:32 PM</p>
                 </div>
               </div>
@@ -360,5 +307,5 @@ export function ThemePreview() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

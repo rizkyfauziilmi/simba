@@ -1,34 +1,29 @@
-import { endOfDay } from "date-fns";
-import {
-  adminProcedure,
-  createTRPCRouter,
-  studentProcedure,
-  teacherProcedure,
-} from "../init";
+import { endOfDay } from 'date-fns'
+import { adminProcedure, createTRPCRouter, studentProcedure, teacherProcedure } from '../init'
 
 export const roleDataRouter = createTRPCRouter({
   getAdminDashboardData: adminProcedure.query(async ({ ctx }) => {
     const studentCount = await ctx.db.student.count({
       where: {
-        status: "AKTIF",
+        status: 'AKTIF',
       },
-    });
+    })
     const teacherCount = await ctx.db.teacher.count({
       where: {
-        status: "AKTIF",
+        status: 'AKTIF',
       },
-    });
+    })
     const classCount = await ctx.db.class.count({
-      where: { status: "AKTIF" },
-    });
+      where: { status: 'AKTIF' },
+    })
     const { amount } = (await ctx.db.schoolBalance.findFirst({
       where: { id: 1 },
       select: {
         amount: true,
       },
-    })) ?? { amount: 0 };
+    })) ?? { amount: 0 }
 
-    const today = endOfDay(new Date());
+    const today = endOfDay(new Date())
     const newestTransactions = await ctx.db.schoolFinance.findMany({
       where: {
         date: {
@@ -50,11 +45,11 @@ export const roleDataRouter = createTRPCRouter({
         },
       },
       take: 5,
-      orderBy: { date: "desc" },
-    });
+      orderBy: { date: 'desc' },
+    })
 
     const newestStudents = await ctx.db.student.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: 'desc' },
       take: 5,
       select: {
         nisn: true,
@@ -71,7 +66,7 @@ export const roleDataRouter = createTRPCRouter({
         },
         status: true,
       },
-    });
+    })
 
     return {
       studentCount,
@@ -80,7 +75,7 @@ export const roleDataRouter = createTRPCRouter({
       schoolBalance: amount,
       newestTransactions,
       newestStudents,
-    };
+    }
   }),
   getTeacherDashboardData: teacherProcedure.query(async ({ ctx }) => {
     const teacher = await ctx.db.teacher.findUnique({
@@ -99,7 +94,7 @@ export const roleDataRouter = createTRPCRouter({
           },
         },
       },
-    });
+    })
 
     const waliKelas = await ctx.db.class.findFirst({
       where: { waliKelasId: ctx.session.teacherId },
@@ -107,7 +102,7 @@ export const roleDataRouter = createTRPCRouter({
         namaKelas: true,
         tingkat: true,
         students: {
-          where: { status: "AKTIF" },
+          where: { status: 'AKTIF' },
           select: {
             nisn: true,
             nama: true,
@@ -120,11 +115,11 @@ export const roleDataRouter = createTRPCRouter({
           },
         },
       },
-    });
+    })
 
     const jadwalMengajar = await ctx.db.classSchedule.findMany({
       where: { guruPengampuId: ctx.session.teacherId },
-      orderBy: [{ hari: "asc" }, { jamMulai: "asc" }],
+      orderBy: [{ hari: 'asc' }, { jamMulai: 'asc' }],
       select: {
         hari: true,
         jamMulai: true,
@@ -136,7 +131,7 @@ export const roleDataRouter = createTRPCRouter({
           select: { nama: true },
         },
       },
-    });
+    })
 
     return {
       teacherInfo: teacher,
@@ -147,7 +142,7 @@ export const roleDataRouter = createTRPCRouter({
             jumlahSiswa: waliKelas.students.length,
           }
         : null,
-      jadwalMengajar: jadwalMengajar.map((jadwal) => ({
+      jadwalMengajar: jadwalMengajar.map(jadwal => ({
         hari: jadwal.hari,
         jamMulai: jadwal.jamMulai,
         jamSelesai: jadwal.jamSelesai,
@@ -156,7 +151,7 @@ export const roleDataRouter = createTRPCRouter({
         lokasi: `Ruang ${jadwal.kelas.ruang}`,
       })),
       daftarSiswa: waliKelas ? waliKelas.students : [],
-    };
+    }
   }),
   getStudentDashboardData: studentProcedure.query(async ({ ctx }) => {
     const student = await ctx.db.student.findUnique({
@@ -177,7 +172,7 @@ export const roleDataRouter = createTRPCRouter({
           },
         },
       },
-    });
+    })
 
     const kelas = await ctx.db.class.findFirst({
       where: {
@@ -198,7 +193,7 @@ export const roleDataRouter = createTRPCRouter({
           },
         },
       },
-    });
+    })
 
     const jadwalPelajaran = await ctx.db.classSchedule.findMany({
       where: {
@@ -210,7 +205,7 @@ export const roleDataRouter = createTRPCRouter({
           },
         },
       },
-      orderBy: [{ hari: "asc" }, { jamMulai: "asc" }],
+      orderBy: [{ hari: 'asc' }, { jamMulai: 'asc' }],
       select: {
         hari: true,
         jamMulai: true,
@@ -222,7 +217,7 @@ export const roleDataRouter = createTRPCRouter({
           select: { nama: true },
         },
       },
-    });
+    })
 
     const temanSekelas = await ctx.db.student.findMany({
       where: {
@@ -236,7 +231,7 @@ export const roleDataRouter = createTRPCRouter({
         userId: {
           not: ctx.session.user.id,
         },
-        status: "AKTIF",
+        status: 'AKTIF',
       },
       select: {
         nisn: true,
@@ -248,12 +243,12 @@ export const roleDataRouter = createTRPCRouter({
           },
         },
       },
-    });
+    })
 
     return {
       studentInfo: student,
       kelasInfo: kelas,
-      jadwalPelajaran: jadwalPelajaran.map((jadwal) => ({
+      jadwalPelajaran: jadwalPelajaran.map(jadwal => ({
         hari: jadwal.hari,
         jamMulai: jadwal.jamMulai,
         jamSelesai: jadwal.jamSelesai,
@@ -261,6 +256,6 @@ export const roleDataRouter = createTRPCRouter({
         guruPengampu: jadwal.guruPengampu,
       })),
       temanSekelas: temanSekelas,
-    };
+    }
   }),
-});
+})

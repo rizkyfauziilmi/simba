@@ -1,16 +1,16 @@
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { ClassHeader } from "./_components/class-header";
-import { ClassSchedule } from "./_components/class-schedule";
-import { StudentsList } from "./_components/students-list";
-import { ErrorBoundary } from "react-error-boundary";
-import { Suspense } from "react";
-import { EmptyError } from "@/components/empty-error";
-import { EmptyLoading } from "@/components/empty-loading";
+import { HydrateClient, prefetch, trpc } from '@/trpc/server'
+import { ClassHeader } from './_components/class-header'
+import { ClassSchedule } from './_components/class-schedule'
+import { StudentsList } from './_components/students-list'
+import { ErrorBoundary } from 'react-error-boundary'
+import { Suspense } from 'react'
+import { EmptyError } from '@/components/empty-error'
+import { EmptyLoading } from '@/components/empty-loading'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 export default function KelasWaliPage() {
-  prefetch(trpc.class.getMyHomeroomClass.queryOptions());
+  prefetch(trpc.class.getMyHomeroomClass.queryOptions())
 
   return (
     <HydrateClient>
@@ -42,5 +42,5 @@ export default function KelasWaliPage() {
         </ErrorBoundary>
       </div>
     </HydrateClient>
-  );
+  )
 }

@@ -1,15 +1,15 @@
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { MasterClassHeader } from "./_components/master-class-header";
-import { ErrorBoundary } from "react-error-boundary";
-import { Suspense } from "react";
-import { MasterClassTable } from "./_components/master-class-table";
-import { TableSkeleton } from "@/components/skeleton/table-skeleton";
-import { EmptyError } from "@/components/empty-error";
+import { HydrateClient, prefetch, trpc } from '@/trpc/server'
+import { MasterClassHeader } from './_components/master-class-header'
+import { ErrorBoundary } from 'react-error-boundary'
+import { Suspense } from 'react'
+import { MasterClassTable } from './_components/master-class-table'
+import { TableSkeleton } from '@/components/skeleton/table-skeleton'
+import { EmptyError } from '@/components/empty-error'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 export default function MasterKelasPage() {
-  prefetch(trpc.class.getAllClasses.queryOptions());
+  prefetch(trpc.class.getAllClasses.queryOptions())
 
   return (
     <HydrateClient>
@@ -29,5 +29,5 @@ export default function MasterKelasPage() {
         </ErrorBoundary>
       </div>
     </HydrateClient>
-  );
+  )
 }

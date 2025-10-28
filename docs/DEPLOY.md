@@ -3,6 +3,7 @@
 Panduan ini akan menjelaskan langkah-langkah untuk melakukan deployment aplikasi SIMBA pada server Ubuntu dengan IP statis dan konfigurasi reverse proxy menggunakan Nginx.
 
 ## Daftar Isi
+
 1. [Konfigurasi IP Statis](#1-konfigurasi-ip-statis)
 2. [Instalasi Software yang Dibutuhkan](#2-instalasi-software-yang-dibutuhkan)
 3. [Konfigurasi SSH untuk GitHub](#3-konfigurasi-ssh-untuk-github)
@@ -55,13 +56,13 @@ sudo nano /etc/netplan/00-installer-config.yaml
 network:
   version: 2
   ethernets:
-    enp0s3:  # Ganti dengan nama interface Anda
+    enp0s3: # Ganti dengan nama interface Anda
       dhcp4: no
       addresses:
-        - 192.168.1.100/24  # Ganti dengan IP statis yang diinginkan
-      gateway4: 192.168.1.1  # Ganti dengan IP router/gateway Anda
+        - 192.168.1.100/24 # Ganti dengan IP statis yang diinginkan
+      gateway4: 192.168.1.1 # Ganti dengan IP router/gateway Anda
       nameservers:
-          addresses: [8.8.8.8, 8.8.4.4]  # Server DNS
+        addresses: [8.8.8.8, 8.8.4.4] # Server DNS
 ```
 
 4. Terapkan perubahan:
@@ -167,12 +168,14 @@ cat ~/.ssh/id_ed25519.pub
 Salin output dari perintah terakhir, yang merupakan public SSH key Anda.
 
 Kemudian, tambahkan SSH key ini ke akun GitHub Anda:
+
 1. Login ke GitHub
 2. Buka Settings > SSH and GPG keys
 3. Klik "New SSH key"
 4. Paste public key dan simpan
 
 Uji koneksi SSH:
+
 ```bash
 ssh -T git@github.com
 ```
@@ -348,6 +351,7 @@ sudo ufw allow ssh
 1. Jika menggunakan Windows, install klien SSH seperti PuTTY atau gunakan Windows Terminal/PowerShell:
 
    Menggunakan PowerShell/Windows Terminal:
+
    ```
    ssh username@192.168.1.100
    ```
@@ -402,22 +406,26 @@ scp username@192.168.1.100:/path/to/remote/file /path/to/local/destination
 Jika Anda mengalami masalah:
 
 1. Periksa status container Docker:
+
    ```bash
    docker ps
    docker-compose logs
    ```
 
 2. Periksa log Nginx:
+
    ```bash
    sudo tail -f /var/log/nginx/error.log
    ```
 
 3. Uji aplikasi secara langsung:
+
    ```bash
    curl http://localhost:3000
    ```
 
 4. Periksa apakah port terbuka:
+
    ```bash
    sudo netstat -tulpn | grep -E '80|3000'
    ```

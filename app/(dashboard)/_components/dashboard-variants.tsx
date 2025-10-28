@@ -1,32 +1,32 @@
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { AdminDashboard } from "./admin-dashboard";
-import { StudentDashboard } from "./student-dashboard";
-import { TeacherDashboard } from "./teacher-dashboard";
-import { ErrorBoundary } from "react-error-boundary";
-import { Suspense } from "react";
-import { EmptyError } from "@/components/empty-error";
-import { EmptyLoading } from "@/components/empty-loading";
+import { HydrateClient, prefetch, trpc } from '@/trpc/server'
+import { AdminDashboard } from './admin-dashboard'
+import { StudentDashboard } from './student-dashboard'
+import { TeacherDashboard } from './teacher-dashboard'
+import { ErrorBoundary } from 'react-error-boundary'
+import { Suspense } from 'react'
+import { EmptyError } from '@/components/empty-error'
+import { EmptyLoading } from '@/components/empty-loading'
 
 interface DashboardVariantsProps {
-  userRole: "admin" | "teacher" | "student";
+  userRole: 'admin' | 'teacher' | 'student'
 }
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 export function DashboardVariants({ userRole }: DashboardVariantsProps) {
-  if (userRole === "admin") {
-    prefetch(trpc.roleData.getAdminDashboardData.queryOptions());
-  } else if (userRole === "teacher") {
-    prefetch(trpc.roleData.getTeacherDashboardData.queryOptions());
-  } else if (userRole === "student") {
-    prefetch(trpc.roleData.getStudentDashboardData.queryOptions());
+  if (userRole === 'admin') {
+    prefetch(trpc.roleData.getAdminDashboardData.queryOptions())
+  } else if (userRole === 'teacher') {
+    prefetch(trpc.roleData.getTeacherDashboardData.queryOptions())
+  } else if (userRole === 'student') {
+    prefetch(trpc.roleData.getStudentDashboardData.queryOptions())
   }
 
   return (
     <HydrateClient>
       {(() => {
         switch (userRole) {
-          case "admin":
+          case 'admin':
             return (
               <ErrorBoundary
                 fallback={
@@ -47,8 +47,8 @@ export function DashboardVariants({ userRole }: DashboardVariantsProps) {
                   <AdminDashboard />
                 </Suspense>
               </ErrorBoundary>
-            );
-          case "teacher":
+            )
+          case 'teacher':
             return (
               <ErrorBoundary
                 fallback={
@@ -69,8 +69,8 @@ export function DashboardVariants({ userRole }: DashboardVariantsProps) {
                   <TeacherDashboard />
                 </Suspense>
               </ErrorBoundary>
-            );
-          case "student":
+            )
+          case 'student':
             return (
               <ErrorBoundary
                 fallback={
@@ -91,11 +91,11 @@ export function DashboardVariants({ userRole }: DashboardVariantsProps) {
                   <StudentDashboard />
                 </Suspense>
               </ErrorBoundary>
-            );
+            )
           default:
-            return null;
+            return null
         }
       })()}
     </HydrateClient>
-  );
+  )
 }

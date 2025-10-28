@@ -1,20 +1,14 @@
-"use client";
+'use client'
 
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { EmptyError } from "@/components/empty-error";
-import { Separator } from "@/components/ui/separator";
-import { GetClassStatusBadge } from "../../_components/get-class-status-badge";
+import { useTRPC } from '@/trpc/client'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { useParams, useRouter } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { EmptyError } from '@/components/empty-error'
+import { Separator } from '@/components/ui/separator'
+import { GetClassStatusBadge } from '../../_components/get-class-status-badge'
 import {
   Table,
   TableBody,
@@ -22,20 +16,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { GetStudentStatusBadge } from "../../../siswa/_components/get-student-status-badge";
-import { getTodayHariEnum } from "@/lib/date";
-import { cn } from "@/lib/utils";
-import { enumToReadable } from "@/lib/string";
+} from '@/components/ui/table'
+import { GetStudentStatusBadge } from '../../../siswa/_components/get-student-status-badge'
+import { getTodayHariEnum } from '@/lib/date'
+import { cn } from '@/lib/utils'
+import { enumToReadable } from '@/lib/string'
 
 export function ClassDetail() {
-  const params = useParams<{ classId: string }>();
-  const router = useRouter();
+  const params = useParams<{ classId: string }>()
+  const router = useRouter()
 
-  const trpc = useTRPC();
+  const trpc = useTRPC()
   const { data: classData, refetch } = useSuspenseQuery(
-    trpc.class.getClassById.queryOptions({ classId: params.classId }),
-  );
+    trpc.class.getClassById.queryOptions({ classId: params.classId })
+  )
 
   if (!classData) {
     return (
@@ -44,7 +38,7 @@ export function ClassDetail() {
         description="Terjadi kesalahan saat memuat data kelas. Silakan coba lagi."
         onAction={() => refetch()}
       />
-    );
+    )
   }
 
   return (
@@ -59,9 +53,7 @@ export function ClassDetail() {
           <CardHeader>
             <div className="flex items-start justify-between">
               <div>
-                <CardTitle className="text-2xl">
-                  Kelas {classData.namaKelas}
-                </CardTitle>
+                <CardTitle className="text-2xl">Kelas {classData.namaKelas}</CardTitle>
                 <CardDescription>
                   {classData.tingkat} - Ruangan {classData.ruang}
                 </CardDescription>
@@ -85,12 +77,8 @@ export function ClassDetail() {
                     <p className="text-sm font-medium">{classData.ruang}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">
-                      Jumlah Siswa
-                    </p>
-                    <p className="text-sm font-medium">
-                      {classData.students.length} siswa
-                    </p>
+                    <p className="text-sm text-muted-foreground">Jumlah Siswa</p>
+                    <p className="text-sm font-medium">{classData.students.length} siswa</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Status</p>
@@ -107,23 +95,15 @@ export function ClassDetail() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-muted-foreground">Nama</p>
-                      <p className="text-sm font-medium">
-                        {classData.waliKelas.nama}
-                      </p>
+                      <p className="text-sm font-medium">{classData.waliKelas.nama}</p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">NIP</p>
-                      <p className="text-sm font-medium">
-                        {classData.waliKelas.nip}
-                      </p>
+                      <p className="text-sm font-medium">{classData.waliKelas.nip}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">
-                        No. Telepon
-                      </p>
-                      <p className="text-sm font-medium">
-                        {classData.waliKelas.noTelepon}
-                      </p>
+                      <p className="text-sm text-muted-foreground">No. Telepon</p>
+                      <p className="text-sm font-medium">{classData.waliKelas.noTelepon}</p>
                     </div>
                   </div>
                 </div>
@@ -153,9 +133,7 @@ export function ClassDetail() {
                         <TableCell>{student.nisn}</TableCell>
                         <TableCell>{student.nama}</TableCell>
                         <TableCell>
-                          {student.jenisKelamin === "LAKI_LAKI"
-                            ? "Laki-laki"
-                            : "Perempuan"}
+                          {student.jenisKelamin === 'LAKI_LAKI' ? 'Laki-laki' : 'Perempuan'}
                         </TableCell>
                         <TableCell>
                           {GetStudentStatusBadge({
@@ -183,14 +161,12 @@ export function ClassDetail() {
                   </TableHeader>
                   <TableBody>
                     {classData.schedules.map((schedule, index) => {
-                      const todayEnum = getTodayHariEnum();
+                      const todayEnum = getTodayHariEnum()
                       return (
                         <TableRow
                           key={index}
                           className={cn(
-                            schedule.hari === todayEnum
-                              ? "bg-accent hover:bg-accent/80"
-                              : "",
+                            schedule.hari === todayEnum ? 'bg-accent hover:bg-accent/80' : ''
                           )}
                         >
                           <TableCell>{enumToReadable(schedule.hari)}</TableCell>
@@ -204,12 +180,10 @@ export function ClassDetail() {
                             </span>
                           </TableCell>
                           <TableCell>
-                            {schedule.guruPengampu
-                              ? schedule.guruPengampu.nama
-                              : "-"}
+                            {schedule.guruPengampu ? schedule.guruPengampu.nama : '-'}
                           </TableCell>
                         </TableRow>
-                      );
+                      )
                     })}
                   </TableBody>
                 </Table>
@@ -219,5 +193,5 @@ export function ClassDetail() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

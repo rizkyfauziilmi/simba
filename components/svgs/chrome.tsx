@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from 'react'
 
 const Chrome = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} preserveAspectRatio="xMidYMid" viewBox="0 0 190.5 190.5">
@@ -23,6 +23,6 @@ const Chrome = (props: SVGProps<SVGSVGElement>) => (
       d="M95.252 47.628h82.479A95.237 95.237 0 0 0 142.87 12.76 95.23 95.23 0 0 0 95.245 0a95.222 95.222 0 0 0-47.623 12.767 95.23 95.23 0 0 0-34.856 34.872l41.24 71.43.011.006a47.62 47.62 0 0 1-.015-47.633 47.61 47.61 0 0 1 41.252-23.815z"
     />
   </svg>
-);
+)
 
-export { Chrome };
+export { Chrome }

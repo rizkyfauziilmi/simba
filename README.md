@@ -18,6 +18,7 @@ cd simba
 1. Pastikan Anda telah [mengatur SSH key di GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 
 2. Kloning repositori:
+
 ```bash
 git clone git@github.com:rizkyfauziilmi/simba.git
 cd simba
@@ -33,6 +34,7 @@ Aplikasi ini memiliki dua dokumentasi utama:
 ## Memulai Development
 
 Untuk memulai development, ikuti panduan development di [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) yang mencakup:
+
 - Instalasi dependencies
 - Konfigurasi environment
 - Menjalankan database PostgreSQL
@@ -52,6 +54,7 @@ Untuk memulai development, ikuti panduan development di [docs/DEVELOPMENT.md](do
 ## Deployment
 
 Untuk men-deploy aplikasi ke server Ubuntu lokal, ikuti panduan deployment di [Panduan Deployment](docs/DEPLOY.md) yang mencakup:
+
 - Konfigurasi IP statis
 - Instalasi software yang dibutuhkan
 - Konfigurasi Nginx sebagai reverse proxy

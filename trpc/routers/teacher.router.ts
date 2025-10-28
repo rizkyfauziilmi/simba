@@ -1,14 +1,14 @@
-import { TRPCError } from "@trpc/server";
-import { adminProcedure, createTRPCRouter } from "../init";
+import { TRPCError } from '@trpc/server'
+import { adminProcedure, createTRPCRouter } from '../init'
 import {
   createTeacherSchema,
   deleteTeacherSchema,
   getNotHomeRoomTeachersSchema,
   getTeacherSchema,
   updateTeacherSchema,
-} from "../schemas/teacher.schema";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+} from '../schemas/teacher.schema'
+import { auth } from '@/lib/auth'
+import { headers } from 'next/headers'
 
 export const teacherRouter = createTRPCRouter({
   getAllTeachers: adminProcedure.query(async ({ ctx }) => {
@@ -20,17 +20,17 @@ export const teacherRouter = createTRPCRouter({
           },
         },
       },
-    });
-    return teachers;
+    })
+    return teachers
   }),
   getActiveTeachers: adminProcedure.query(async ({ ctx }) => {
     const teachers = await ctx.db.teacher.findMany({
       where: {
-        status: "AKTIF",
+        status: 'AKTIF',
       },
-    });
+    })
 
-    return teachers;
+    return teachers
   }),
   getNotHomeRoomTeachers: adminProcedure
     .input(getNotHomeRoomTeachersSchema)
@@ -38,7 +38,7 @@ export const teacherRouter = createTRPCRouter({
       const teachers = await ctx.db.teacher.findMany({
         where: {
           NOT: {
-            OR: [{ status: "KELUAR" }, { status: "PENSIUN" }],
+            OR: [{ status: 'KELUAR' }, { status: 'PENSIUN' }],
           },
           OR: currentClassId
             ? [
@@ -62,172 +62,164 @@ export const teacherRouter = createTRPCRouter({
           id: true,
           nip: true,
         },
-      });
+      })
 
-      return teachers;
+      return teachers
     }),
-  getTeacherById: adminProcedure
-    .input(getTeacherSchema)
-    .query(async ({ ctx, input }) => {
-      const { teacherId } = input;
+  getTeacherById: adminProcedure.input(getTeacherSchema).query(async ({ ctx, input }) => {
+    const { teacherId } = input
 
-      const teacher = await ctx.db.teacher.findUnique({
-        where: {
-          id: teacherId,
-        },
-        include: {
-          waliKelas: {
-            select: {
-              namaKelas: true,
-              tingkat: true,
-              ruang: true,
-            },
+    const teacher = await ctx.db.teacher.findUnique({
+      where: {
+        id: teacherId,
+      },
+      include: {
+        waliKelas: {
+          select: {
+            namaKelas: true,
+            tingkat: true,
+            ruang: true,
           },
-          ClassSchedule: {
-            select: {
-              hari: true,
-              jamMulai: true,
-              jamSelesai: true,
-              subject: {
-                select: {
-                  nama: true,
-                },
-              },
-              kelas: {
-                select: {
-                  namaKelas: true,
-                  ruang: true,
-                },
+        },
+        ClassSchedule: {
+          select: {
+            hari: true,
+            jamMulai: true,
+            jamSelesai: true,
+            subject: {
+              select: {
+                nama: true,
               },
             },
-            orderBy: [{ hari: "asc" }, { jamMulai: "asc" }],
+            kelas: {
+              select: {
+                namaKelas: true,
+                ruang: true,
+              },
+            },
           },
+          orderBy: [{ hari: 'asc' }, { jamMulai: 'asc' }],
         },
-      });
+      },
+    })
 
-      return teacher;
-    }),
-  createTeacher: adminProcedure
-    .input(createTeacherSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { nama, nip } = input;
+    return teacher
+  }),
+  createTeacher: adminProcedure.input(createTeacherSchema).mutation(async ({ ctx, input }) => {
+    const { nama, nip } = input
 
-      const isNipExists = await ctx.db.teacher.findFirst({
-        where: {
-          nip,
-        },
-        select: {
-          id: true,
-        },
-      });
+    const isNipExists = await ctx.db.teacher.findFirst({
+      where: {
+        nip,
+      },
+      select: {
+        id: true,
+      },
+    })
 
-      if (isNipExists) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "NIP sudah digunakan",
-        });
-      }
+    if (isNipExists) {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'NIP sudah digunakan',
+      })
+    }
 
-      const namaFormatted = nama.toLowerCase().replace(/\s/g, "");
+    const namaFormatted = nama.toLowerCase().replace(/\s/g, '')
 
-      const newUserTeacher = await auth.api.createUser({
-        body: {
-          email: `${namaFormatted}@example.com`,
-          password: `${namaFormatted}@1234`,
-          name: nama,
-          role: "teacher",
-          data: {
-            username: namaFormatted,
-            displayUsername: nama,
-          },
-        },
-      });
-
-      await ctx.db.teacher.create({
+    const newUserTeacher = await auth.api.createUser({
+      body: {
+        email: `${namaFormatted}@example.com`,
+        password: `${namaFormatted}@1234`,
+        name: nama,
+        role: 'teacher',
         data: {
-          ...input,
-          userId: newUserTeacher.user.id,
+          username: namaFormatted,
+          displayUsername: nama,
         },
-      });
+      },
+    })
 
-      return {
-        message: "Guru berhasil ditambahkan",
-      };
-    }),
-  deleteTeacher: adminProcedure
-    .input(deleteTeacherSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { teacherId } = input;
+    await ctx.db.teacher.create({
+      data: {
+        ...input,
+        userId: newUserTeacher.user.id,
+      },
+    })
 
-      const teacher = await ctx.db.teacher.findUnique({
-        where: {
-          id: teacherId,
-        },
-        select: {
-          id: true,
-          userId: true,
-        },
-      });
+    return {
+      message: 'Guru berhasil ditambahkan',
+    }
+  }),
+  deleteTeacher: adminProcedure.input(deleteTeacherSchema).mutation(async ({ ctx, input }) => {
+    const { teacherId } = input
 
-      if (!teacher) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Guru tidak ditemukan",
-        });
-      }
+    const teacher = await ctx.db.teacher.findUnique({
+      where: {
+        id: teacherId,
+      },
+      select: {
+        id: true,
+        userId: true,
+      },
+    })
 
-      await ctx.db.teacher.delete({
-        where: {
-          id: teacher.id,
-        },
-      });
+    if (!teacher) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Guru tidak ditemukan',
+      })
+    }
 
-      await auth.api.removeUser({
-        body: {
-          userId: teacher.userId,
-        },
-        headers: await headers(),
-      });
+    await ctx.db.teacher.delete({
+      where: {
+        id: teacher.id,
+      },
+    })
 
-      return {
-        message: "Guru berhasil dihapus",
-      };
-    }),
-  updateTeacher: adminProcedure
-    .input(updateTeacherSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { teacherId, ...data } = input;
+    await auth.api.removeUser({
+      body: {
+        userId: teacher.userId,
+      },
+      headers: await headers(),
+    })
 
-      const teacher = await ctx.db.teacher.findUnique({
-        where: {
-          id: teacherId,
-        },
-        select: {
-          userId: true,
-          user: {
-            select: {
-              email: true,
-            },
+    return {
+      message: 'Guru berhasil dihapus',
+    }
+  }),
+  updateTeacher: adminProcedure.input(updateTeacherSchema).mutation(async ({ ctx, input }) => {
+    const { teacherId, ...data } = input
+
+    const teacher = await ctx.db.teacher.findUnique({
+      where: {
+        id: teacherId,
+      },
+      select: {
+        userId: true,
+        user: {
+          select: {
+            email: true,
           },
         },
-      });
+      },
+    })
 
-      if (!teacher) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Guru tidak ditemukan",
-        });
-      }
+    if (!teacher) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Guru tidak ditemukan',
+      })
+    }
 
-      await ctx.db.teacher.update({
-        where: {
-          id: teacherId,
-        },
-        data,
-      });
+    await ctx.db.teacher.update({
+      where: {
+        id: teacherId,
+      },
+      data,
+    })
 
-      return {
-        message: "Guru berhasil diperbarui",
-      };
-    }),
-});
+    return {
+      message: 'Guru berhasil diperbarui',
+    }
+  }),
+})

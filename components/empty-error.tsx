@@ -1,6 +1,6 @@
-import { RefreshCcwIcon, ServerCrash } from "lucide-react";
+import { RefreshCcwIcon, ServerCrash } from 'lucide-react'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Empty,
   EmptyContent,
@@ -8,17 +8,17 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
+} from '@/components/ui/empty'
 
 interface EmptyErrorProps {
-  title?: string;
-  description?: string;
-  onAction?: () => void;
+  title?: string
+  description?: string
+  onAction?: () => void
 }
 
 export function EmptyError({
-  title = "Terjadi kesalahan.",
-  description = "Terjadi error saat memuat data. Silakan coba lagi.",
+  title = 'Terjadi kesalahan.',
+  description = 'Terjadi error saat memuat data. Silakan coba lagi.',
   onAction,
 }: EmptyErrorProps) {
   return (
@@ -39,5 +39,5 @@ export function EmptyError({
         </EmptyContent>
       )}
     </Empty>
-  );
+  )
 }

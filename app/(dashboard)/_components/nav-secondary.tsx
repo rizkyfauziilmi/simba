@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { type LucideIcon } from "lucide-react";
+import { type LucideIcon } from 'lucide-react'
 
 import {
   SidebarGroup,
@@ -8,42 +8,36 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+} from '@/components/ui/sidebar'
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
 
 export function NavSecondary({
   items,
   currentRole,
   ...props
 }: {
-  currentRole: string;
+  currentRole: string
   items: {
-    title: string;
-    url: string;
-    icon: LucideIcon;
-    role: string[];
-    items: never[];
-  }[];
+    title: string
+    url: string
+    icon: LucideIcon
+    role: string[]
+    items: never[]
+  }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   // Filter parent items sesuai role
-  const filteredItems = items.filter(
-    (item) => !item.role || item.role.includes(currentRole),
-  );
+  const filteredItems = items.filter(item => !item.role || item.role.includes(currentRole))
 
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
-          {filteredItems.map((item) => (
+          {filteredItems.map(item => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton
-                asChild
-                size="sm"
-                isActive={pathname === item.url}
-              >
+              <SidebarMenuButton asChild size="sm" isActive={pathname === item.url}>
                 <Link href={item.url}>
                   <item.icon />
                   <span>{item.title}</span>
@@ -54,5 +48,5 @@ export function NavSecondary({
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  );
+  )
 }

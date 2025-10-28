@@ -1,5 +1,5 @@
-import { Separator } from "../ui/separator";
-import { Skeleton } from "../ui/skeleton";
+import { Separator } from '../ui/separator'
+import { Skeleton } from '../ui/skeleton'
 
 export function TableSkeleton() {
   return (
@@ -39,7 +39,7 @@ export function TableSkeleton() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function TableRow() {
@@ -52,5 +52,5 @@ function TableRow() {
       <Skeleton className="w-1/10 rounded-md h-4" />
       <Skeleton className="w-1/10 rounded-md h-4" />
     </div>
-  );
+  )
 }

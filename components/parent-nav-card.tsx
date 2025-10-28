@@ -1,26 +1,16 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
-import Link from "next/link";
+import { Button } from '@/components/ui/button'
+import { Card, CardTitle, CardDescription, CardContent, CardHeader } from '@/components/ui/card'
+import Link from 'next/link'
 
 interface MasterNavCardProps {
-  title: string;
-  description: string;
-  href: string;
+  title: string
+  description: string
+  href: string
 }
 
-export function ParentNavCard({
-  title,
-  description,
-  href,
-}: MasterNavCardProps) {
+export function ParentNavCard({ title, description, href }: MasterNavCardProps) {
   return (
     <Card>
       <div className="flex justify-between items-center">
@@ -35,5 +25,5 @@ export function ParentNavCard({
         </CardContent>
       </div>
     </Card>
-  );
+  )
 }

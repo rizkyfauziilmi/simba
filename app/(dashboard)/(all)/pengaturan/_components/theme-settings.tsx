@@ -1,50 +1,39 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Check } from "lucide-react";
-import { useTheme } from "next-themes";
-import { themes } from "@/constants/theme";
-import { Switch } from "@/components/ui/switch";
-import { ThemePreview } from "./theme-preview";
+import { useState, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Check } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { themes } from '@/constants/theme'
+import { Switch } from '@/components/ui/switch'
+import { ThemePreview } from './theme-preview'
 
 export default function ThemeSettings() {
-  const { theme: currentTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const { theme: currentTheme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => setMounted(true), [])
 
-  if (!mounted) return null;
+  if (!mounted) return null
 
   // Get current flavour (light/dark) from theme value
-  const currentMode = currentTheme?.split("-").pop() || "light";
+  const currentMode = currentTheme?.split('-').pop() || 'light'
 
   // Get current variant from theme value
   const currentVariant =
-    Object.keys(themes).find((variant) => currentTheme?.startsWith(variant)) ||
-    "default";
+    Object.keys(themes).find(variant => currentTheme?.startsWith(variant)) || 'default'
 
   // Handler for switch
   const handleModeChange = (checked: boolean) => {
-    const newMode = checked ? "dark" : "light";
-    setTheme(`${currentVariant}-${newMode}`);
-  };
+    const newMode = checked ? 'dark' : 'light'
+    setTheme(`${currentVariant}-${newMode}`)
+  }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">
-          Pengaturan Tema
-        </h1>
-        <p className="text-muted-foreground">
-          Pilih tema yang Anda sukai untuk aplikasi
-        </p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Pengaturan Tema</h1>
+        <p className="text-muted-foreground">Pilih tema yang Anda sukai untuk aplikasi</p>
       </div>
 
       <Card>
@@ -55,30 +44,25 @@ export default function ThemeSettings() {
         <CardContent>
           <div className="flex items-center gap-4 mb-4">
             <span className="text-sm">Terang</span>
-            <Switch
-              checked={currentMode === "dark"}
-              onCheckedChange={handleModeChange}
-            />
+            <Switch checked={currentMode === 'dark'} onCheckedChange={handleModeChange} />
             <span className="text-sm">Gelap</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {Object.entries(themes).map(([variantKey, variant]) => {
-              const isActive = currentVariant === variantKey;
+              const isActive = currentVariant === variantKey
               return (
                 <button
                   key={variantKey}
                   onClick={() => setTheme(`${variantKey}-${currentMode}`)}
                   className={`relative p-4 rounded-lg border-2 transition-all ${
                     isActive
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/50"
+                      ? 'border-primary bg-primary/5'
+                      : 'border-border hover:border-primary/50'
                   }`}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h3 className="font-semibold text-foreground text-left">
-                        {variant.name}
-                      </h3>
+                      <h3 className="font-semibold text-foreground text-left">{variant.name}</h3>
                       <p className="text-sm text-muted-foreground text-left">
                         {variant.description}
                       </p>
@@ -107,19 +91,17 @@ export default function ThemeSettings() {
                         ),
                       ),
                     )}*/}
-                    {variant.modes[currentMode as "light" | "dark"].colors.map(
-                      (color, index) => (
-                        <div
-                          key={`${currentMode}-${index}`}
-                          style={{ backgroundColor: color }}
-                          className="w-6 h-6 rounded-md border border-border"
-                          title={`${variant.name} ${currentMode} ${color}`}
-                        />
-                      ),
-                    )}
+                    {variant.modes[currentMode as 'light' | 'dark'].colors.map((color, index) => (
+                      <div
+                        key={`${currentMode}-${index}`}
+                        style={{ backgroundColor: color }}
+                        className="w-6 h-6 rounded-md border border-border"
+                        title={`${variant.name} ${currentMode} ${color}`}
+                      />
+                    ))}
                   </div>
                 </button>
-              );
+              )
             })}
           </div>
         </CardContent>
@@ -135,5 +117,5 @@ export default function ThemeSettings() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

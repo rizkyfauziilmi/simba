@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Empty,
   EmptyContent,
@@ -6,11 +6,11 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty";
-import { BrushCleaning } from "lucide-react";
+} from '@/components/ui/empty'
+import { BrushCleaning } from 'lucide-react'
 
 interface CreateMapelFormProps {
-  onClick?: () => void;
+  onClick?: () => void
 }
 
 export function EmptySchedules({ onClick }: CreateMapelFormProps) {
@@ -21,9 +21,7 @@ export function EmptySchedules({ onClick }: CreateMapelFormProps) {
           <BrushCleaning />
         </EmptyMedia>
         <EmptyTitle>Tidak ada jadwal yang ditambahkan</EmptyTitle>
-        <EmptyDescription>
-          Tekan tombol tambah untuk menambahkan jadwal baru.
-        </EmptyDescription>
+        <EmptyDescription>Tekan tombol tambah untuk menambahkan jadwal baru.</EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
         <Button variant="outline" size="sm" onClick={onClick}>
@@ -31,5 +29,5 @@ export function EmptySchedules({ onClick }: CreateMapelFormProps) {
         </Button>
       </EmptyContent>
     </Empty>
-  );
+  )
 }

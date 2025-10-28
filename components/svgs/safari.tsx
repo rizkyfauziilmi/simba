@@ -1,4 +1,4 @@
-import type { SVGProps } from "react";
+import type { SVGProps } from 'react'
 
 const Safari = (props: SVGProps<SVGSVGElement>) => (
   <svg {...props} viewBox="0 0 66.165833 65.803795">
@@ -47,11 +47,8 @@ const Safari = (props: SVGProps<SVGSVGElement>) => (
       d="m36.38339038 34.83805895-6.60095092-6.91272438-16.81512624 22.66471911z"
       paint-order="markers stroke fill"
     />
-    <path
-      d="m12.96732 50.59006 23.41607-15.75201 16.81513-22.66472z"
-      opacity=".243"
-    />
+    <path d="m12.96732 50.59006 23.41607-15.75201 16.81513-22.66472z" opacity=".243" />
   </svg>
-);
+)
 
-export { Safari };
+export { Safari }

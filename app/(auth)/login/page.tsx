@@ -1,8 +1,8 @@
-import { LoginForm } from "./_components/login-form";
-import Link from "next/link";
-import logo from "@/public/logo.png";
-import banner from "@/public/banner.png";
-import Image from "next/image";
+import { LoginForm } from './_components/login-form'
+import Link from 'next/link'
+import logo from '@/public/logo.png'
+import banner from '@/public/banner.png'
+import Image from 'next/image'
 
 export default function LoginPage() {
   return (
@@ -28,5 +28,5 @@ export default function LoginPage() {
         />
       </div>
     </div>
-  );
+  )
 }

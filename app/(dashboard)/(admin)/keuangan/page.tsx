@@ -1,34 +1,34 @@
-import { FinanceFilters } from "./_components/filters";
-import { FinanceChart } from "./_components/finance-chart";
-import { SummaryCards } from "./_components/summary-cards";
-import { HydrateClient, prefetch, trpc } from "@/trpc/server";
-import { ErrorBoundary } from "react-error-boundary";
-import { Suspense } from "react";
-import type { SearchParams } from "nuqs/server";
-import { loadSearchParams } from "@/lib/searchParams";
-import { TransactionDetailTable } from "./_components/transaction-detail-table";
-import { TransactionHeader } from "./_components/transaction-header";
-import { FinanceCardSkeletonList } from "./_components/skeleton/finance-card-skeleton";
-import { FinanceChartSkeleton } from "./_components/skeleton/finance-chart-skeleton";
-import { TableSkeleton } from "@/components/skeleton/table-skeleton";
-import { EmptyError } from "@/components/empty-error";
+import { FinanceFilters } from './_components/filters'
+import { FinanceChart } from './_components/finance-chart'
+import { SummaryCards } from './_components/summary-cards'
+import { HydrateClient, prefetch, trpc } from '@/trpc/server'
+import { ErrorBoundary } from 'react-error-boundary'
+import { Suspense } from 'react'
+import type { SearchParams } from 'nuqs/server'
+import { loadSearchParams } from '@/lib/searchParams'
+import { TransactionDetailTable } from './_components/transaction-detail-table'
+import { TransactionHeader } from './_components/transaction-header'
+import { FinanceCardSkeletonList } from './_components/skeleton/finance-card-skeleton'
+import { FinanceChartSkeleton } from './_components/skeleton/finance-chart-skeleton'
+import { TableSkeleton } from '@/components/skeleton/table-skeleton'
+import { EmptyError } from '@/components/empty-error'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 type PageProps = {
-  searchParams: Promise<SearchParams>;
-};
+  searchParams: Promise<SearchParams>
+}
 
 export default async function KeuanganPage({ searchParams }: PageProps) {
-  const { categories, from, to } = await loadSearchParams(searchParams);
+  const { categories, from, to } = await loadSearchParams(searchParams)
 
   prefetch(
     trpc.finance.getFinanceSummary.queryOptions({
       categories: categories ?? undefined,
       startDate: from,
       endDate: to,
-    }),
-  );
+    })
+  )
 
   return (
     <HydrateClient>
@@ -94,5 +94,5 @@ export default async function KeuanganPage({ searchParams }: PageProps) {
         </section>
       </main>
     </HydrateClient>
-  );
+  )
 }
