@@ -2,6 +2,8 @@
 
 Aplikasi SIMBA adalah sistem informasi manajemen berbasis web yang dibangun dengan [Next.js](https://nextjs.org).
 
+![Tampilan Aplikasi SIMBA](docs/screenshot-1.png)
+
 ## Kloning Repositori
 
 Anda dapat mengkloning repositori ini menggunakan metode HTTPS atau SSH:
